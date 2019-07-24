@@ -18,7 +18,6 @@ matrix:
         # add more combinations here as per requirement
         - env: PYTHON_VERSION="3.7" NUMPY_VERSION="1.15" SCIPY_VERSION="1.1"
                SKLEARN_VERSION="0.20" PANDAS_VERSION="0.24" STATSMODELS_VERSION="0.9" SKTIME_VERSION="0.1.0" KERAS_VERSION="2.2.4"
-			   
 
 install:
     # install miniconda
