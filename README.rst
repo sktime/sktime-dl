@@ -10,18 +10,18 @@ This package uses the base sktime as a dependency. Follow the `original instruct
 
 For the deep-learning part of sktime-dl, you need:
 
-* Keras
-* keras-contrib
+* `Keras <https://github.com/keras-team/keras>`__
+* `keras-contrib <https://github.com/keras-team/keras-contrib>`__ 
 * and a compatible backend for Keras, one of 
-    * tensorflow  (confirmed working)
-    * tensorflow-gpu (confirmed working)
-    * theano   (untested)
+    * `tensorflow <https://www.tensorflow.org/install/>`__ (confirmed working, v1.8.0)
+    * `theano <http://deeplearning.net/software/theano/install.html#install>`__ (untested)
+    * `CNTK <https://docs.microsoft.com/en-us/cognitive-toolkit/setup-cntk-on-your-machine>`__ (untested)
 
-If tensorflow-gpu is installed, CUDA and CUDNN are also required to be able to utilise your GPU. 
+If you want to run the networks on a GPU, `CUDNN <https://docs.nvidia.com/deeplearning/sdk/cudnn-install/>`__ is also required to be able to utilise your GPU. 
 
-For linux users, all of these points should hopefully be relatively straight forward via simple pip-commands, aside from CUDNN.
+For windows users, we recommend following `this <https://github.com/antoniosehk/keras-tensorflow-windows-installation>`__ (unaffiliated) guide.
 
-For windows users, we recommend following this `<https://github.com/antoniosehk/keras-tensorflow-windows-installation>`__ (unaffiliated) guide.
+For linux users, all of these points should hopefully be relatively straight forward via simple pip-commands and conversions from the previous link.
 
 For mac users, I am unfortunately unsure of the best processes for installing these. If you have links to a tested and up-to-date guide, let us know (@James-Large).
 
