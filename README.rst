@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.com/alan-turing-institute/sktime.svg?token=kTo6WTfr4f458q1WzPCH&branch=master
+    :target: https://travis-ci.com/alan-turing-institute/sktime   
+
 sktime-dl
 =========
 An additional deep learning with Keras toolset for `sktime <https://github.com/alan-turing-institute/sktime>`__, a `scikit-learn <https://github.com/scikit-learn/scikit-learn>`__ compatible Python toolbox for learning with time series and panel data. 
