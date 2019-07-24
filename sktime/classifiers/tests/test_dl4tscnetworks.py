@@ -5,8 +5,18 @@ import keras
 
 from sktime.datasets import load_italy_power_demand, load_basic_motions
 
+import sktime.contrib.deeplearning_based.dl4tsc.cnn as cnn
+import sktime.contrib.deeplearning_based.dl4tsc.encoder as encoder
+import sktime.contrib.deeplearning_based.dl4tsc.fcn as fcn
+import sktime.contrib.deeplearning_based.dl4tsc.mcdcnn as mcdcnn
+import sktime.contrib.deeplearning_based.dl4tsc.mcnn as mcnn
+import sktime.contrib.deeplearning_based.dl4tsc.mlp as mlp
+import sktime.contrib.deeplearning_based.dl4tsc.resnet as resnet
+import sktime.contrib.deeplearning_based.dl4tsc.tlenet as tlenet
+import sktime.contrib.deeplearning_based.dl4tsc.twiesn as twiesn
+import sktime.contrib.deeplearning_based.tuned_cnn as tuned_cnn
 
-def test_basic_univariate(network):
+def test_basic_univariate(network=cnn.CNN()):
     '''
     just a super basic test with gunpoint,
         load data,
@@ -26,7 +36,7 @@ def test_basic_univariate(network):
     print("End test_basic()")
 
 
-def test_pipeline(network):
+def test_pipeline(network=cnn.CNN()):
     '''
     slightly more generalised test with sktime pipelines
         load data,
@@ -55,7 +65,7 @@ def test_pipeline(network):
     print("End test_pipeline()")
 
 
-def test_highLevelsktime(network):
+def test_highLevelsktime(network=cnn.CNN()):
     '''
     truly generalised test with sktime tasks/strategies
         load data, build task
@@ -84,7 +94,7 @@ def test_highLevelsktime(network):
     print("End test_highLevelsktime()")
 
 
-def test_basic_multivariate(network):
+def test_basic_multivariate(network=cnn.CNN()):
     '''
     just a super basic test with basicmotions,
         load data,
@@ -103,7 +113,7 @@ def test_basic_multivariate(network):
     print("End test_multivariate()")
 
 
-def test_network(network):
+def test_network(network=cnn.CNN()):
     # sklearn compatibility
     # check_estimator(FCN)
 
@@ -113,17 +123,7 @@ def test_network(network):
     test_highLevelsktime(network)
 
 
-def test_all_networks_all_tests():
-    import sktime.contrib.deeplearning_based.dl4tsc.cnn as cnn
-    import sktime.contrib.deeplearning_based.dl4tsc.encoder as encoder
-    import sktime.contrib.deeplearning_based.dl4tsc.fcn as fcn
-    import sktime.contrib.deeplearning_based.dl4tsc.mcdcnn as mcdcnn
-    import sktime.contrib.deeplearning_based.dl4tsc.mcnn as mcnn
-    import sktime.contrib.deeplearning_based.dl4tsc.mlp as mlp
-    import sktime.contrib.deeplearning_based.dl4tsc.resnet as resnet
-    import sktime.contrib.deeplearning_based.dl4tsc.tlenet as tlenet
-    import sktime.contrib.deeplearning_based.dl4tsc.twiesn as twiesn
-    import sktime.contrib.deeplearning_based.tuned_cnn as tuned_cnn
+def all_networks_all_tests():
 
     networks = [
         cnn.CNN(),
@@ -198,4 +198,4 @@ def comparisonExperiments():
 
 
 if __name__ == "__main__":
-    test_all_networks_all_tests()
+    all_networks_all_tests()
