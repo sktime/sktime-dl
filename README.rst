@@ -1,13 +1,11 @@
 sktime-dl
 =========
-
 An additional deep learning with Keras toolset for `sktime <https://github.com/alan-turing-institute/sktime>`__, a `scikit-learn <https://github.com/scikit-learn/scikit-learn>`__ compatible Python toolbox for learning with time series and panel data. 
 
 The package is under active development. Currently, classification models based off the the networks in `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__ have been implemented, as well as an example of a tuned network for future development. 
 
 Installation
 ------------
-
 This package uses the base sktime as a dependency. Follow the `original instructions <https://help.github.com/en/articles/changing-a-remotes-url>`__ to install this. 
 
 For the deep-learning part of sktime-dl, you need:
@@ -30,16 +28,14 @@ For mac users, I am unfortunately unsure of the best processes for installing th
 Overview
 --------
 
-Repository for off-the-shelf networks
--------------------------------------
-
+A repository for off-the-shelf networks
+~~~~~~~~~~~~~~~~~~~
 The aim is to define Keras networks able to be directly used within sktime and its pipelining and strategy tools, and by extension scikit-learn, for use in applications and research. Overtime, we wish to interface or reimplement networks from the literature in the context of time series analysis.
 
 Currently, we interface with a number of networks for time series classification in particular. 
 
-dl-4-tsc Interfacing
---------------------
-
+dl-4-tsc interfacing
+~~~~~~~~~~~~~~~~~~~
 This toolset currently serves as an interface to `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__, and implements the following network archtiectures: 
 
 * Time convolutional neural network (CNN)
@@ -65,12 +61,12 @@ Contributors
 Former and current active contributors are as follows.
 
 sktime-dl
----------
+~~~~~~~~~
 
 James Large(@James-Large), Aaron Bostrom(@ABostrom), Hassan Ismail Fawaz(@hfawaz)
 
 sktime
-------
+~~~~~~
 
 Project management: Jason Lines (@jasonlines), Franz Király (@fkiraly)
 
