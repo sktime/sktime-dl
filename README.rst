@@ -40,7 +40,8 @@ The aim is to define Keras networks able to be directly used within sktime and i
 Currently, we interface with a number of networks for time series classification in particular. 
 
 dl-4-tsc interfacing
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+
 This toolset currently serves as an interface to `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__, and implements the following network archtiectures: 
 
 - Time convolutional neural network (CNN)
