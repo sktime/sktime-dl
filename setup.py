@@ -40,7 +40,6 @@ if sys.version_info < (3, 6):
                        " Python version is %s installed in %s."
                        % (platform.python_version(), sys.executable))
 
-
 DISTNAME = 'sktime-dl'
 DESCRIPTION = 'deep learning extension toolbox for sktime, a scikit-learn compatible toolbox for learning with time series/panel data'
 with codecs.open('README.rst', encoding='utf-8-sig') as f:
@@ -56,8 +55,11 @@ PROJECT_URLS = {
     'Source Code': 'https://github.com/uea-machine-learning/sktime-dl'
 }
 VERSION = find_version('sktime-dl', '__init__.py')
-INSTALL_REQUIRES = ['sktime>=0.2.0',
-                    'keras']
+INSTALL_REQUIRES = [
+    'sktime>=0.2.0',
+    'keras>=2.2.4',
+    'tensorflow>=1.8.0'  # and/or tensorflow-gpu 1.8.0
+]
 CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Intended Audience :: Developers',
                'License :: OSI Approved',
