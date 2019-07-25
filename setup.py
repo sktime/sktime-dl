@@ -14,11 +14,6 @@ try:
 except ModuleNotFoundError as e:
     raise ModuleNotFoundError("No module named 'numpy'. Please install "
                               "numpy first using `pip install numpy`.")
-try:
-    from Cython.Build import cythonize
-except ModuleNotFoundError as e:
-    raise ModuleNotFoundError("No module named 'cython'. Please install "
-                              "cython first using `pip install cython`.")
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -41,32 +36,28 @@ def find_version(*file_paths):
 
 # raise warning for Python versions prior to 3.6
 if sys.version_info < (3, 6):
-    raise RuntimeError("sktime requires Python 3.6 or later. The current"
+    raise RuntimeError("sktime-dl requires Python 3.6 or later. The current"
                        " Python version is %s installed in %s."
                        % (platform.python_version(), sys.executable))
 
 
-DISTNAME = 'sktime'
-DESCRIPTION = 'scikit-learn compatible toolbox for learning with time series/panel data'
+DISTNAME = 'sktime-dl'
+DESCRIPTION = 'deep learning extension toolbox for sktime, a scikit-learn compatible toolbox for learning with time series/panel data'
 with codecs.open('README.rst', encoding='utf-8-sig') as f:
     LONG_DESCRIPTION = f.read()
 MAINTAINER = 'F. Király'
 MAINTAINER_EMAIL = 'fkiraly@turing.ac.uk'
-URL = 'https://github.com/alan-turing-institute/sktime'
+URL = 'https://github.com/uea-machine-learning/sktime-dl'
 LICENSE = 'BSD-3-Clause'
-DOWNLOAD_URL = 'https://pypi.org/project/sktime/#files'
+DOWNLOAD_URL = 'https://pypi.org/project/sktime-dl/#files'
 PROJECT_URLS = {
-    'Issue Tracker': 'https://github.com/alan-turing-institute/sktime/issues',
-    'Documentation': 'https://alan-turing-institute.github.io/sktime/',
-    'Source Code': 'https://github.com/alan-turing-institute/sktime'
+    'Issue Tracker': 'https://github.com/uea-machine-learning/sktime-dl/issues',
+    'Documentation': 'https://uea-machine-learning.github.io/sktime-dl/',
+    'Source Code': 'https://github.com/uea-machine-learning/sktime-dl'
 }
-VERSION = find_version('sktime', '__init__.py')
-INSTALL_REQUIRES = ['numpy>=1.16.0',
-                    'scipy>=1.2.0',
-                    'scikit-learn>=0.21.0',
-                    'pandas>=0.23.0',
-                    'scikit-posthocs>=0.5.0',
-                    'statsmodels>=0.9.0']
+VERSION = find_version('sktime-dl', '__init__.py')
+INSTALL_REQUIRES = ['sktime>=0.2.0',
+                    'keras']
 CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Intended Audience :: Developers',
                'License :: OSI Approved',
@@ -107,8 +98,5 @@ setup(name=DISTNAME,
       include_package_data=True,
       install_requires=INSTALL_REQUIRES,
       extras_require=EXTRAS_REQUIRE,
-      ext_modules=cythonize(
-          ["sktime/distances/elastic_cython.pyx"],
-          annotate=True),
       include_dirs=[np.get_include()]
-      )
+)

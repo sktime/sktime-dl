@@ -67,7 +67,7 @@ Former and current active contributors are as follows.
 sktime-dl
 ~~~~~~~~~
 
-James Large (@James-Large), Aaron Bostrom (@ABostrom), Hassan Ismail Fawaz (@hfawaz)
+James Large (@James-Large), Aaron Bostrom (@ABostrom), Hassan Ismail Fawaz (@hfawaz), Markus Löning (@mloning)
 
 sktime
 ~~~~~~
