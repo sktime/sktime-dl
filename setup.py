@@ -54,8 +54,9 @@ PROJECT_URLS = {
     'Documentation': 'https://uea-machine-learning.github.io/sktime-dl/',
     'Source Code': 'https://github.com/uea-machine-learning/sktime-dl'
 }
-VERSION = find_version('sktime-dl', '__init__.py')
+VERSION = find_version('sktime_dl', '__init__.py')
 INSTALL_REQUIRES = [
+    'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master',
     'sktime>=0.2.0',
     'keras>=2.2.4',
     'tensorflow>=1.8.0'  # and/or tensorflow-gpu 1.8.0
@@ -101,4 +102,4 @@ setup(name=DISTNAME,
       install_requires=INSTALL_REQUIRES,
       extras_require=EXTRAS_REQUIRE,
       include_dirs=[np.get_include()]
-)
+      )

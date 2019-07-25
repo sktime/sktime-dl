@@ -21,14 +21,12 @@ __author__ = "James Large"
 
 import numpy as np
 
-from sktime.utils.validation import check_X_y
-from sktime.classifiers.base import BaseClassifier
-from sktime.contrib.deeplearning_based.basenetwork import BaseDeepLearner
-from sktime.classifiers.tests.test_dl4tscnetworks import test_network
+from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.tests.test_dl4tscnetworks import test_network
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
-from sktime.contrib.deeplearning_based.dl4tsc.cnn import CNN
+from sktime_dl.contrib.deeplearning_based.dl4tsc.cnn import CNN
 
 
 class Tuned_CNN(BaseDeepLearner):

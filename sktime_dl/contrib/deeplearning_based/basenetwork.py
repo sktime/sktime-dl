@@ -22,8 +22,6 @@ import numpy as np
 import pandas as pd
 
 from sktime.classifiers.base import BaseClassifier
-from sktime.classifiers.tests.test_dl4tscnetworks import comparisonExperiments
-from sktime.classifiers.tests.test_dl4tscnetworks import test_all_networks_all_tests
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
@@ -73,8 +71,3 @@ class BaseDeepLearner(BaseClassifier):
         y = self.onehot_encoder.fit_transform(y)
 
         return y
-
-
-if __name__ == "__main__":
-    comparisonExperiments()
-    # test_all_networks_all_tests()

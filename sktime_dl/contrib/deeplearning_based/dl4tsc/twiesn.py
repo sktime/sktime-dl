@@ -24,8 +24,7 @@ from sklearn.linear_model import Ridge
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-from sktime.contrib.deeplearning_based.basenetwork import BaseDeepLearner
-from sktime.classifiers.tests.test_dl4tscnetworks import test_network
+from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
 
 
 # class Classifier_TWIESN:
@@ -254,6 +253,3 @@ class TWIESN(BaseDeepLearner):
         new_y_pred = np.argmax(new_y_pred, axis=1)
         return new_y_pred
 
-
-if __name__ == "__main__":
-    test_network(TWIESN())

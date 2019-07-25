@@ -36,13 +36,13 @@ install:
     - pip install nbsphinx
 
     # TODO change to from test repo to actual repo
-    - pip install -i https://test.pypi.org/simple sktime-dl
+    - pip install -i https://test.pypi.org/simple sktime_dl
     - python setup.py build_ext -i
 
 script:
     - mkdir for_test
     - cd for_test
-    - pytest -v --cov=sktime-dl --pyargs ../sktime-dl
+    - pytest -v --cov=sktime_dl --pyargs ../sktime_dl
 
 
 

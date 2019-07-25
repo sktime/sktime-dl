@@ -20,8 +20,7 @@ import numpy as np
 import pandas as pd
 
 from sktime.utils.validation import check_X_y
-from sktime.contrib.deeplearning_based.basenetwork import BaseDeepLearner
-from sktime.classifiers.tests.test_dl4tscnetworks import test_network
+from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
 
 
 class Encoder(BaseDeepLearner):
@@ -117,6 +116,3 @@ class Encoder(BaseDeepLearner):
         self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
                                       verbose=self.verbose, callbacks=self.callbacks)
 
-
-if __name__ == '__main__':
-    test_network(Encoder())
