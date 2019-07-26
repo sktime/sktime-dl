@@ -18,7 +18,7 @@ except ModuleNotFoundError:
 
 # raise warning for Python versions not equal to 3.6
 # TODO find fix for tensorflow interacting with python 3.7, some particular factor of the environment does not work
-if sys.version_info < (3, 6) or sys.version_info > (3, 6):
+if sys.version_info < (3, 6) or sys.version_info >= (3, 7):
     raise RuntimeError("sktime-dl requires Python 3.6. The current"
                        " Python version is %s installed in %s."
                        % (platform.python_version(), sys.executable))
@@ -75,8 +75,7 @@ CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Operating System :: POSIX',
                'Operating System :: Unix',
                'Operating System :: MacOS',
-               'Programming Language :: Python :: 3.6',
-               'Programming Language :: Python :: 3.7']
+               'Programming Language :: Python :: 3.6']
 EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
