@@ -62,7 +62,7 @@ INSTALL_REQUIRES = [
     # 'keras_contrib', # use once keras_contrib is available on pypi
     'sktime>=0.2.0',
     'keras>=2.2.4',
-    'tensorflow>=1.8.0'  # and/or tensorflow-gpu 1.8.0
+    'tensorflow==1.8.0'  # and/or tensorflow-gpu 1.8.0
 ]
 CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Intended Audience :: Developers',

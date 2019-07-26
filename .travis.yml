@@ -36,7 +36,7 @@ install:
     - pip install nbsphinx
 
     # TODO remove manual dependency installs (needed since test pypi does not find them)
-    - pip install tensorflow
+    - pip install tensorflow==1.8.0
     - pip install keras
     - pip install sktime
     - pip install git+https://github.com/keras-team/keras-contrib.git@master # install keras contrib manually as not available on pypi
