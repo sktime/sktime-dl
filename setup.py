@@ -16,9 +16,10 @@ except ModuleNotFoundError:
                               "numpy first using `pip install numpy`.")
 
 
-# raise warning for Python versions prior to 3.6
-if sys.version_info < (3, 6):
-    raise RuntimeError("sktime-dl requires Python 3.6 or later. The current"
+# raise warning for Python versions not equal to 3.6
+# TODO find fix for tensorflow interacting with python 3.7, some particular factor of the environment does not work
+if sys.version_info != (3, 6):
+    raise RuntimeError("sktime-dl requires Python 3.6. The current"
                        " Python version is %s installed in %s."
                        % (platform.python_version(), sys.executable))
 
@@ -62,7 +63,7 @@ INSTALL_REQUIRES = [
     # 'keras_contrib', # use once keras_contrib is available on pypi
     'sktime>=0.2.0',
     'keras>=2.2.4',
-    'tensorflow==1.8.0'  # and/or tensorflow-gpu 1.8.0
+    'tensorflow>=1.8.0'  # and/or tensorflow-gpu 1.8.0
 ]
 CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Intended Audience :: Developers',
