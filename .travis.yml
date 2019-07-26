@@ -48,7 +48,7 @@ install:
 script:
     - mkdir for_test
     - cd for_test
-    - pytest -v --cov=sktime_dl --pyargs ../sktime_dl
+    - pytest -v --cov=sktime-dl --pyargs ../sktime_dl
 
 
 
