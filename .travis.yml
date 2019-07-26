@@ -31,12 +31,18 @@ install:
     # create the testing environment
     - conda create -n testenv --yes python=$PYTHON_VERSION pip
     - source activate testenv
+    - conda install -n testenv --yes pip numpy=$NUMPY_VERSION cython nose pytest pytest-cov sphinx jupyter
     - pip install sphinx_rtd_theme
-    - pip install scikit-posthocs
     - pip install nbsphinx
 
+    # TODO remove manual dependency installs (needed since test pypi does not find them)
+    - pip install tensorflow
+    - pip install keras
+    - pip install sktime
+    - pip install git+https://github.com/keras-team/keras-contrib.git@master # install keras contrib manually as not available on pypi
+
     # TODO change to from test repo to actual repo
-    - pip install -i https://test.pypi.org/simple sktime_dl
+    - pip install -i https://test.pypi.org/simple sktime_dl==0.2.dev1
     - python setup.py build_ext -i
 
 script:

@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""Install script for sktime"""
+"""Install script for sktime-dl"""
 
 from setuptools import find_packages
 from setuptools import setup
@@ -11,9 +11,16 @@ import platform
 
 try:
     import numpy as np
-except ModuleNotFoundError as e:
+except ModuleNotFoundError:
     raise ModuleNotFoundError("No module named 'numpy'. Please install "
                               "numpy first using `pip install numpy`.")
+
+
+# raise warning for Python versions prior to 3.6
+if sys.version_info < (3, 6):
+    raise RuntimeError("sktime-dl requires Python 3.6 or later. The current"
+                       " Python version is %s installed in %s."
+                       % (platform.python_version(), sys.executable))
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -34,14 +41,9 @@ def find_version(*file_paths):
         raise RuntimeError("Unable to find version string.")
 
 
-# raise warning for Python versions prior to 3.6
-if sys.version_info < (3, 6):
-    raise RuntimeError("sktime-dl requires Python 3.6 or later. The current"
-                       " Python version is %s installed in %s."
-                       % (platform.python_version(), sys.executable))
-
-DISTNAME = 'sktime-dl'
-DESCRIPTION = 'deep learning extension toolbox for sktime, a scikit-learn compatible toolbox for learning with time series/panel data'
+DISTNAME = 'sktime-dl'  # package name is sktime-dl, to have a valid module path, module name is sktime_dl
+DESCRIPTION = 'Deep learning extension toolbox for sktime, a scikit-learn compatible toolbox for ' \
+              'learning with time series data'
 with codecs.open('README.rst', encoding='utf-8-sig') as f:
     LONG_DESCRIPTION = f.read()
 MAINTAINER = 'F. Király'
@@ -56,7 +58,8 @@ PROJECT_URLS = {
 }
 VERSION = find_version('sktime_dl', '__init__.py')
 INSTALL_REQUIRES = [
-    'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master',
+    # 'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master', # doesn't work with pypi
+    # 'keras_contrib', # use once keras_contrib is available on pypi
     'sktime>=0.2.0',
     'keras>=2.2.4',
     'tensorflow>=1.8.0'  # and/or tensorflow-gpu 1.8.0
