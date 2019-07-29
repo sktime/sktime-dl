@@ -21,10 +21,10 @@ import numpy as np
 import pandas as pd
 
 from sktime.utils.validation import check_X_y
-from sktime_dl.classifiers.deeplearning._base import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
-class CNN(BaseDeepLearner):
+class CNNClassifier(BaseDeepClassifier):
 
     def __init__(self, dim_to_use=0, rand_seed=0, verbose=False,
                  nb_epochs=2000,
