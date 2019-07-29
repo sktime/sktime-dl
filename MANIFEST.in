@@ -1,4 +1,3 @@
 include *.rst
 recursive-include examples *
-recursive-include sktime-dl *.c *.h *.pyx *.pxd *.pxi
-#recursive-include sktime-dl/datasets *.csv *.csv.gz *.arff *.arff.gz *.txt *.ts
+recursive-include sktime_dl *.c *.h *.pyx *.pxd *.pxi
