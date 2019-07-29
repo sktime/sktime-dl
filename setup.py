@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""Install script for sktime"""
+"""Install script for sktime-dl"""
 
 from setuptools import find_packages
 from setuptools import setup
@@ -11,14 +11,17 @@ import platform
 
 try:
     import numpy as np
-except ModuleNotFoundError as e:
+except ModuleNotFoundError:
     raise ModuleNotFoundError("No module named 'numpy'. Please install "
                               "numpy first using `pip install numpy`.")
-try:
-    from Cython.Build import cythonize
-except ModuleNotFoundError as e:
-    raise ModuleNotFoundError("No module named 'cython'. Please install "
-                              "cython first using `pip install cython`.")
+
+
+# raise warning for Python versions not equal to 3.6
+# TODO find fix for tensorflow interacting with python 3.7, some particular factor of the environment does not work
+if sys.version_info < (3, 6) or sys.version_info >= (3, 7):
+    raise RuntimeError("sktime-dl requires Python 3.6. The current"
+                       " Python version is %s installed in %s."
+                       % (platform.python_version(), sys.executable))
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -39,34 +42,29 @@ def find_version(*file_paths):
         raise RuntimeError("Unable to find version string.")
 
 
-# raise warning for Python versions prior to 3.6
-if sys.version_info < (3, 6):
-    raise RuntimeError("sktime requires Python 3.6 or later. The current"
-                       " Python version is %s installed in %s."
-                       % (platform.python_version(), sys.executable))
-
-
-DISTNAME = 'sktime'
-DESCRIPTION = 'scikit-learn compatible toolbox for learning with time series/panel data'
+DISTNAME = 'sktime-dl'  # package name is sktime-dl, to have a valid module path, module name is sktime_dl
+DESCRIPTION = 'Deep learning extension toolbox for sktime, a scikit-learn compatible toolbox for ' \
+              'learning with time series data'
 with codecs.open('README.rst', encoding='utf-8-sig') as f:
     LONG_DESCRIPTION = f.read()
 MAINTAINER = 'F. Király'
 MAINTAINER_EMAIL = 'fkiraly@turing.ac.uk'
-URL = 'https://github.com/alan-turing-institute/sktime'
+URL = 'https://github.com/uea-machine-learning/sktime-dl'
 LICENSE = 'BSD-3-Clause'
-DOWNLOAD_URL = 'https://pypi.org/project/sktime/#files'
+DOWNLOAD_URL = 'https://pypi.org/project/sktime-dl/#files'
 PROJECT_URLS = {
-    'Issue Tracker': 'https://github.com/alan-turing-institute/sktime/issues',
-    'Documentation': 'https://alan-turing-institute.github.io/sktime/',
-    'Source Code': 'https://github.com/alan-turing-institute/sktime'
+    'Issue Tracker': 'https://github.com/uea-machine-learning/sktime-dl/issues',
+    'Documentation': 'https://uea-machine-learning.github.io/sktime-dl/',
+    'Source Code': 'https://github.com/uea-machine-learning/sktime-dl'
 }
-VERSION = find_version('sktime', '__init__.py')
-INSTALL_REQUIRES = ['numpy>=1.16.0',
-                    'scipy>=1.2.0',
-                    'scikit-learn>=0.21.0',
-                    'pandas>=0.23.0',
-                    'scikit-posthocs>=0.5.0',
-                    'statsmodels>=0.9.0']
+VERSION = find_version('sktime_dl', '__init__.py')
+INSTALL_REQUIRES = [
+    # 'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master', # doesn't work with pypi
+    # 'keras_contrib', # use once keras_contrib is available on pypi
+    'sktime>=0.2.0',
+    'keras>=2.2.4',
+    'tensorflow>=1.8.0'  # and/or tensorflow-gpu 1.8.0
+]
 CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Intended Audience :: Developers',
                'License :: OSI Approved',
@@ -77,8 +75,7 @@ CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Operating System :: POSIX',
                'Operating System :: Unix',
                'Operating System :: MacOS',
-               'Programming Language :: Python :: 3.6',
-               'Programming Language :: Python :: 3.7']
+               'Programming Language :: Python :: 3.6']
 EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
@@ -107,8 +104,5 @@ setup(name=DISTNAME,
       include_package_data=True,
       install_requires=INSTALL_REQUIRES,
       extras_require=EXTRAS_REQUIRE,
-      ext_modules=cythonize(
-          ["sktime/distances/elastic_cython.pyx"],
-          annotate=True),
       include_dirs=[np.get_include()]
       )

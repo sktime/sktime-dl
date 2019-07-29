@@ -21,14 +21,11 @@ __author__ = "James Large"
 
 import numpy as np
 
-from sktime.utils.validation import check_X_y
-from sktime.classifiers.base import BaseClassifier
-from sktime.contrib.deeplearning_based.basenetwork import BaseDeepLearner
-from sktime.classifiers.tests.test_dl4tscnetworks import test_network
+from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
-from sktime.contrib.deeplearning_based.dl4tsc.cnn import CNN
+from sktime_dl.contrib.deeplearning_based.dl4tsc.cnn import CNN
 
 
 class Tuned_CNN(BaseDeepLearner):
@@ -110,9 +107,3 @@ class Tuned_CNN(BaseDeepLearner):
         params = self.grid_history.cv_results_['params']
         for mean, stdev, param in zip(means, stds, params):
             print("%f (%f) with: %r" % (mean, stdev, param))
-
-
-if __name__ == '__main__':
-    # simple, small, fast search for testing. default nb_epochs = 2000
-    param_grid = dict(nb_epochs=[5, 10])
-    test_network(Tuned_CNN(param_grid=param_grid, cv_folds=2), verbose=True)

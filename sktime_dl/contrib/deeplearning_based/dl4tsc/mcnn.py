@@ -23,8 +23,7 @@ import gc
 
 from sklearn.model_selection import train_test_split
 
-from sktime.contrib.deeplearning_based.basenetwork import BaseDeepLearner
-from sktime.classifiers.tests.test_dl4tscnetworks import test_network
+from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
 
 
 class MCNN(BaseDeepLearner):
@@ -522,6 +521,3 @@ class MCNN(BaseDeepLearner):
 
         return y_pred
 
-
-if __name__ == "__main__":
-    test_network(MCNN())

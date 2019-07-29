@@ -21,8 +21,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from sktime.utils.validation import check_X_y
-from sktime.contrib.deeplearning_based.basenetwork import BaseDeepLearner
-from sktime.classifiers.tests.test_dl4tscnetworks import test_network
+from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
 
 
 class MCDCNN(BaseDeepLearner):
@@ -162,6 +161,3 @@ class MCDCNN(BaseDeepLearner):
             probs = np.hstack([1 - probs, probs])
         return probs
 
-
-if __name__ == '__main__':
-    test_network(MCDCNN())

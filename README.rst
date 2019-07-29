@@ -33,13 +33,15 @@ Overview
 --------
 
 A repository for off-the-shelf networks
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The aim is to define Keras networks able to be directly used within sktime and its pipelining and strategy tools, and by extension scikit-learn, for use in applications and research. Overtime, we wish to interface or reimplement networks from the literature in the context of time series analysis.
 
 Currently, we interface with a number of networks for time series classification in particular. 
 
 dl-4-tsc interfacing
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+
 This toolset currently serves as an interface to `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__, and implements the following network archtiectures: 
 
 - Time convolutional neural network (CNN)
@@ -67,7 +69,7 @@ Former and current active contributors are as follows.
 sktime-dl
 ~~~~~~~~~
 
-James Large (@James-Large), Aaron Bostrom (@ABostrom), Hassan Ismail Fawaz (@hfawaz)
+James Large (@James-Large), Aaron Bostrom (@ABostrom), Hassan Ismail Fawaz (@hfawaz), Markus Löning (@mloning)
 
 sktime
 ~~~~~~

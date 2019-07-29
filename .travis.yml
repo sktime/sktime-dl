@@ -16,8 +16,8 @@ cache:
 matrix:
     include:
         # add more combinations here as per requirement
-        - env: PYTHON_VERSION="3.7" NUMPY_VERSION="1.15" SCIPY_VERSION="1.1"
-               SKLEARN_VERSION="0.20" PANDAS_VERSION="0.24" STATSMODELS_VERSION="0.9" SKTIME_VERSION="0.1.0" KERAS_VERSION="2.2.4"
+        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.15" SCIPY_VERSION="1.1"
+               SKLEARN_VERSION="0.20" PANDAS_VERSION="0.24" STATSMODELS_VERSION="0.9" SKTIME_VERSION="0.2.0" KERAS_VERSION="2.2.4"
 
 install:
     # install miniconda
@@ -27,20 +27,28 @@ install:
     - chmod +x miniconda.sh && ./miniconda.sh -b -p $MINICONDA_PATH
     - export PATH=$MINICONDA_PATH/bin:$PATH
     - conda update --yes conda
+
     # create the testing environment
     - conda create -n testenv --yes python=$PYTHON_VERSION pip
     - source activate testenv
-    - conda install -n testenv --yes numpy==$NUMPY_VERSION scipy==$SCIPY_VERSION scikit-learn==$SKLEARN_VERSION pandas==$PANDAS_VERSION statsmodels==$STATSMODELS_VERSION cython nose pytest pytest-cov sphinx jupyter keras
+    - conda install -n testenv --yes pip numpy=$NUMPY_VERSION cython nose pytest pytest-cov sphinx jupyter
     - pip install sphinx_rtd_theme
-    - pip install scikit-posthocs
     - pip install nbsphinx
-    - pip install sktime==$SKTIME_VERSION
+
+    # TODO remove manual dependency installs (needed since test pypi does not find them)
+    - pip install tensorflow
+    - pip install keras
+    - pip install sktime
+    - pip install git+https://github.com/keras-team/keras-contrib.git@master # install keras contrib manually as not available on pypi
+
+    # TODO change to from test repo to actual repo
+    - pip install -i https://test.pypi.org/simple sktime_dl==0.2.dev1
     - python setup.py build_ext -i
 
 script:
     - mkdir for_test
     - cd for_test
-    - pytest -v --cov=sktime --pyargs ../sktime 
+    - pytest -v --cov=sktime_dl --pyargs ../sktime_dl
 
 
 
