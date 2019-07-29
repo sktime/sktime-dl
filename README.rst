@@ -1,9 +1,11 @@
 .. image:: https://travis-ci.com/uea-machine-learning/sktime-dl.svg?branch=master
     :target: https://travis-ci.com/uea-machine-learning/sktime-dl
+.. image:: https://badge.fury.io/py/sktime-dl.svg
+    :target: https://badge.fury.io/py/sktime-dl
 
 sktime-dl
 =========
-An additional deep learning with Keras toolset for `sktime <https://github.com/alan-turing-institute/sktime>`__, a `scikit-learn <https://github.com/scikit-learn/scikit-learn>`__ compatible Python toolbox for learning with time series and panel data. 
+An additional deep learning with Keras for `sktime <https://github.com/alan-turing-institute/sktime>`__, a `scikit-learn <https://github.com/scikit-learn/scikit-learn>`__ compatible Python toolbox for learning with time series and panel data. 
 
 The package is under active development. Currently, classification models based off the the networks in `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__ have been implemented, as well as an example of a tuned network for future development. 
 
