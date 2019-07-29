@@ -17,7 +17,7 @@ import numpy as np
 
 import pandas as pd
 
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepLearner
 
 
 class TLENET(BaseDeepLearner):

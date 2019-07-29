@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 
 from sktime.utils.validation import check_X_y
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepLearner
 
 
 class FCN(BaseDeepLearner):

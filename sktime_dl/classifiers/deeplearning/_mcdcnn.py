@@ -21,7 +21,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from sktime.utils.validation import check_X_y
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepLearner
 
 
 class MCDCNN(BaseDeepLearner):
