@@ -23,7 +23,7 @@ import gc
 
 from sklearn.model_selection import train_test_split
 
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning_based.basenetwork import BaseDeepLearner
 
 
 class MCNN(BaseDeepLearner):

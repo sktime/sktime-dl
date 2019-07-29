@@ -5,16 +5,16 @@ import keras
 
 from sktime.datasets import load_italy_power_demand #, load_basic_motions
 
-import sktime_dl.contrib.deeplearning_based.dl4tsc.cnn as cnn
-import sktime_dl.contrib.deeplearning_based.dl4tsc.encoder as encoder
-import sktime_dl.contrib.deeplearning_based.dl4tsc.fcn as fcn
-import sktime_dl.contrib.deeplearning_based.dl4tsc.mcdcnn as mcdcnn
-import sktime_dl.contrib.deeplearning_based.dl4tsc.mcnn as mcnn
-import sktime_dl.contrib.deeplearning_based.dl4tsc.mlp as mlp
-import sktime_dl.contrib.deeplearning_based.dl4tsc.resnet as resnet
-import sktime_dl.contrib.deeplearning_based.dl4tsc.tlenet as tlenet
-import sktime_dl.contrib.deeplearning_based.dl4tsc.twiesn as twiesn
-import sktime_dl.contrib.deeplearning_based.tuned_cnn as tuned_cnn
+import sktime_dl.classifiers.deeplearning_based.dl4tsc.cnn as cnn
+import sktime_dl.classifiers.deeplearning_based.dl4tsc.encoder as encoder
+import sktime_dl.classifiers.deeplearning_based.dl4tsc.fcn as fcn
+import sktime_dl.classifiers.deeplearning_based.dl4tsc.mcdcnn as mcdcnn
+import sktime_dl.classifiers.deeplearning_based.dl4tsc.mcnn as mcnn
+import sktime_dl.classifiers.deeplearning_based.dl4tsc.mlp as mlp
+import sktime_dl.classifiers.deeplearning_based.dl4tsc.resnet as resnet
+import sktime_dl.classifiers.deeplearning_based.dl4tsc.tlenet as tlenet
+import sktime_dl.classifiers.deeplearning_based.dl4tsc.twiesn as twiesn
+import sktime_dl.classifiers.deeplearning_based.tuned_cnn as tuned_cnn
 
 
 def test_basic_univariate(network=cnn.CNN()):

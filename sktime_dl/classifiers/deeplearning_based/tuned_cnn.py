@@ -21,11 +21,11 @@ __author__ = "James Large"
 
 import numpy as np
 
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning_based.basenetwork import BaseDeepLearner
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
-from sktime_dl.contrib.deeplearning_based.dl4tsc.cnn import CNN
+from sktime_dl.classifiers.deeplearning_based.dl4tsc.cnn import CNN
 
 
 class Tuned_CNN(BaseDeepLearner):
