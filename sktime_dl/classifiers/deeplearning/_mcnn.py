@@ -406,7 +406,6 @@ class MCNNClassifier(BaseDeepClassifier):
         best_df_metrics = None
         best_valid_loss = np.inf
 
-        output_directory_root = self.output_directory
         # grid search
         for pool_factor in self.pool_factors:
             for filter_size in self.filter_sizes:
