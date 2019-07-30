@@ -24,20 +24,16 @@ from sklearn.linear_model import Ridge
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
 # class Classifier_TWIESN:
-class TWIESN(BaseDeepLearner):
+class TWIESNClassifier(BaseDeepClassifier):
     def __init__(self,
-                 output_directory=None,
-                 rand_seed=0,
-                 verbose=False,
-                 dim_to_use=0):
+                 random_seed=0,
+                 verbose=False):
 
-        self.output_directory = output_directory
         self.verbose = verbose
-        self.dim_to_use = dim_to_use
 
         # calced in fit
         self.classes_ = None
@@ -46,8 +42,8 @@ class TWIESN(BaseDeepLearner):
         self.model = None
         self.history = None
 
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
         # hyperparameters
         first_config = {'N_x': 250, 'connect': 0.5, 'scaleW_in': 1.0, 'lamda': 0.0}
@@ -99,11 +95,12 @@ class TWIESN(BaseDeepLearner):
     def fit(self, X, y, input_checks=True, **kwargs):
         # check and convert input to a univariate Numpy array
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
+
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
             X = X.reshape((X.shape[0], X.shape[1], 1))
@@ -165,11 +162,11 @@ class TWIESN(BaseDeepLearner):
     def predict_proba(self, X, input_checks=True, **kwargs):
         # check input is univariate etc.
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
 
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
@@ -252,4 +249,3 @@ class TWIESN(BaseDeepLearner):
         # get the label with maximum prediction over the last label axis
         new_y_pred = np.argmax(new_y_pred, axis=1)
         return new_y_pred
-

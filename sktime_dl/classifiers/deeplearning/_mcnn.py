@@ -23,17 +23,14 @@ import gc
 
 from sklearn.model_selection import train_test_split
 
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
-class MCNN(BaseDeepLearner):
+class MCNNClassifier(BaseDeepClassifier):
 
     def __init__(self,
-                 output_directory=None,
                  verbose=False,
-                 dim_to_use=0,
-                 rand_seed=0):
-        self.output_directory = output_directory
+                 random_seed=0):
         self.verbose = verbose
         self.pool_factors = [2, 3, 5]  # used for hyperparameters grid search
         self.filter_sizes = [0.05, 0.1, 0.2]  # used for hyperparameters grid search
@@ -42,8 +39,6 @@ class MCNN(BaseDeepLearner):
         self.n_epochs = 200
         self.max_train_batch_size = 256
         self.slice_ratio = 0.9
-
-        self.dim_to_use = dim_to_use
 
         # *******set up the ma and ds********#
         self.ma_base = 5
@@ -60,8 +55,8 @@ class MCNN(BaseDeepLearner):
         self.model = None
         self.history = None
 
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
     def slice_data(self, data_x, data_y, slice_ratio):
         n = data_x.shape[0]
@@ -394,11 +389,12 @@ class MCNN(BaseDeepLearner):
     def fit(self, X, y, input_checks=True, **kwargs):
         # check and convert input to a univariate Numpy array
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
+
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
             X = X.reshape((X.shape[0], X.shape[1], 1))
@@ -408,7 +404,6 @@ class MCNN(BaseDeepLearner):
         best_df_metrics = None
         best_valid_loss = np.inf
 
-        output_directory_root = self.output_directory
         # grid search
         for pool_factor in self.pool_factors:
             for filter_size in self.filter_sizes:
@@ -460,11 +455,11 @@ class MCNN(BaseDeepLearner):
         #### get predictions out of the model.
         # check and convert input to a univariate Numpy array
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
 
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
@@ -520,4 +515,3 @@ class MCNN(BaseDeepLearner):
         y_pred = np.array(y_predicted)
 
         return y_pred
-

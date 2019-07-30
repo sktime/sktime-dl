@@ -21,14 +21,15 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from sktime.utils.validation import check_X_y
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
-class MCDCNN(BaseDeepLearner):
+class MCDCNNClassifier(BaseDeepClassifier):
 
-    def __init__(self, dim_to_use=0, rand_seed=0, verbose=False):
+    def __init__(self,
+                 random_seed=0,
+                 verbose=False):
         self.verbose = verbose
-        self.dim_to_use = dim_to_use
 
         # calced in fit
         self.classes_ = None
@@ -41,8 +42,8 @@ class MCDCNN(BaseDeepLearner):
         self.nb_epochs = 120
         self.batch_size = 16
 
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         n_t = input_shape[0]
@@ -108,11 +109,11 @@ class MCDCNN(BaseDeepLearner):
             check_X_y(X, y)
 
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
 
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
@@ -139,13 +140,12 @@ class MCDCNN(BaseDeepLearner):
                                       callbacks=self.callbacks)
 
     def predict_proba(self, X, input_checks=True, **kwargs):
-
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
 
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
@@ -160,4 +160,3 @@ class MCDCNN(BaseDeepLearner):
             # first column is probability of class 0 and second is of class 1
             probs = np.hstack([1 - probs, probs])
         return probs
-

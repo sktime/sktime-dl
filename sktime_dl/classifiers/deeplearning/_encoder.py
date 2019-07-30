@@ -20,14 +20,15 @@ import numpy as np
 import pandas as pd
 
 from sktime.utils.validation import check_X_y
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
-class Encoder(BaseDeepLearner):
+class EncoderClassifier(BaseDeepClassifier):
 
-    def __init__(self, dim_to_use=0, rand_seed=0, verbose=False):
+    def __init__(self,
+                 random_seed=0,
+                 verbose=False):
         self.verbose = verbose
-        self.dim_to_use = dim_to_use
 
         # calced in fit
         self.classes_ = None
@@ -41,8 +42,8 @@ class Encoder(BaseDeepLearner):
         self.batch_size = 12
         self.callbacks = None
 
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         input_layer = keras.layers.Input(input_shape)
@@ -95,11 +96,11 @@ class Encoder(BaseDeepLearner):
             check_X_y(X, y)
 
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
 
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
@@ -115,4 +116,3 @@ class Encoder(BaseDeepLearner):
 
         self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
                                       verbose=self.verbose, callbacks=self.callbacks)
-
