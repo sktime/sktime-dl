@@ -35,14 +35,12 @@ install:
     - pip install sphinx_rtd_theme
     - pip install nbsphinx
 
-    # TODO remove manual dependency installs (needed since test pypi does not find them)
-    - pip install tensorflow
-    - pip install keras
-    - pip install sktime
-    - pip install git+https://github.com/keras-team/keras-contrib.git@master # install keras contrib manually as not available on pypi
+    # install keras contrib manually as currently not available on pypi
+    - pip install git+https://github.com/keras-team/keras-contrib.git@master
 
-    # TODO change to from test repo to actual repo
-    - pip install -i https://test.pypi.org/simple sktime_dl==0.2.dev1
+    # for test pypi add dependency installs manually
+    # - pip install --index-url --no-deps https://test.pypi.org/simple sktime_dl==0.2.dev1
+    - pip install sktime-dl
     - python setup.py build_ext -i
 
 script:
