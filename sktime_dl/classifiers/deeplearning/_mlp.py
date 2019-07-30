@@ -24,7 +24,10 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 class MLPClassifier(BaseDeepClassifier):
 
-    def __init__(self, dim_to_use=0, rand_seed=0, verbose=False):
+    def __init__(self,
+                 dim_to_use=0,
+                 random_seed=0,
+                 verbose=False):
         self.verbose = verbose
         self.dim_to_use = dim_to_use
 
@@ -40,8 +43,8 @@ class MLPClassifier(BaseDeepClassifier):
         self.batch_size = 16
         self.callbacks = None
 
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         input_layer = keras.layers.Input(input_shape)
@@ -103,4 +106,3 @@ class MLPClassifier(BaseDeepClassifier):
 
         self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
                                       verbose=self.verbose, callbacks=self.callbacks)
-

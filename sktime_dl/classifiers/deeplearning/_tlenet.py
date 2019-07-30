@@ -22,8 +22,10 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 class TLENETClassifier(BaseDeepClassifier):
 
-    def __init__(self, output_directory=None, verbose=False, dim_to_use=0, rand_seed=0):
-        self.output_directory = output_directory
+    def __init__(self,
+                 verbose=False,
+                 dim_to_use=0,
+                 random_seed=0):
         self.verbose = verbose
         self.warping_ratios = [0.5, 1, 2]
         self.slice_ratio = 0.1
@@ -39,8 +41,8 @@ class TLENETClassifier(BaseDeepClassifier):
         self.model = None
         self.history = None
 
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
     def slice_data(self, X, y=None, length_sliced=1):
         n = X.shape[0]
@@ -236,4 +238,3 @@ class TLENETClassifier(BaseDeepClassifier):
         keras.backend.clear_session()
 
         return y_pred
-

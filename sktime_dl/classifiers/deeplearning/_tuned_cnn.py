@@ -30,7 +30,10 @@ from sktime_dl.classifiers.deeplearning._cnn import CNNClassifier
 
 class TunedCNNClassifier(BaseDeepClassifier):
 
-    def __init__(self, dim_to_use=0, rand_seed=0, verbose=False, n_jobs=1,
+    def __init__(self, dim_to_use=0,
+                 random_seed=0,
+                 verbose=False,
+                 n_jobs=1,
                  param_grid=dict(
                      kernel_size=[3, 7],
                      avg_pool_size=[2, 3],
@@ -40,8 +43,8 @@ class TunedCNNClassifier(BaseDeepClassifier):
                  cv_folds=5):
         self.verbose = verbose
         self.dim_to_use = dim_to_use
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
         self.base_model = CNNClassifier()
         # todo make decisions on wrapping each network

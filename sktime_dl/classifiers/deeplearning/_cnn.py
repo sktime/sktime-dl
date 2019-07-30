@@ -26,7 +26,7 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 class CNNClassifier(BaseDeepClassifier):
 
-    def __init__(self, dim_to_use=0, rand_seed=0, verbose=False,
+    def __init__(self, dim_to_use=0, random_seed=0, verbose=False,
                  nb_epochs=2000,
                  batch_size=16,
                  kernel_size=7,
@@ -37,8 +37,8 @@ class CNNClassifier(BaseDeepClassifier):
         self.dim_to_use = dim_to_use
 
         self.callbacks = []
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
         # calced in fit
         self.input_shape = None
@@ -118,4 +118,3 @@ class CNNClassifier(BaseDeepClassifier):
 
         self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
                                       verbose=self.verbose, callbacks=self.callbacks)
-

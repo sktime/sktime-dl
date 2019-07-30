@@ -30,12 +30,10 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 # class Classifier_TWIESN:
 class TWIESNClassifier(BaseDeepClassifier):
     def __init__(self,
-                 output_directory=None,
-                 rand_seed=0,
+                 random_seed=0,
                  verbose=False,
                  dim_to_use=0):
 
-        self.output_directory = output_directory
         self.verbose = verbose
         self.dim_to_use = dim_to_use
 
@@ -46,8 +44,8 @@ class TWIESNClassifier(BaseDeepClassifier):
         self.model = None
         self.history = None
 
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
         # hyperparameters
         first_config = {'N_x': 250, 'connect': 0.5, 'scaleW_in': 1.0, 'lamda': 0.0}
@@ -252,4 +250,3 @@ class TWIESNClassifier(BaseDeepClassifier):
         # get the label with maximum prediction over the last label axis
         new_y_pred = np.argmax(new_y_pred, axis=1)
         return new_y_pred
-

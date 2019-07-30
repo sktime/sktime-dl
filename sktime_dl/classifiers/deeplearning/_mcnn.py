@@ -29,11 +29,9 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 class MCNNClassifier(BaseDeepClassifier):
 
     def __init__(self,
-                 output_directory=None,
                  verbose=False,
                  dim_to_use=0,
-                 rand_seed=0):
-        self.output_directory = output_directory
+                 random_seed=0):
         self.verbose = verbose
         self.pool_factors = [2, 3, 5]  # used for hyperparameters grid search
         self.filter_sizes = [0.05, 0.1, 0.2]  # used for hyperparameters grid search
@@ -60,8 +58,8 @@ class MCNNClassifier(BaseDeepClassifier):
         self.model = None
         self.history = None
 
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
     def slice_data(self, data_x, data_y, slice_ratio):
         n = data_x.shape[0]
@@ -520,4 +518,3 @@ class MCNNClassifier(BaseDeepClassifier):
         y_pred = np.array(y_predicted)
 
         return y_pred
-

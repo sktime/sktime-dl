@@ -26,7 +26,10 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 class MCDCNNClassifier(BaseDeepClassifier):
 
-    def __init__(self, dim_to_use=0, rand_seed=0, verbose=False):
+    def __init__(self,
+                 dim_to_use=0,
+                 random_seed=0,
+                 verbose=False):
         self.verbose = verbose
         self.dim_to_use = dim_to_use
 
@@ -41,8 +44,8 @@ class MCDCNNClassifier(BaseDeepClassifier):
         self.nb_epochs = 120
         self.batch_size = 16
 
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         n_t = input_shape[0]
@@ -160,4 +163,3 @@ class MCDCNNClassifier(BaseDeepClassifier):
             # first column is probability of class 0 and second is of class 1
             probs = np.hstack([1 - probs, probs])
         return probs
-
