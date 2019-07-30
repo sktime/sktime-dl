@@ -17,10 +17,10 @@ import numpy as np
 
 import pandas as pd
 
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
-class TLENET(BaseDeepLearner):
+class TLENETClassifier(BaseDeepClassifier):
 
     def __init__(self, output_directory=None, verbose=False, dim_to_use=0, rand_seed=0):
         self.output_directory = output_directory

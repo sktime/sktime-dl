@@ -21,10 +21,10 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from sktime.utils.validation import check_X_y
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
-class MCDCNN(BaseDeepLearner):
+class MCDCNNClassifier(BaseDeepClassifier):
 
     def __init__(self, dim_to_use=0, rand_seed=0, verbose=False):
         self.verbose = verbose

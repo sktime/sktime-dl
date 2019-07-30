@@ -23,10 +23,10 @@ import gc
 
 from sklearn.model_selection import train_test_split
 
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
-class MCNN(BaseDeepLearner):
+class MCNNClassifier(BaseDeepClassifier):
 
     def __init__(self,
                  output_directory=None,

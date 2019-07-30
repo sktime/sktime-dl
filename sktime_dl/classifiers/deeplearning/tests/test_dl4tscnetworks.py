@@ -5,19 +5,19 @@ import keras
 
 from sktime.datasets import load_italy_power_demand #, load_basic_motions
 
-import sktime_dl.contrib.deeplearning_based.dl4tsc.cnn as cnn
-import sktime_dl.contrib.deeplearning_based.dl4tsc.encoder as encoder
-import sktime_dl.contrib.deeplearning_based.dl4tsc.fcn as fcn
-import sktime_dl.contrib.deeplearning_based.dl4tsc.mcdcnn as mcdcnn
-import sktime_dl.contrib.deeplearning_based.dl4tsc.mcnn as mcnn
-import sktime_dl.contrib.deeplearning_based.dl4tsc.mlp as mlp
-import sktime_dl.contrib.deeplearning_based.dl4tsc.resnet as resnet
-import sktime_dl.contrib.deeplearning_based.dl4tsc.tlenet as tlenet
-import sktime_dl.contrib.deeplearning_based.dl4tsc.twiesn as twiesn
-import sktime_dl.contrib.deeplearning_based.tuned_cnn as tuned_cnn
+from sktime_dl.classifiers.deeplearning import CNNClassifier
+from sktime_dl.classifiers.deeplearning import EncoderClassifier
+from sktime_dl.classifiers.deeplearning import FCNClassifier
+from sktime_dl.classifiers.deeplearning import MCDCNNClassifier
+from sktime_dl.classifiers.deeplearning import MCNNClassifier
+from sktime_dl.classifiers.deeplearning import MLPClassifier
+from sktime_dl.classifiers.deeplearning import ResNetClassifier
+from sktime_dl.classifiers.deeplearning import TLENETClassifier
+from sktime_dl.classifiers.deeplearning import TWIESNClassifier
+from sktime_dl.classifiers.deeplearning import TunedCNNClassifier
 
 
-def test_basic_univariate(network=cnn.CNN()):
+def test_basic_univariate(network=CNNClassifier()):
     '''
     just a super basic test with gunpoint,
         load data,
@@ -37,7 +37,7 @@ def test_basic_univariate(network=cnn.CNN()):
     print("End test_basic()")
 
 
-def test_pipeline(network=cnn.CNN()):
+def test_pipeline(network=CNNClassifier()):
     '''
     slightly more generalised test with sktime pipelines
         load data,
@@ -66,7 +66,7 @@ def test_pipeline(network=cnn.CNN()):
     print("End test_pipeline()")
 
 
-def test_highLevelsktime(network=cnn.CNN()):
+def test_highLevelsktime(network=CNNClassifier()):
     '''
     truly generalised test with sktime tasks/strategies
         load data, build task
@@ -114,7 +114,7 @@ def test_highLevelsktime(network=cnn.CNN()):
 #     print("End test_multivariate()")
 
 
-def test_network(network=cnn.CNN()):
+def test_network(network=CNNClassifier()):
     # sklearn compatibility
     # check_estimator(FCN)
 
@@ -127,16 +127,16 @@ def test_network(network=cnn.CNN()):
 def all_networks_all_tests():
 
     networks = [
-        cnn.CNN(),
-        encoder.Encoder(),
-        fcn.FCN(),
-        mcdcnn.MCDCNN(),
-        mcnn.MCNN(),
-        mlp.MLP(),
-        resnet.ResNet(),
-        tlenet.TLENET(),
-        twiesn.TWIESN(),
-        tuned_cnn.Tuned_CNN(),
+        CNNClassifier(),
+        EncoderClassifier(),
+        FCNClassifier(),
+        MCDCNNClassifier(),
+        MCNNClassifier(),
+        MLPClassifier(),
+        ResNetClassifier(),
+        TLENETClassifier(),
+        TWIESNClassifier(),
+        TunedCNNClassifier(),
     ]
 
     for network in networks:

@@ -27,7 +27,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
 
-class BaseDeepLearner(BaseClassifier):
+class BaseDeepClassifier(BaseClassifier):
     classes_ = None
     nb_classes = None
 

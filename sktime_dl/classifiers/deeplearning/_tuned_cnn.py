@@ -21,14 +21,14 @@ __author__ = "James Large"
 
 import numpy as np
 
-from sktime_dl.contrib.deeplearning_based.basenetwork import BaseDeepLearner
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
-from sktime_dl.contrib.deeplearning_based.dl4tsc.cnn import CNN
+from sktime_dl.classifiers.deeplearning._cnn import CNNClassifier
 
 
-class Tuned_CNN(BaseDeepLearner):
+class TunedCNNClassifier(BaseDeepClassifier):
 
     def __init__(self, dim_to_use=0, rand_seed=0, verbose=False, n_jobs=1,
                  param_grid=dict(
@@ -43,7 +43,7 @@ class Tuned_CNN(BaseDeepLearner):
         self.rand_seed = rand_seed
         self.random_state = np.random.RandomState(self.rand_seed)
 
-        self.base_model = CNN()
+        self.base_model = CNNClassifier()
         # todo make decisions on wrapping each network
         #  separately or generalise the parameters across networks, etc.
 
