@@ -21,19 +21,19 @@ __author__ = "James Large"
 
 import numpy as np
 
-from sktime.utils.validation import check_X_y
-from sktime.classifiers.base import BaseClassifier
-from sktime.contrib.deeplearning_based.basenetwork import BaseDeepLearner
-from sktime.classifiers.tests.test_dl4tscnetworks import test_network
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
-from sktime.contrib.deeplearning_based.dl4tsc.cnn import CNN
+from sktime_dl.classifiers.deeplearning._cnn import CNNClassifier
 
 
-class Tuned_CNN(BaseDeepLearner):
+class TunedCNNClassifier(BaseDeepClassifier):
 
-    def __init__(self, dim_to_use=0, rand_seed=0, verbose=False, n_jobs=1,
+    def __init__(self,
+                 random_seed=0,
+                 verbose=False,
+                 n_jobs=1,
                  param_grid=dict(
                      kernel_size=[3, 7],
                      avg_pool_size=[2, 3],
@@ -42,11 +42,10 @@ class Tuned_CNN(BaseDeepLearner):
                  search_method='grid',
                  cv_folds=5):
         self.verbose = verbose
-        self.dim_to_use = dim_to_use
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
-        self.base_model = CNN()
+        self.base_model = CNNClassifier()
         # todo make decisions on wrapping each network
         #  separately or generalise the parameters across networks, etc.
 
@@ -110,9 +109,3 @@ class Tuned_CNN(BaseDeepLearner):
         params = self.grid_history.cv_results_['params']
         for mean, stdev, param in zip(means, stds, params):
             print("%f (%f) with: %r" % (mean, stdev, param))
-
-
-if __name__ == '__main__':
-    # simple, small, fast search for testing. default nb_epochs = 2000
-    param_grid = dict(nb_epochs=[5, 10])
-    test_network(Tuned_CNN(param_grid=param_grid, cv_folds=2), verbose=True)

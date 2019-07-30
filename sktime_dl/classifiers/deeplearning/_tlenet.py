@@ -17,18 +17,17 @@ import numpy as np
 
 import pandas as pd
 
-from sktime.contrib.deeplearning_based.basenetwork import BaseDeepLearner
-from sktime.classifiers.tests.test_dl4tscnetworks import test_network
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
-class TLENET(BaseDeepLearner):
+class TLENETClassifier(BaseDeepClassifier):
 
-    def __init__(self, output_directory=None, verbose=False, dim_to_use=0, rand_seed=0):
-        self.output_directory = output_directory
+    def __init__(self,
+                 verbose=False,
+                 random_seed=0):
         self.verbose = verbose
         self.warping_ratios = [0.5, 1, 2]
         self.slice_ratio = 0.1
-        self.dim_to_use = dim_to_use
 
         self.nb_epochs = 1000
         self.batch_size = 256
@@ -40,8 +39,8 @@ class TLENET(BaseDeepLearner):
         self.model = None
         self.history = None
 
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
     def slice_data(self, X, y=None, length_sliced=1):
         n = X.shape[0]
@@ -172,11 +171,12 @@ class TLENET(BaseDeepLearner):
     def fit(self, X, y, input_checks=True, **kwargs):
         # check and convert input to a univariate Numpy array
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
+
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
             X = X.reshape((X.shape[0], X.shape[1], 1))
@@ -210,11 +210,12 @@ class TLENET(BaseDeepLearner):
         # preprocess test.
         # check and convert input to a univariate Numpy array
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
+
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
             X = X.reshape((X.shape[0], X.shape[1], 1))
@@ -237,7 +238,3 @@ class TLENET(BaseDeepLearner):
         keras.backend.clear_session()
 
         return y_pred
-
-
-if __name__ == "__main__":
-    test_network(TLENET())

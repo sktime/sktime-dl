@@ -1,9 +1,11 @@
 .. image:: https://travis-ci.com/uea-machine-learning/sktime-dl.svg?branch=master
     :target: https://travis-ci.com/uea-machine-learning/sktime-dl
+.. image:: https://badge.fury.io/py/sktime-dl.svg
+    :target: https://badge.fury.io/py/sktime-dl
 
 sktime-dl
 =========
-An additional deep learning with Keras toolset for `sktime <https://github.com/alan-turing-institute/sktime>`__, a `scikit-learn <https://github.com/scikit-learn/scikit-learn>`__ compatible Python toolbox for learning with time series and panel data. 
+An extension package for deep learning with Keras for `sktime <https://github.com/alan-turing-institute/sktime>`__, a `scikit-learn <https://github.com/scikit-learn/scikit-learn>`__ compatible Python toolbox for learning with time series and panel data. 
 
 The package is under active development. Currently, classification models based off the the networks in `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__ have been implemented, as well as an example of a tuned network for future development. 
 
@@ -33,13 +35,15 @@ Overview
 --------
 
 A repository for off-the-shelf networks
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The aim is to define Keras networks able to be directly used within sktime and its pipelining and strategy tools, and by extension scikit-learn, for use in applications and research. Overtime, we wish to interface or reimplement networks from the literature in the context of time series analysis.
 
 Currently, we interface with a number of networks for time series classification in particular. 
 
 dl-4-tsc interfacing
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+
 This toolset currently serves as an interface to `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__, and implements the following network archtiectures: 
 
 - Time convolutional neural network (CNN)
@@ -67,7 +71,7 @@ Former and current active contributors are as follows.
 sktime-dl
 ~~~~~~~~~
 
-James Large (@James-Large), Aaron Bostrom (@ABostrom), Hassan Ismail Fawaz (@hfawaz)
+James Large (@James-Large), Aaron Bostrom (@ABostrom), Hassan Ismail Fawaz (@hfawaz), Markus Löning (@mloning)
 
 sktime
 ~~~~~~

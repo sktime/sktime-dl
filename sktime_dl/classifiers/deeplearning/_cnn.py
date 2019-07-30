@@ -21,13 +21,14 @@ import numpy as np
 import pandas as pd
 
 from sktime.utils.validation import check_X_y
-from sktime.contrib.deeplearning_based.basenetwork import BaseDeepLearner
-from sktime.classifiers.tests.test_dl4tscnetworks import test_network
+from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
-class CNN(BaseDeepLearner):
+class CNNClassifier(BaseDeepClassifier):
 
-    def __init__(self, dim_to_use=0, rand_seed=0, verbose=False,
+    def __init__(self,
+                 random_seed=0,
+                 verbose=False,
                  nb_epochs=2000,
                  batch_size=16,
                  kernel_size=7,
@@ -35,11 +36,10 @@ class CNN(BaseDeepLearner):
                  nb_conv_layers=2,
                  filter_sizes=[6, 12]):
         self.verbose = verbose
-        self.dim_to_use = dim_to_use
 
         self.callbacks = []
-        self.rand_seed = rand_seed
-        self.random_state = np.random.RandomState(self.rand_seed)
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
         # calced in fit
         self.input_shape = None
@@ -99,11 +99,11 @@ class CNN(BaseDeepLearner):
             check_X_y(X, y)
 
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
 
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
@@ -119,7 +119,3 @@ class CNN(BaseDeepLearner):
 
         self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
                                       verbose=self.verbose, callbacks=self.callbacks)
-
-
-if __name__ == '__main__':
-    test_network(CNN())

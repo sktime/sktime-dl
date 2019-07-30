@@ -22,14 +22,12 @@ import numpy as np
 import pandas as pd
 
 from sktime.classifiers.base import BaseClassifier
-from sktime.classifiers.tests.test_dl4tscnetworks import comparisonExperiments
-from sktime.classifiers.tests.test_dl4tscnetworks import test_all_networks_all_tests
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
 
-class BaseDeepLearner(BaseClassifier):
+class BaseDeepClassifier(BaseClassifier):
     classes_ = None
     nb_classes = None
 
@@ -42,11 +40,11 @@ class BaseDeepLearner(BaseClassifier):
     def predict_proba(self, X, input_checks=True, **kwargs):
 
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
 
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
@@ -73,8 +71,3 @@ class BaseDeepLearner(BaseClassifier):
         y = self.onehot_encoder.fit_transform(y)
 
         return y
-
-
-if __name__ == "__main__":
-    comparisonExperiments()
-    # test_all_networks_all_tests()
