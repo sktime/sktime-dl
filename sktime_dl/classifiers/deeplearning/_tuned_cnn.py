@@ -30,7 +30,7 @@ from sktime_dl.classifiers.deeplearning._cnn import CNNClassifier
 
 class TunedCNNClassifier(BaseDeepClassifier):
 
-    def __init__(self, dim_to_use=0,
+    def __init__(self,
                  random_seed=0,
                  verbose=False,
                  n_jobs=1,
@@ -42,7 +42,6 @@ class TunedCNNClassifier(BaseDeepClassifier):
                  search_method='grid',
                  cv_folds=5):
         self.verbose = verbose
-        self.dim_to_use = dim_to_use
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
 

@@ -26,7 +26,9 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 class CNNClassifier(BaseDeepClassifier):
 
-    def __init__(self, dim_to_use=0, random_seed=0, verbose=False,
+    def __init__(self,
+                 random_seed=0,
+                 verbose=False,
                  nb_epochs=2000,
                  batch_size=16,
                  kernel_size=7,
@@ -34,7 +36,6 @@ class CNNClassifier(BaseDeepClassifier):
                  nb_conv_layers=2,
                  filter_sizes=[6, 12]):
         self.verbose = verbose
-        self.dim_to_use = dim_to_use
 
         self.callbacks = []
         self.random_seed = random_seed
@@ -98,11 +99,11 @@ class CNNClassifier(BaseDeepClassifier):
             check_X_y(X, y)
 
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
 
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension

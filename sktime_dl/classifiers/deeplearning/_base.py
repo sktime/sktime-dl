@@ -40,11 +40,11 @@ class BaseDeepClassifier(BaseClassifier):
     def predict_proba(self, X, input_checks=True, **kwargs):
 
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
 
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension

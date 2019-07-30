@@ -24,12 +24,10 @@ class TLENETClassifier(BaseDeepClassifier):
 
     def __init__(self,
                  verbose=False,
-                 dim_to_use=0,
                  random_seed=0):
         self.verbose = verbose
         self.warping_ratios = [0.5, 1, 2]
         self.slice_ratio = 0.1
-        self.dim_to_use = dim_to_use
 
         self.nb_epochs = 1000
         self.batch_size = 256
@@ -173,11 +171,12 @@ class TLENETClassifier(BaseDeepClassifier):
     def fit(self, X, y, input_checks=True, **kwargs):
         # check and convert input to a univariate Numpy array
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
+
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
             X = X.reshape((X.shape[0], X.shape[1], 1))
@@ -211,11 +210,12 @@ class TLENETClassifier(BaseDeepClassifier):
         # preprocess test.
         # check and convert input to a univariate Numpy array
         if isinstance(X, pd.DataFrame):
-            if isinstance(X.iloc[0, self.dim_to_use], pd.Series):
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-            else:
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe containing Series objects")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
+
         if len(X.shape) == 2:
             # add a dimension to make it multivariate with one dimension
             X = X.reshape((X.shape[0], X.shape[1], 1))
