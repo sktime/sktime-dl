@@ -1,8 +1,3 @@
-import gc
-import sys
-
-import keras
-
 from sktime.datasets import load_italy_power_demand #, load_basic_motions
 
 from sktime_dl.classifiers.deeplearning import CNNClassifier
@@ -77,8 +72,8 @@ def test_highLevelsktime(network=CNNClassifier()):
 
     print("start test_highLevelsktime()")
 
-    from sktime.highlevel import TSCTask
-    from sktime.highlevel import TSCStrategy
+    from sktime.highlevel.tasks import TSCTask
+    from sktime.highlevel.strategies import TSCStrategy
     from sklearn.metrics import accuracy_score
 
     train = load_italy_power_demand(split='TRAIN')
