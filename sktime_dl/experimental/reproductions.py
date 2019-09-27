@@ -19,8 +19,8 @@ def comparisonExperiments():
     data_dir = sys.argv[1]
     res_dir = sys.argv[2]
 
-    complete_classifiers = [
-        # "dl4tsc_cnn",
+    classifier_names = [
+        "dl4tsc_cnn",
         # "dl4tsc_encoder",
         # "dl4tsc_fcn",
         # "dl4tsc_mcdcnn",
@@ -29,6 +29,20 @@ def comparisonExperiments():
         "dl4tsc_resnet",
         # "dl4tsc_tlenet",
         # "dl4tsc_twiesn",
+        # "dl4tsc_tunedcnn"
+    ]
+
+    classifiers = [
+        CNNClassifier(),
+        # EncoderClassifier(),
+        # FCNClassifier(),
+        # MCDCNNClassifier(),
+        # MCNNClassifier(),
+        # MLPClassifier(),
+        ResNetClassifier(),
+        # TLENETClassifier(),
+        # TWIESNClassifier(),
+        # TunedCNNClassifier(),
     ]
 
     # small_datasets = [
@@ -58,10 +72,10 @@ def comparisonExperiments():
 
     for f in range(num_folds):
         for d in univariate_datasets:
-            for c in complete_classifiers:
-                print(c, d, f)
+            for cname, c in zip(classifier_names, classifiers):
+                print(cname, d, f)
                 try:
-                    exp.run_experiment(data_dir, res_dir, c, d, f)
+                    exp.run_experiment(data_dir, res_dir, cname, d, classifier=c, resampleID=f)
                     gc.collect()
                     keras.backend.clear_session()
                 except:
