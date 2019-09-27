@@ -67,7 +67,7 @@ class TunedCNNClassifier(BaseDeepClassifier):
         else:
             return self.base_model.build_model(input_shape, nb_classes, self.tuned_params)
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, **kwargs):
         if self.search_method is 'grid':
             self.grid = GridSearchCV(estimator=self.base_model,
                                      param_grid=self.param_grid,

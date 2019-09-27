@@ -92,7 +92,8 @@ class TWIESNClassifier(BaseDeepClassifier):
         # argmax the val_y because it is in onehot encoding.
         return accuracy_score(np.argmax(val_y, axis=1), y_pred_val)
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, **kwargs):
+
         # check and convert input to a univariate Numpy array
         if isinstance(X, pd.DataFrame):
             if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
