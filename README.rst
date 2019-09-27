@@ -13,6 +13,8 @@ Installation
 ------------
 This package uses the base sktime as a dependency. Follow the `original instructions <https://help.github.com/en/articles/changing-a-remotes-url>`__ to install this. 
 
+The sktime-dl package currently has API calls up to date with **sktime version 0.3.0**. Updates to sktime may precede sktime-dl updates by some lag time.
+
 For the deep-learning part of sktime-dl, you need:
 
 - `Keras <https://github.com/keras-team/keras>`__
