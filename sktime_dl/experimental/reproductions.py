@@ -21,50 +21,29 @@ def comparisonExperiments():
 
     classifier_names = [
         "dl4tsc_cnn",
-        # "dl4tsc_encoder",
-        # "dl4tsc_fcn",
-        # "dl4tsc_mcdcnn",
-        # "dl4tsc_mcnn",
-        # "dl4tsc_mlp",
+        "dl4tsc_encoder",
+        "dl4tsc_fcn",
+        "dl4tsc_mcdcnn",
+        "dl4tsc_mcnn",
+        "dl4tsc_mlp",
         "dl4tsc_resnet",
-        # "dl4tsc_tlenet",
-        # "dl4tsc_twiesn",
-        # "dl4tsc_tunedcnn"
+        "dl4tsc_tlenet",
+        "dl4tsc_twiesn",
+        "dl4tsc_tunedcnn"
     ]
 
     classifiers = [
         CNNClassifier(),
-        # EncoderClassifier(),
-        # FCNClassifier(),
-        # MCDCNNClassifier(),
-        # MCNNClassifier(),
-        # MLPClassifier(),
+        EncoderClassifier(),
+        FCNClassifier(),
+        MCDCNNClassifier(),
+        MCNNClassifier(),
+        MLPClassifier(),
         ResNetClassifier(),
-        # TLENETClassifier(),
-        # TWIESNClassifier(),
-        # TunedCNNClassifier(),
+        TLENETClassifier(),
+        TWIESNClassifier(),
+        TunedCNNClassifier(),
     ]
-
-    # small_datasets = [
-    #     "Beef",
-    #     "Car",
-    #     "Coffee",
-    #     "CricketX",
-    #     "CricketY",
-    #     "CricketZ",
-    #     "DiatomSizeReduction",
-    #     "Fish",
-    #     "GunPoint",
-    #     "ItalyPowerDemand",
-    #     "MoteStrain",
-    #     "OliveOil",
-    #     "Plane",
-    #     "SonyAIBORobotSurface1",
-    #     "SonyAIBORobotSurface2",
-    #     "SyntheticControl",
-    #     "Trace",
-    #     "TwoLeadECG",
-    # ]
 
     num_folds = 30
 
