@@ -18,7 +18,6 @@ import keras
 import numpy as np
 import pandas as pd
 
-from sktime.utils.validation import check_X_y
 from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
@@ -77,9 +76,7 @@ class MLPClassifier(BaseDeepClassifier):
 
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
-        if input_checks:
-            check_X_y(X, y)
+    def fit(self, X, y, **kwargs):
 
         if isinstance(X, pd.DataFrame):
             if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):

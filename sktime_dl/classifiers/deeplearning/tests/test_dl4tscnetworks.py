@@ -1,8 +1,3 @@
-import gc
-import sys
-
-import keras
-
 from sktime.datasets import load_italy_power_demand #, load_basic_motions
 
 from sktime_dl.classifiers.deeplearning import CNNClassifier
@@ -77,8 +72,8 @@ def test_highLevelsktime(network=CNNClassifier()):
 
     print("start test_highLevelsktime()")
 
-    from sktime.highlevel import TSCTask
-    from sktime.highlevel import TSCStrategy
+    from sktime.highlevel.tasks import TSCTask
+    from sktime.highlevel.strategies import TSCStrategy
     from sklearn.metrics import accuracy_score
 
     train = load_italy_power_demand(split='TRAIN')
@@ -143,59 +138,6 @@ def all_networks_all_tests():
         print('\n\t\t' + network.__class__.__name__ + ' testing started')
         test_network(network)
         print('\t\t' + network.__class__.__name__ + ' testing finished')
-
-
-def comparisonExperiments():
-    data_dir = sys.argv[1]
-    res_dir = sys.argv[2]
-
-    complete_classifiers = [
-        "dl4tsc_cnn",
-        "dl4tsc_encoder",
-        "dl4tsc_fcn",
-        "dl4tsc_mcdcnn",
-        "dl4tsc_mcnn",
-        "dl4tsc_mlp",
-        "dl4tsc_resnet",
-        "dl4tsc_tlenet",
-        "dl4tsc_twiesn",
-    ]
-
-    small_datasets = [
-        "Beef",
-        "Car",
-        "Coffee",
-        "CricketX",
-        "CricketY",
-        "CricketZ",
-        "DiatomSizeReduction",
-        "Fish",
-        "GunPoint",
-        "ItalyPowerDemand",
-        "MoteStrain",
-        "OliveOil",
-        "Plane",
-        "SonyAIBORobotSurface1",
-        "SonyAIBORobotSurface2",
-        "SyntheticControl",
-        "Trace",
-        "TwoLeadECG",
-    ]
-
-    num_folds = 30
-
-    import sktime.contrib.experiments as exp
-
-    for f in range(num_folds):
-        for d in small_datasets:
-            for c in complete_classifiers:
-                print(c, d, f)
-                try:
-                    exp.run_experiment(data_dir, res_dir, c, d, f)
-                    gc.collect()
-                    keras.backend.clear_session()
-                except:
-                    print('\n\n FAILED: ', sys.exc_info()[0], '\n\n')
 
 
 if __name__ == "__main__":

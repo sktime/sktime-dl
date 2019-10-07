@@ -20,7 +20,6 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 
-from sktime.utils.validation import check_X_y
 from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
@@ -104,9 +103,7 @@ class MCDCNNClassifier(BaseDeepClassifier):
 
         return new_x
 
-    def fit(self, X, y, input_checks=True, **kwargs):
-        if input_checks:
-            check_X_y(X, y)
+    def fit(self, X, y, **kwargs):
 
         if isinstance(X, pd.DataFrame):
             if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
