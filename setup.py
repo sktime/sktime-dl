@@ -43,7 +43,7 @@ def find_version(*file_paths):
 
 
 DISTNAME = 'sktime-dl'  # package name is sktime-dl, to have a valid module path, module name is sktime_dl
-DESCRIPTION = 'Deep learning extension toolbox for sktime, a scikit-learn compatible toolbox for ' \
+DESCRIPTION = 'Deep learning extension package for sktime, a scikit-learn compatible toolbox for ' \
               'learning with time series data'
 with codecs.open('README.rst', encoding='utf-8-sig') as f:
     LONG_DESCRIPTION = f.read()
