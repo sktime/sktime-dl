@@ -15,7 +15,48 @@ from sktime_dl.classifiers.deeplearning import TLENETClassifier
 from sktime_dl.classifiers.deeplearning import TWIESNClassifier
 from sktime_dl.classifiers.deeplearning import TunedCNNClassifier
 
-def comparisonExperiments():
+import sktime.contrib.experiments as exp
+
+def setNetwork(cls, resampleId=0):
+    """
+    Basic way of determining the classifier to build. To differentiate settings just and another elif. So, for example, if
+    you wanted tuned TSF, you just pass TuneTSF and set up the tuning mechanism in the elif.
+    This may well get superceded, it is just how e have always done it
+    :param cls: String indicating which classifier you want
+    :return: A classifier.
+
+    """
+    if cls.lower() == 'dl4tsc_cnn':
+        return CNNClassifier()
+    elif cls.lower() == 'dl4tsc_encoder':
+        return EncoderClassifier()
+    elif cls.lower() == 'dl4tsc_fcn':
+        return FCNClassifier()
+    elif cls.lower() == 'dl4tsc_mcdcnn':
+        return MCDCNNClassifier()
+    elif  cls.lower() == 'dl4tsc_mcnn':
+        return MCNNClassifier()
+    elif cls.lower() == 'dl4tsc_mlp':
+        return MLPClassifier()
+    elif cls.lower() == 'dl4tsc_resnet':
+        return ResNetClassifier()
+    elif cls.lower() == 'dl4tsc_tlenet':
+        return TLENETClassifier()
+    elif cls.lower() == 'dl4tsc_twiesn':
+        return TWIESNClassifier()
+    elif cls.lower() == 'dl4tsc_tunedcnn':
+        return TunedCNNClassifier()
+    else:
+        raise Exception('UNKNOWN CLASSIFIER')
+
+def dlExperiment(data_dir, res_dir, classifier_name, dset, fold, classifier=None):
+
+    if classifier is None:
+        classifier = setNetwork(classifier_name, fold)
+
+    exp.run_experiment(data_dir, res_dir, classifier_name, dset, classifier=classifier, resampleID=fold)
+
+def allComparisonExperiments():
     data_dir = sys.argv[1]
     res_dir = sys.argv[2]
 
@@ -47,14 +88,12 @@ def comparisonExperiments():
 
     num_folds = 30
 
-    import sktime.contrib.experiments as exp
-
     for f in range(num_folds):
         for d in univariate_datasets:
             for cname, c in zip(classifier_names, classifiers):
                 print(cname, d, f)
                 try:
-                    exp.run_experiment(data_dir, res_dir, cname, d, classifier=c, resampleID=f)
+                    dlExperiment(data_dir, res_dir, cname, d, f, classifier=c)
                     gc.collect()
                     keras.backend.clear_session()
                 except:
@@ -62,4 +101,5 @@ def comparisonExperiments():
 
 
 if __name__ == "__main__":
-    comparisonExperiments()
+    #allComparisonExperiments()
+    dlExperiment(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], int(sys.argv[5]))
