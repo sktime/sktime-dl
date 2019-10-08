@@ -386,7 +386,8 @@ class MCNNClassifier(BaseDeepClassifier):
 
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, **kwargs):
+
         # check and convert input to a univariate Numpy array
         if isinstance(X, pd.DataFrame):
             if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
