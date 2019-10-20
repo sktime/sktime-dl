@@ -14,6 +14,7 @@ from sktime_dl.classifiers.deeplearning import ResNetClassifier
 from sktime_dl.classifiers.deeplearning import TLENETClassifier
 from sktime_dl.classifiers.deeplearning import TWIESNClassifier
 from sktime_dl.classifiers.deeplearning import TunedCNNClassifier
+from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
 
 import sktime.contrib.experiments as exp
 
@@ -46,6 +47,8 @@ def setNetwork(cls, resampleId=0):
         return TWIESNClassifier()
     elif cls.lower() == 'dl4tsc_tunedcnn':
         return TunedCNNClassifier()
+    elif cls.lower() == "inceptiontime":
+        return InceptionTimeClassifier()
     else:
         raise Exception('UNKNOWN CLASSIFIER')
 
@@ -70,7 +73,8 @@ def allComparisonExperiments():
         "dl4tsc_resnet",
         "dl4tsc_tlenet",
         "dl4tsc_twiesn",
-        "dl4tsc_tunedcnn"
+        "dl4tsc_tunedcnn",
+        "inceptiontime"
     ]
 
     classifiers = [
@@ -84,6 +88,7 @@ def allComparisonExperiments():
         TLENETClassifier(),
         TWIESNClassifier(),
         TunedCNNClassifier(),
+        InceptionTimeClassifier(),
     ]
 
     num_folds = 30

@@ -8,3 +8,4 @@ from ._resnet import ResNetClassifier
 from ._tlenet import TLENETClassifier
 from ._twiesn import TWIESNClassifier
 from ._tuned_cnn import TunedCNNClassifier
+from ._inceptiontime import InceptionTimeClassifier

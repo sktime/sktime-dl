@@ -10,6 +10,7 @@ from sktime_dl.classifiers.deeplearning import ResNetClassifier
 from sktime_dl.classifiers.deeplearning import TLENETClassifier
 from sktime_dl.classifiers.deeplearning import TWIESNClassifier
 from sktime_dl.classifiers.deeplearning import TunedCNNClassifier
+from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
 
 
 def test_basic_univariate(network=CNNClassifier()):
@@ -132,6 +133,7 @@ def all_networks_all_tests():
         TLENETClassifier(),
         TWIESNClassifier(),
         TunedCNNClassifier(),
+        InceptionTimeClassifier(),
     ]
 
     for network in networks:
