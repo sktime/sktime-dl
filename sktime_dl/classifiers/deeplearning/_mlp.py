@@ -81,7 +81,7 @@ class MLPClassifier(BaseDeepClassifier):
         if isinstance(X, pd.DataFrame):
             if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (MLP cannot yet handle multivariate problems")
             else:
                 X = np.asarray([a.values for a in X.iloc[:, 0]])
 

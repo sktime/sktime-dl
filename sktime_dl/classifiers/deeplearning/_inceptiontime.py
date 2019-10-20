@@ -11,38 +11,38 @@
 # }
 import keras
 import numpy as np
-import time
-
-from utils.utils import save_logs
-from utils.utils import calculate_metrics
-from utils.utils import save_test_duration
+import pandas as pd
 
 from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
 class InceptionTimeClassifier(BaseDeepClassifier):
 
-    def __init__(self, output_directory, input_shape, nb_classes, verbose=False, build=True, batch_size=64,
-                 nb_filters=32, use_residual=True, use_bottleneck=True, depth=6, kernel_size=41, nb_epochs=1500):
+    def __init__(self,
+                 random_seed=0,
+                 verbose=False):
+        self.verbose = verbose
 
-        self.output_directory = output_directory
-
-        self.nb_filters = nb_filters
-        self.use_residual = use_residual
-        self.use_bottleneck = use_bottleneck
-        self.depth = depth
-        self.kernel_size = kernel_size - 1
+        # predefined
+        self.nb_filters = 32
+        self.use_residual = True
+        self.use_bottleneck = True
+        self.depth = 6
+        self.kernel_size = 41 - 1
         self.callbacks = None
-        self.batch_size = batch_size
+        self.batch_size = 64
         self.bottleneck_size = 32
-        self.nb_epochs = nb_epochs
+        self.nb_epochs = 1500
 
-        if build == True:
-            self.model = self.build_model(input_shape, nb_classes)
-            if (verbose == True):
-                self.model.summary()
-            self.verbose = verbose
-            self.model.save_weights(self.output_directory + 'model_init.hdf5')
+        # calced in fit
+        self.classes_ = None
+        self.nb_classes = -1
+        self.input_shape = None
+        self.model = None
+        self.history = None
+
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
     def _inception_module(self, input_tensor, stride=1, activation='linear'):
 
@@ -90,7 +90,6 @@ class InceptionTimeClassifier(BaseDeepClassifier):
         input_res = input_layer
 
         for d in range(self.depth):
-
             x = self._inception_module(x)
 
             if self.use_residual and d % 3 == 2:
@@ -109,67 +108,35 @@ class InceptionTimeClassifier(BaseDeepClassifier):
         reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
                                                       min_lr=0.0001)
 
-        file_path = self.output_directory + 'best_model.hdf5'
-
-        model_checkpoint = keras.callbacks.ModelCheckpoint(filepath=file_path, monitor='loss',
-                                                           save_best_only=True)
-
-        self.callbacks = [reduce_lr, model_checkpoint]
+        self.callbacks = [reduce_lr]
 
         return model
 
-    def fit(self, x_train, y_train, x_val, y_val, y_true, plot_test_acc=False):
-        if len(keras.backend.tensorflow_backend._get_available_gpus()) == 0:
-            print('error no gpu')
-            exit()
-        # x_val and y_val are only used to monitor the test loss and NOT for training
+    def fit(self, X, y, **kwargs):
+
+        if isinstance(X, pd.DataFrame):
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
+                raise TypeError(
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (InceptionTime cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
+
+        if len(X.shape) == 2:
+            # add a dimension to make it multivariate with one dimension
+            X = X.reshape((X.shape[0], X.shape[1], 1))
+
+        y_onehot = self.convert_y(y)
+        self.input_shape = X.shape[1:]
 
         if self.batch_size is None:
-            mini_batch_size = int(min(x_train.shape[0] / 10, 16))
-        else:
-            mini_batch_size = self.batch_size
+            self.batch_size = int(min(X.shape[0] / 10, 16))
 
-        start_time = time.time()
+        self.batch_size = int(min(X.shape[0] / 10, self.batch_size))
 
-        if plot_test_acc:
+        self.model = self.build_model(self.input_shape, self.nb_classes)
 
-            hist = self.model.fit(x_train, y_train, batch_size=mini_batch_size, epochs=self.nb_epochs,
-                                  verbose=self.verbose, validation_data=(x_val, y_val), callbacks=self.callbacks)
-        else:
+        if self.verbose:
+            self.model.summary()
 
-            hist = self.model.fit(x_train, y_train, batch_size=mini_batch_size, epochs=self.nb_epochs,
-                                  verbose=self.verbose, callbacks=self.callbacks)
-
-        duration = time.time() - start_time
-
-        self.model.save(self.output_directory + 'last_model.hdf5')
-
-        y_pred = self.predict(x_val, y_true, x_train, y_train, y_val,
-                              return_df_metrics=False)
-
-        # save predictions
-        np.save(self.output_directory + 'y_pred.npy', y_pred)
-
-        # convert the predicted from binary to integer
-        y_pred = np.argmax(y_pred, axis=1)
-
-        df_metrics = save_logs(self.output_directory, hist, y_pred, y_true, duration,
-                               plot_test_acc=plot_test_acc)
-
-        keras.backend.clear_session()
-
-        return df_metrics
-
-    def predict(self, x_test, y_true, x_train, y_train, y_test, return_df_metrics=True):
-        start_time = time.time()
-        model_path = self.output_directory + 'best_model.hdf5'
-        model = keras.models.load_model(model_path)
-        y_pred = model.predict(x_test, batch_size=self.batch_size)
-        if return_df_metrics:
-            y_pred = np.argmax(y_pred, axis=1)
-            df_metrics = calculate_metrics(y_true, y_pred, 0.0)
-            return df_metrics
-        else:
-            test_duration = time.time() - start_time
-            save_test_duration(self.output_directory + 'test_duration.csv', test_duration)
-            return y_pred
+        self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
+                                      verbose=self.verbose, callbacks=self.callbacks)
