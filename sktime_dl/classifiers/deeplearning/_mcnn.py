@@ -18,7 +18,6 @@ __author__ = "Aaron Bostrom, James Large"
 
 import keras
 import numpy as np
-import pandas as pd
 import gc
 
 from sklearn.model_selection import train_test_split

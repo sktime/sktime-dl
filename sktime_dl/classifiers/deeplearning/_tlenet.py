@@ -15,8 +15,6 @@ __author__ = "Aaron Bostrom, James Large"
 import keras
 import numpy as np
 
-import pandas as pd
-
 from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 

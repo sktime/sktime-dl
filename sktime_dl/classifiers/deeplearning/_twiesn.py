@@ -15,7 +15,6 @@
 __author__ = "Aaron Bostrom, James Large"
 
 import numpy as np
-import pandas as pd
 
 from scipy import sparse
 from scipy.sparse import linalg as slinalg
