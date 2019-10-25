@@ -1,4 +1,4 @@
-from sktime.datasets import load_italy_power_demand #, load_basic_motions
+from sktime.datasets import load_italy_power_demand  # , load_basic_motions
 
 from sktime_dl.classifiers.deeplearning import CNNClassifier
 from sktime_dl.classifiers.deeplearning import EncoderClassifier
@@ -9,9 +9,9 @@ from sktime_dl.classifiers.deeplearning import MLPClassifier
 from sktime_dl.classifiers.deeplearning import ResNetClassifier
 from sktime_dl.classifiers.deeplearning import TLENETClassifier
 from sktime_dl.classifiers.deeplearning import TWIESNClassifier
-from sktime_dl.classifiers.deeplearning import TunedCNNClassifier
 from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
 from sktime_dl.classifiers.deeplearning import DeepLearnerEnsembleClassifier
+from sktime_dl.classifiers.deeplearning import TunedDeepLearningClassifier
 
 
 def test_basic_univariate(network=CNNClassifier()):
@@ -122,7 +122,6 @@ def test_network(network=CNNClassifier()):
 
 
 def all_networks_all_tests():
-
     networks = [
         CNNClassifier(),
         EncoderClassifier(),
@@ -133,7 +132,9 @@ def all_networks_all_tests():
         ResNetClassifier(),
         TLENETClassifier(),
         TWIESNClassifier(),
-        TunedCNNClassifier(),
+        TunedDeepLearningClassifier(CNNClassifier(), param_grid=dict(
+            nb_conv_layers=[1, 2],
+        ), ),
         InceptionTimeClassifier(),
         DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier"),
     ]

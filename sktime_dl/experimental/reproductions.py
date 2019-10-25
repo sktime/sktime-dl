@@ -25,7 +25,6 @@ from sktime_dl.classifiers.deeplearning import MLPClassifier
 from sktime_dl.classifiers.deeplearning import ResNetClassifier
 from sktime_dl.classifiers.deeplearning import TLENETClassifier
 from sktime_dl.classifiers.deeplearning import TWIESNClassifier
-from sktime_dl.classifiers.deeplearning import TunedCNNClassifier
 from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
 from sktime_dl.classifiers.deeplearning import DeepLearnerEnsembleClassifier
 
@@ -62,10 +61,6 @@ def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
         return TWIESNClassifier(random_seed=fold)
     elif cls.lower() == 'dl4tsc_tunedcnn':
         return TunedCNNClassifier(random_seed=fold)
-    elif cls.lower() == "inception_single":
-        return InceptionTimeClassifier(random_seed=fold)
-    elif cls.lower() == "inception_time":
-        return DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier")
     elif cls.lower() == "inception0":
         return InceptionTimeClassifier(random_seed=fold)
     elif cls.lower() == "inception1":
@@ -118,7 +113,6 @@ def allComparisonExperiments():
         ResNetClassifier(),
         TLENETClassifier(),
         TWIESNClassifier(),
-        TunedCNNClassifier(),
         InceptionTimeClassifier(),
         DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier")
     ]
