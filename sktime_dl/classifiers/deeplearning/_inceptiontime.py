@@ -100,6 +100,17 @@ class InceptionTimeClassifier(BaseDeepClassifier):
         return x
 
     def build_model(self, input_shape, nb_classes):
+        """
+        Construct a compiled, un-trained, keras model that is ready for training
+        ----------
+        input_shape : tuple
+            The shape of the data fed into the input layer
+        nb_classes: int
+            The number of classes, which shall become the size of the output layer
+        Returns
+        -------
+        output : a compiled Keras Model
+        """
         input_layer = keras.layers.Input(input_shape)
 
         x = input_layer
@@ -128,9 +139,21 @@ class InceptionTimeClassifier(BaseDeepClassifier):
 
         return model
 
-    def fit(self, X, y, **kwargs):
-
-        X = self.check_and_clean_data(X)
+    def fit(self, X, y, input_checks=True, **kwargs):
+        """
+        Build the classifier on the training set (X, y)
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+        y : array-like, shape = [n_instances]
+            The class labels.
+        input_checks: boolean
+            whether to check the X and y parameters
+        Returns
+        -------
+        self : object
+        """
+        X = self.check_and_clean_data(X, y, input_checks=input_checks)
 
         y_onehot = self.convert_y(y)
         self.input_shape = X.shape[1:]
@@ -149,3 +172,5 @@ class InceptionTimeClassifier(BaseDeepClassifier):
                                       verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
+
+        return self

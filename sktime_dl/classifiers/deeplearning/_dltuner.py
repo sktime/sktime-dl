@@ -61,6 +61,19 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
             return self.base_model.build_model(input_shape, nb_classes, self.tuned_params)
 
     def fit(self, X, y, **kwargs):
+        """
+        Searches the best parameters for and fits classifier on the training set (X, y)
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+        y : array-like, shape = [n_instances]
+            The class labels.
+        input_checks: boolean
+            whether to check the X and y parameters
+        Returns
+        -------
+        self : object
+        """
         if self.search_method is 'grid':
             self.grid = GridSearchCV(estimator=self.base_model,
                                      param_grid=self.param_grid,

@@ -94,6 +94,17 @@ class TLENETClassifier(BaseDeepClassifier):
         return warped_series
 
     def build_model(self, input_shape, nb_classes, **kwargs):
+        """
+        Construct a compiled, un-trained, keras model that is ready for training
+        ----------
+        input_shape : tuple
+            The shape of the data fed into the input layer
+        nb_classes: int
+            The number of classes, which shall become the size of the output layer
+        Returns
+        -------
+        output : a compiled Keras Model
+        """
         input_layer = keras.layers.Input(input_shape)
 
         conv_1 = keras.layers.Conv1D(filters=5, kernel_size=5, activation='relu', padding='same')(input_layer)
@@ -175,9 +186,21 @@ class TLENETClassifier(BaseDeepClassifier):
 
         return new_x, new_y, tot_increase_num
 
-    def fit(self, X, y, **kwargs):
-
-        X = self.check_and_clean_data(X)
+    def fit(self, X, y, input_checks=True, **kwargs):
+        """
+        Build the classifier on the training set (X, y)
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+        y : array-like, shape = [n_instances]
+            The class labels.
+        input_checks: boolean
+            whether to check the X and y parameters
+        Returns
+        -------
+        self : object
+        """
+        X = self.check_and_clean_data(X, y, input_checks=input_checks)
 
         y = self.convert_y(y)
 
@@ -206,24 +229,29 @@ class TLENETClassifier(BaseDeepClassifier):
 
         self.save_trained_model()
 
-    def predict_proba(self, X, input_checks=True, **kwargs):
-        # preprocess test.
-        # check and convert input to a univariate Numpy array
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (TLENET cannot yet handle multivariate problems")
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
+        return self
 
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
+    def predict_proba(self, X, input_checks=True, **kwargs):
+        """
+        Find probability estimates for each class for all cases in X.
+        Parameters
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.
+            If a Pandas data frame is passed (sktime format)
+            If a Pandas data frame is passed, a check is performed that it only has one column.
+            If not, an exception is thrown, since this classifier does not yet have
+            multivariate capability.
+        input_checks: boolean
+            whether to check the X parameter
+        Returns
+        -------
+        output : array of shape = [n_instances, n_classes] of probabilities
+        """
+        X = self.check_and_clean_data(X, input_checks=input_checks)
 
         X, _, tot_increase_num = self.pre_processing(X)
-        # print(X.shape)
 
-        # predict some stuff based on the keras.
         preds = self.model.predict(X, batch_size=self.batch_size)
 
         y_predicted = []

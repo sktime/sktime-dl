@@ -59,12 +59,6 @@ class TWIESNClassifier(BaseDeepClassifier):
         self.rho_s = rho_s
         self.alpha = alpha  # leaky rate
 
-    def build_model(self, input_shape, nb_classes, **kwargs):
-        self.init_matrices()
-
-        # construct the riger classifier model
-        self.ridge_classifier = Ridge(alpha=self.lamda)
-
     def evaluate_paramset(self, X, y, val_X, val_y, rho, config):
 
         # param setting is correct.
@@ -97,9 +91,21 @@ class TWIESNClassifier(BaseDeepClassifier):
         # argmax the val_y because it is in onehot encoding.
         return accuracy_score(np.argmax(val_y, axis=1), y_pred_val)
 
-    def fit(self, X, y, **kwargs):
-
-        X = self.check_and_clean_data(X)
+    def fit(self, X, y, input_checks=True, **kwargs):
+        """
+        Build the classifier on the training set (X, y)
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+        y : array-like, shape = [n_instances]
+            The class labels.
+        input_checks: boolean
+            whether to check the X and y parameters
+        Returns
+        -------
+        self : object
+        """
+        X = self.check_and_clean_data(X, y, input_checks=input_checks)
 
         onehot_y = self.convert_y(y)
 
@@ -157,18 +163,26 @@ class TWIESNClassifier(BaseDeepClassifier):
 
         self.save_trained_model()
 
-    def predict_proba(self, X, input_checks=True, **kwargs):
-        # check input is univariate etc.
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (TWIESN cannot yet handle multivariate problems")
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
+        return self
 
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
+    def predict_proba(self, X, input_checks=True, **kwargs):
+        """
+        Find probability estimates for each class for all cases in X.
+        Parameters
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.
+            If a Pandas data frame is passed (sktime format)
+            If a Pandas data frame is passed, a check is performed that it only has one column.
+            If not, an exception is thrown, since this classifier does not yet have
+            multivariate capability.
+        input_checks: boolean
+            whether to check the X parameter
+        Returns
+        -------
+        output : array of shape = [n_instances, n_classes] of probabilities
+        """
+        X = self.check_and_clean_data(X, input_checks=input_checks)
 
         # transform and predict prodba on the ridge classifier.
         new_x_test = self.transform_to_feature_space(X)

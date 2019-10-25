@@ -66,6 +66,8 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
             # first column is probability of class 0 and second is of class 1
             self.y_pred = np.hstack([1 - self.y_pred, self.y_pred])
 
+        return self
+
     def predict_proba(self, X, **kwargs):
         return self.y_pred
 
