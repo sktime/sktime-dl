@@ -26,15 +26,17 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 class CNNClassifier(BaseDeepClassifier):
 
     def __init__(self,
-                 random_seed=0,
                  nb_epochs=2000,
                  batch_size=16,
                  kernel_size=7,
                  avg_pool_size=3,
                  nb_conv_layers=2,
                  filter_sizes=[6, 12],
+
+                 random_seed=0,
                  verbose=False,
                  model_save_directory=None):
+
         self.verbose = verbose
         self.model_save_directory = model_save_directory
 

@@ -22,21 +22,33 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 class InceptionTimeClassifier(BaseDeepClassifier):
 
     def __init__(self,
+                 nb_filters=32,
+                 use_residual=True,
+                 use_bottleneck=True,
+                 depth=6,
+                 kernel_size=41 - 1,
+                 callbacks=None,
+                 batch_size=64,
+                 bottleneck_size=32,
+                 nb_epochs=1500,
+
                  random_seed=0,
                  verbose=False,
                  model_save_directory=None):
+
         self.verbose = verbose
         self.model_save_directory = model_save_directory
+
         # predefined
-        self.nb_filters = 32
-        self.use_residual = True
-        self.use_bottleneck = True
-        self.depth = 6
-        self.kernel_size = 41 - 1
-        self.callbacks = None
-        self.batch_size = 64
-        self.bottleneck_size = 32
-        self.nb_epochs = 1500
+        self.nb_filters = nb_filters
+        self.use_residual = use_residual
+        self.use_bottleneck = use_bottleneck
+        self.depth = depth
+        self.kernel_size = kernel_size
+        self.callbacks = callbacks
+        self.batch_size = batch_size
+        self.bottleneck_size = bottleneck_size
+        self.nb_epochs = nb_epochs
 
         # calced in fit
         self.classes_ = None

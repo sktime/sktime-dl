@@ -30,9 +30,13 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 # class Classifier_TWIESN:
 class TWIESNClassifier(BaseDeepClassifier):
     def __init__(self,
+                 rho_s=[0.55, 0.9, 2.0, 5.0],
+                 alpha=0.1,  # leaky rate
+
                  random_seed=0,
                  verbose=False,
                  model_save_directory=None):
+
         self.verbose = verbose
         self.model_save_directory = model_save_directory
 
@@ -52,8 +56,8 @@ class TWIESNClassifier(BaseDeepClassifier):
         third_config = {'N_x': 500, 'connect': 0.1, 'scaleW_in': 2.0, 'lamda': 0.05}
         fourth_config = {'N_x': 800, 'connect': 0.1, 'scaleW_in': 2.0, 'lamda': 0.05}
         self.configs = [first_config, second_config, third_config, fourth_config]
-        self.rho_s = [0.55, 0.9, 2.0, 5.0]
-        self.alpha = 0.1  # leaky rate
+        self.rho_s = rho_s
+        self.alpha = alpha  # leaky rate
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         self.init_matrices()

@@ -23,17 +23,21 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 class TLENETClassifier(BaseDeepClassifier):
 
     def __init__(self,
+                 nb_epochs=1000,
+                 batch_size=256,
+
                  verbose=False,
                  random_seed=0,
                  model_save_directory=None):
+
         self.verbose = verbose
         self.model_save_directory = model_save_directory
 
         self.warping_ratios = [0.5, 1, 2]
         self.slice_ratio = 0.1
 
-        self.nb_epochs = 1000
-        self.batch_size = 256
+        self.nb_epochs = nb_epochs
+        self.batch_size = batch_size
 
         # calced in fit
         self.classes_ = None

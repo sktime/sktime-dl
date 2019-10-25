@@ -29,19 +29,28 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 class MCNNClassifier(BaseDeepClassifier):
 
     def __init__(self,
-                 verbose=False,
+                 pool_factors=[2, 3, 5],
+                 filter_sizes=[0.05, 0.1, 0.2],
+                 window_size=0.2,
+                 n_train_batch=10,
+                 n_epochs=200,
+                 max_train_batch_size=256,
+                 slice_ratio=0.9,
+
                  random_seed=0,
+                 verbose=False,
                  model_save_directory=None):
+
         self.verbose = verbose
         self.model_save_directory = model_save_directory
 
-        self.pool_factors = [2, 3, 5]  # used for hyperparameters grid search
-        self.filter_sizes = [0.05, 0.1, 0.2]  # used for hyperparameters grid search
-        self.window_size = 0.2
-        self.n_train_batch = 10
-        self.n_epochs = 200
-        self.max_train_batch_size = 256
-        self.slice_ratio = 0.9
+        self.pool_factors = pool_factors  # used for hyperparameters grid search
+        self.filter_sizes = filter_sizes  # used for hyperparameters grid search
+        self.window_size = window_size
+        self.n_train_batch = n_train_batch
+        self.n_epochs = n_epochs
+        self.max_train_batch_size = max_train_batch_size
+        self.slice_ratio = slice_ratio
 
         # *******set up the ma and ds********#
         self.ma_base = 5

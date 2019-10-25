@@ -25,9 +25,13 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 class EncoderClassifier(BaseDeepClassifier):
 
     def __init__(self,
+                 nb_epochs=100,
+                 batch_size=12,
+
                  random_seed=0,
                  verbose=False,
                  model_save_directory=None):
+
         self.verbose = verbose
         self.model_save_directory = model_save_directory
 
@@ -39,8 +43,8 @@ class EncoderClassifier(BaseDeepClassifier):
         self.history = None
 
         # predefined
-        self.nb_epochs = 100
-        self.batch_size = 12
+        self.nb_epochs = nb_epochs
+        self.batch_size = batch_size
         self.callbacks = None
 
         self.random_seed = random_seed

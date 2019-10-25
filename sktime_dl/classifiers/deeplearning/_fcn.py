@@ -24,9 +24,13 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 class FCNClassifier(BaseDeepClassifier):
 
     def __init__(self,
+                 nb_epochs=2000,
+                 batch_size=16,
+
                  random_seed=0,
                  verbose=False,
                  model_save_directory=None):
+
         self.verbose = verbose
         self.model_save_directory = model_save_directory
 
@@ -38,8 +42,8 @@ class FCNClassifier(BaseDeepClassifier):
         self.history = None
 
         # predefined
-        self.nb_epochs = 2000
-        self.batch_size = 16
+        self.nb_epochs = nb_epochs
+        self.batch_size = batch_size
         self.callbacks = None
 
         self.random_seed = random_seed
