@@ -30,15 +30,24 @@ from sklearn.preprocessing import OneHotEncoder
 class BaseDeepClassifier(BaseClassifier):
     classes_ = None
     nb_classes = None
+    model_save_directory = None
+    model = None
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         raise NotImplementedError('this is an abstract method')
 
-    def fit(self, X, y, input_checks=True, **kwargs):
-        raise NotImplementedError()
-
     def predict_proba(self, X, input_checks=True, **kwargs):
+        X = self.check_and_clean_data(X)
 
+        probs = self.model.predict(X, **kwargs)
+
+        # check if binary classification
+        if probs.shape[1] == 1:
+            # first column is probability of class 0 and second is of class 1
+            probs = np.hstack([1 - probs, probs])
+        return probs
+
+    def check_and_clean_data(self, X):
         if isinstance(X, pd.DataFrame):
             if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
@@ -50,13 +59,11 @@ class BaseDeepClassifier(BaseClassifier):
             # add a dimension to make it multivariate with one dimension
             X = X.reshape((X.shape[0], X.shape[1], 1))
 
-        probs = self.model.predict(X, **kwargs)
+        return X
 
-        # check if binary classification
-        if probs.shape[1] == 1:
-            # first column is probability of class 0 and second is of class 1
-            probs = np.hstack([1 - probs, probs])
-        return probs
+    def save_trained_model(self):
+        if self.model_save_directory is not None:
+            self.model.save(self.model_save_directory + 'trained_model.hdf5')
 
     def convert_y(self, y):
         self.label_encoder = LabelEncoder()

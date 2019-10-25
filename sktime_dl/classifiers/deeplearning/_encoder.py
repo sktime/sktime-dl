@@ -26,8 +26,10 @@ class EncoderClassifier(BaseDeepClassifier):
 
     def __init__(self,
                  random_seed=0,
-                 verbose=False):
+                 verbose=False,
+                 model_save_directory=None):
         self.verbose = verbose
+        self.model_save_directory = model_save_directory
 
         # calced in fit
         self.classes_ = None
@@ -82,26 +84,13 @@ class EncoderClassifier(BaseDeepClassifier):
         model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(0.00001),
                       metrics=['accuracy'])
 
-        # file_path = self.output_directory + 'best_model.hdf5'
-        # model_checkpoint = keras.callbacks.ModelCheckpoint(filepath=file_path,
-        #                                                   monitor='loss', save_best_only=True)
-        # self.callbacks = [model_checkpoint]
         self.callbacks = []
 
         return model
 
     def fit(self, X, y, **kwargs):
 
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (Encoder cannot yet handle multivariate problems")
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
+        X = self.check_and_clean_data(X)
 
         y_onehot = self.convert_y(y)
         self.input_shape = X.shape[1:]
@@ -113,3 +102,5 @@ class EncoderClassifier(BaseDeepClassifier):
 
         self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
                                       verbose=self.verbose, callbacks=self.callbacks)
+
+        self.save_trained_model()

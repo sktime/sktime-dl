@@ -24,8 +24,11 @@ class TLENETClassifier(BaseDeepClassifier):
 
     def __init__(self,
                  verbose=False,
-                 random_seed=0):
+                 random_seed=0,
+                 model_save_directory=None):
         self.verbose = verbose
+        self.model_save_directory = model_save_directory
+
         self.warping_ratios = [0.5, 1, 2]
         self.slice_ratio = 0.1
 
@@ -170,17 +173,7 @@ class TLENETClassifier(BaseDeepClassifier):
 
     def fit(self, X, y, **kwargs):
 
-        # check and convert input to a univariate Numpy array
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (TLENET cannot yet handle multivariate problems")
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
+        X = self.check_and_clean_data(X)
 
         y = self.convert_y(y)
 
@@ -206,6 +199,8 @@ class TLENETClassifier(BaseDeepClassifier):
 
         self.hist = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
                                    verbose=self.verbose, callbacks=self.callbacks)
+
+        self.save_trained_model()
 
     def predict_proba(self, X, input_checks=True, **kwargs):
         # preprocess test.

@@ -30,8 +30,11 @@ class MCNNClassifier(BaseDeepClassifier):
 
     def __init__(self,
                  verbose=False,
-                 random_seed=0):
+                 random_seed=0,
+                 model_save_directory=None):
         self.verbose = verbose
+        self.model_save_directory = model_save_directory
+
         self.pool_factors = [2, 3, 5]  # used for hyperparameters grid search
         self.filter_sizes = [0.05, 0.1, 0.2]  # used for hyperparameters grid search
         self.window_size = 0.2
@@ -388,17 +391,7 @@ class MCNNClassifier(BaseDeepClassifier):
 
     def fit(self, X, y, **kwargs):
 
-        # check and convert input to a univariate Numpy array
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (MCNN cannot yet handle multivariate problems")
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
+        X = self.check_and_clean_data(X)
 
         y = self.convert_y(y)
 
@@ -451,6 +444,8 @@ class MCNNClassifier(BaseDeepClassifier):
         # todo is jsut leaking slower - still fails. to be fixed when time for tedious deep-delving, else just do not expect
         #  to be able to run multiple of these in a single execution
         _, self.model = self.train(X, y, pool_factor, filter_size)
+
+        self.save_trained_model()
 
     def predict_proba(self, X, input_checks=True, **kwargs):
         #### get predictions out of the model.
