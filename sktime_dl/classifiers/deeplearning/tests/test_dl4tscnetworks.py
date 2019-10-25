@@ -11,9 +11,10 @@ from sktime_dl.classifiers.deeplearning import TLENETClassifier
 from sktime_dl.classifiers.deeplearning import TWIESNClassifier
 from sktime_dl.classifiers.deeplearning import TunedCNNClassifier
 from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
+from sktime_dl.classifiers.deeplearning import DeepLearnerEnsembleClassifier
 
 
-def test_basic_univariate(network=CNNClassifier()):
+def test_basic_univariate(network=DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier")):
     '''
     just a super basic test with gunpoint,
         load data,
@@ -33,7 +34,7 @@ def test_basic_univariate(network=CNNClassifier()):
     print("End test_basic()")
 
 
-def test_pipeline(network=CNNClassifier()):
+def test_pipeline(network=DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier")):
     '''
     slightly more generalised test with sktime pipelines
         load data,
@@ -62,7 +63,7 @@ def test_pipeline(network=CNNClassifier()):
     print("End test_pipeline()")
 
 
-def test_highLevelsktime(network=CNNClassifier()):
+def test_highLevelsktime(network=DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier")):
     '''
     truly generalised test with sktime tasks/strategies
         load data, build task
@@ -110,7 +111,7 @@ def test_highLevelsktime(network=CNNClassifier()):
 #     print("End test_multivariate()")
 
 
-def test_network(network=CNNClassifier()):
+def test_network(network=DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier")):
     # sklearn compatibility
     # check_estimator(FCN)
 
@@ -134,6 +135,7 @@ def all_networks_all_tests():
         TWIESNClassifier(),
         TunedCNNClassifier(),
         InceptionTimeClassifier(),
+        DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier"),
     ]
 
     for network in networks:

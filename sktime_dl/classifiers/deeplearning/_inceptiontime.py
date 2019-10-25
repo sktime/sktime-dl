@@ -1,6 +1,9 @@
 # InceptionTime, adapted from the implementation from Fawaz et. al
 # https://github.com/hfawaz/InceptionTime/blob/master/classifiers/inception.py
 #
+# A single inception network. To ensemble over random initialisations in order to form the unqualified InceptionTime
+# network ensemble described in the reference below, use DeepLearnerEnsembleClassifier with InceptionTimeClassifier
+#
 # Network originally proposed by:
 #
 # @article{IsmailFawaz2019inceptionTime,

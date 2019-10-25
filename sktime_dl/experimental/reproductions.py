@@ -1,6 +1,18 @@
-import gc
 import sys
 
+if len(sys.argv) > 1:
+    setseed = bool(sys.argv[6])
+    if setseed:
+        # rngseed = int(sys.argv[5])
+        rngseed = int(sys.argv[7]) + 5
+        from numpy.random import seed
+
+        seed(rngseed)
+        from tensorflow import set_random_seed
+
+        set_random_seed(rngseed)
+
+import gc
 import keras
 from sktime.contrib.experiments import univariate_datasets
 
@@ -15,10 +27,12 @@ from sktime_dl.classifiers.deeplearning import TLENETClassifier
 from sktime_dl.classifiers.deeplearning import TWIESNClassifier
 from sktime_dl.classifiers.deeplearning import TunedCNNClassifier
 from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
+from sktime_dl.classifiers.deeplearning import DeepLearnerEnsembleClassifier
 
 import sktime.contrib.experiments as exp
 
-def setNetwork(cls, resampleId=0):
+
+def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     """
     Basic way of determining the classifier to build. To differentiate settings just and another elif. So, for example, if
     you wanted tuned TSF, you just pass TuneTSF and set up the tuning mechanism in the elif.
@@ -27,37 +41,53 @@ def setNetwork(cls, resampleId=0):
     :return: A classifier.
 
     """
+    fold = int(fold)
     if cls.lower() == 'dl4tsc_cnn':
-        return CNNClassifier()
+        return CNNClassifier(random_seed=fold)
     elif cls.lower() == 'dl4tsc_encoder':
-        return EncoderClassifier()
+        return EncoderClassifier(random_seed=fold)
     elif cls.lower() == 'dl4tsc_fcn':
-        return FCNClassifier()
+        return FCNClassifier(random_seed=fold)
     elif cls.lower() == 'dl4tsc_mcdcnn':
-        return MCDCNNClassifier()
-    elif  cls.lower() == 'dl4tsc_mcnn':
-        return MCNNClassifier()
+        return MCDCNNClassifier(random_seed=fold)
+    elif cls.lower() == 'dl4tsc_mcnn':
+        return MCNNClassifier(random_seed=fold)
     elif cls.lower() == 'dl4tsc_mlp':
-        return MLPClassifier()
+        return MLPClassifier(random_seed=fold)
     elif cls.lower() == 'dl4tsc_resnet':
-        return ResNetClassifier()
+        return ResNetClassifier(random_seed=fold)
     elif cls.lower() == 'dl4tsc_tlenet':
-        return TLENETClassifier()
+        return TLENETClassifier(random_seed=fold)
     elif cls.lower() == 'dl4tsc_twiesn':
-        return TWIESNClassifier()
+        return TWIESNClassifier(random_seed=fold)
     elif cls.lower() == 'dl4tsc_tunedcnn':
-        return TunedCNNClassifier()
+        return TunedCNNClassifier(random_seed=fold)
+    elif cls.lower() == "inception_single":
+        return InceptionTimeClassifier(random_seed=fold)
+    elif cls.lower() == "inception_time":
+        return DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier")
+    elif cls.lower() == "inception0":
+        return InceptionTimeClassifier(random_seed=fold)
+    elif cls.lower() == "inception1":
+        return InceptionTimeClassifier(random_seed=fold)
+    elif cls.lower() == "inception2":
+        return InceptionTimeClassifier(random_seed=fold)
+    elif cls.lower() == "inception3":
+        return InceptionTimeClassifier(random_seed=fold)
+    elif cls.lower() == "inception4":
+        return InceptionTimeClassifier(random_seed=fold)
     elif cls.lower() == "inceptiontime":
-        return InceptionTimeClassifier()
+        return DeepLearnerEnsembleClassifier(res_dir, dset, random_seed=fold, network_name='inception', nb_iterations=5)
     else:
-        raise Exception('UNKNOWN CLASSIFIER')
+        raise Exception('UNKNOWN CLASSIFIER: ' + cls)
+
 
 def dlExperiment(data_dir, res_dir, classifier_name, dset, fold, classifier=None):
-
     if classifier is None:
-        classifier = setNetwork(classifier_name, fold)
+        classifier = setNetwork(data_dir, res_dir, classifier_name, dset, fold, classifier=None)
 
     exp.run_experiment(data_dir, res_dir, classifier_name, dset, classifier=classifier, resampleID=fold)
+
 
 def allComparisonExperiments():
     data_dir = sys.argv[1]
@@ -74,7 +104,8 @@ def allComparisonExperiments():
         "dl4tsc_tlenet",
         "dl4tsc_twiesn",
         "dl4tsc_tunedcnn",
-        "inceptiontime"
+        "inception_single",
+        "inception_time"
     ]
 
     classifiers = [
@@ -89,6 +120,7 @@ def allComparisonExperiments():
         TWIESNClassifier(),
         TunedCNNClassifier(),
         InceptionTimeClassifier(),
+        DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier")
     ]
 
     num_folds = 30
@@ -106,5 +138,11 @@ def allComparisonExperiments():
 
 
 if __name__ == "__main__":
-    #allComparisonExperiments()
-    dlExperiment(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], int(sys.argv[5]))
+    # allComparisonExperiments()
+
+    classifier = sys.argv[3]
+    if classifier == "inception":  # seeding inception ensemble exps for bakeoff redux
+       classifier = classifier + sys.argv[7]
+
+    dlExperiment(sys.argv[1], sys.argv[2], classifier, sys.argv[4], int(sys.argv[5]))
+
