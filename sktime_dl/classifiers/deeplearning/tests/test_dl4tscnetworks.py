@@ -136,7 +136,7 @@ def all_networks_all_tests():
             nb_conv_layers=[1, 2],
         ), ),
         InceptionTimeClassifier(),
-        DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier"),
+        #DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier"),
     ]
 
     for network in networks:

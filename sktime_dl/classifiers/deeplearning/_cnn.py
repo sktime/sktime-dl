@@ -1,19 +1,3 @@
-# Time convolutional neural network, adapted from the implementation from Fawaz et. al
-# https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/cnn.py
-#
-# Network originally proposed by:
-#
-# @article{zhao2017convolutional,
-#   title={Convolutional neural networks for time series classification},
-#   author={Zhao, Bendong and Lu, Huanzhang and Chen, Shangfeng and Liu, Junliang and Wu, Dongya},
-#   journal={Journal of Systems Engineering and Electronics},
-#   volume={28},
-#   number={1},
-#   pages={162--169},
-#   year={2017},
-#   publisher={BIAI}
-# }
-
 __author__ = "James Large"
 
 import keras
@@ -23,6 +7,25 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
 class CNNClassifier(BaseDeepClassifier):
+    """Time Convolutional Neural Network (CNN).
+
+    Adapted from the implementation from Fawaz et. al
+
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/cnn.py
+
+    Network originally defined in:
+
+    @article{zhao2017convolutional,
+      title={Convolutional neural networks for time series classification},
+      author={Zhao, Bendong and Lu, Huanzhang and Chen, Shangfeng and Liu, Junliang and Wu, Dongya},
+      journal={Journal of Systems Engineering and Electronics},
+      volume={28},
+      number={1},
+      pages={162--169},
+      year={2017},
+      publisher={BIAI}
+    }
+    """
 
     def __init__(self,
                  nb_epochs=2000,
@@ -35,6 +38,17 @@ class CNNClassifier(BaseDeepClassifier):
                  random_seed=0,
                  verbose=False,
                  model_save_directory=None):
+        '''
+        :param nb_epochs: int, the number of epochs to train the model
+        :param batch_size: int, the number of samples per gradient update.
+        :param kernel_size: int, specifying the length of the 1D convolution window
+        :param avg_pool_size: int, size of the average pooling windows
+        :param nb_conv_layers: int, the number of convolutional plus average pooling layers
+        :param filter_sizes: int, array of shape = (nb_conv_layers)
+        :param random_seed: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
+        '''
 
         self.verbose = verbose
         self.model_save_directory = model_save_directory
@@ -43,12 +57,10 @@ class CNNClassifier(BaseDeepClassifier):
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
 
-        # calced in fit
         self.input_shape = None
         self.model = None
         self.history = None
 
-        # TUNABLE PARAMETERS
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
         self.kernel_size = kernel_size

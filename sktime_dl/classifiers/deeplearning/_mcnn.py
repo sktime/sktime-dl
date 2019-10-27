@@ -1,15 +1,3 @@
-# Multi-scale convolutional neural network, adapted from the implementation from Fawaz et. al
-# https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mcnn.py
-#
-# Network originally proposed by:
-#
-# @article{cui2016multi,
-#   title={Multi-scale convolutional neural networks for time series classification},
-#   author={Cui, Zhicheng and Chen, Wenlin and Chen, Yixin},
-#   journal={arXiv preprint arXiv:1603.06995},
-#   year={2016}
-# }
-#
 # todo keras/tesnorflow memory problem when search over network parameters
 #      currently just deleting EVERY model and retraining the best parameters
 #      at the end, see **1
@@ -26,19 +14,47 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
 class MCNNClassifier(BaseDeepClassifier):
+    """Multi-scale Convolutional Neural Network (MCNN).
+
+    Adapted from the implementation from Fawaz et. al
+
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mcnn.py
+
+    Network originally defined in:
+
+    @article{cui2016multi,
+      title={Multi-scale convolutional neural networks for time series classification},
+      author={Cui, Zhicheng and Chen, Wenlin and Chen, Yixin},
+      journal={arXiv preprint arXiv:1603.06995},
+      year={2016}
+    }
+    """
 
     def __init__(self,
                  pool_factors=[2, 3, 5],
                  filter_sizes=[0.05, 0.1, 0.2],
                  window_size=0.2,
-                 n_train_batch=10,
-                 n_epochs=200,
+                 nb_train_batch=10,
+                 nb_epochs=200,
                  max_train_batch_size=256,
                  slice_ratio=0.9,
 
                  random_seed=0,
                  verbose=False,
                  model_save_directory=None):
+        '''
+        :param pool_factors: array of shape
+        :param filter_sizes: array of shape
+        :param window_size: int,
+        :param nb_train_batch: int,
+        :param nb_epochs: int, the number of epochs to train the model
+        :param max_train_batch_size: int,
+        :param slice_ratio: int,
+
+        :param random_seed: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
+        '''
 
         self.verbose = verbose
         self.model_save_directory = model_save_directory
@@ -46,8 +62,8 @@ class MCNNClassifier(BaseDeepClassifier):
         self.pool_factors = pool_factors  # used for hyperparameters grid search
         self.filter_sizes = filter_sizes  # used for hyperparameters grid search
         self.window_size = window_size
-        self.n_train_batch = n_train_batch
-        self.n_epochs = n_epochs
+        self.n_train_batch = nb_train_batch
+        self.n_epochs = nb_epochs
         self.max_train_batch_size = max_train_batch_size
         self.slice_ratio = slice_ratio
 

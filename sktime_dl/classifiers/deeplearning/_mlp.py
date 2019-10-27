@@ -1,17 +1,3 @@
-# Multi layer perceptron, adapted from the implementation from Fawaz et. al
-# https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mlp.py
-#
-# Network originally proposed by:
-#
-# @inproceedings{wang2017time,
-#   title={Time series classification from scratch with deep neural networks: A strong baseline},
-#   author={Wang, Zhiguang and Yan, Weizhong and Oates, Tim},
-#   booktitle={2017 International joint conference on neural networks (IJCNN)},
-#   pages={1578--1585},
-#   year={2017},
-#   organization={IEEE}
-# }
-
 __author__ = "James Large"
 
 import keras
@@ -21,6 +7,23 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
 class MLPClassifier(BaseDeepClassifier):
+    """Multi Layer Perceptron (MLP).
+
+    Adapted from the implementation from Fawaz et. al
+
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mlp.py
+
+    Network originally defined in:
+
+    @inproceedings{wang2017time,
+      title={Time series classification from scratch with deep neural networks: A strong baseline},
+      author={Wang, Zhiguang and Yan, Weizhong and Oates, Tim},
+      booktitle={2017 International joint conference on neural networks (IJCNN)},
+      pages={1578--1585},
+      year={2017},
+      organization={IEEE}
+    }
+    """
 
     def __init__(self,
                  nb_epochs=5000,
@@ -29,6 +32,14 @@ class MLPClassifier(BaseDeepClassifier):
                  random_seed=0,
                  verbose=False,
                  model_save_directory=None):
+        '''
+        :param nb_epochs: int, the number of epochs to train the model
+        :param batch_size: int, specifying the length of the 1D convolution window
+        :param random_seed: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
+        '''
+
         self.verbose = verbose
         self.model_save_directory = model_save_directory
 

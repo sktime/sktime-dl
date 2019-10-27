@@ -1,17 +1,3 @@
-# InceptionTime, adapted from the implementation from Fawaz et. al
-# https://github.com/hfawaz/InceptionTime/blob/master/classifiers/inception.py
-#
-# A single inception network. To ensemble over random initialisations in order to form the unqualified InceptionTime
-# network ensemble described in the reference below, use DeepLearnerEnsembleClassifier with InceptionTimeClassifier
-#
-# Network originally proposed by:
-#
-# @article{IsmailFawaz2019inceptionTime,
-#   Title                    = {InceptionTime: Finding AlexNet for Time Series Classification},
-#   Author                   = {Ismail Fawaz, Hassan and Lucas, Benjamin and Forestier, Germain and Pelletier, Charlotte and Schmidt, Daniel F. and Weber, Jonathan and Webb, Geoffrey I. and Idoumghar, Lhassane and Muller, Pierre-Alain and Petitjean, François},
-#   journal                  = {ArXiv},
-#   Year                     = {2019}
-# }
 import keras
 import numpy as np
 
@@ -19,21 +5,48 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
 class InceptionTimeClassifier(BaseDeepClassifier):
+    """InceptionTime
+
+    Adapted from the implementation from Fawaz et. al
+
+    https://github.com/hfawaz/InceptionTime/blob/master/classifiers/inception.py
+
+    Network originally defined in:
+
+    @article{IsmailFawaz2019inceptionTime,
+      Title                    = {InceptionTime: Finding AlexNet for Time Series Classification},
+      Author                   = {Ismail Fawaz, Hassan and Lucas, Benjamin and Forestier, Germain and Pelletier, Charlotte and Schmidt, Daniel F. and Weber, Jonathan and Webb, Geoffrey I. and Idoumghar, Lhassane and Muller, Pierre-Alain and Petitjean, François},
+      journal                  = {ArXiv},
+      Year                     = {2019}
+    }
+    """
 
     def __init__(self,
                  nb_filters=32,
                  use_residual=True,
                  use_bottleneck=True,
+                 bottleneck_size=32,
                  depth=6,
                  kernel_size=41 - 1,
-                 callbacks=None,
                  batch_size=64,
-                 bottleneck_size=32,
                  nb_epochs=1500,
 
                  random_seed=0,
                  verbose=False,
                  model_save_directory=None):
+        '''
+        :param nb_filters: int,
+        :param use_residual: boolean,
+        :param use_bottleneck: boolean,
+        :param depth: int
+        :param kernel_size: int, specifying the length of the 1D convolution window
+        :param batch_size: int, the number of samples per gradient update.
+        :param bottleneck_size: int,
+        :param nb_epochs: int, the number of epochs to train the model
+        :param random_seed: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
+        '''
 
         self.verbose = verbose
         self.model_save_directory = model_save_directory
@@ -44,7 +57,6 @@ class InceptionTimeClassifier(BaseDeepClassifier):
         self.use_bottleneck = use_bottleneck
         self.depth = depth
         self.kernel_size = kernel_size
-        self.callbacks = callbacks
         self.batch_size = batch_size
         self.bottleneck_size = bottleneck_size
         self.nb_epochs = nb_epochs
@@ -55,6 +67,7 @@ class InceptionTimeClassifier(BaseDeepClassifier):
         self.input_shape = None
         self.model = None
         self.history = None
+        self.callbacks = None
 
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)

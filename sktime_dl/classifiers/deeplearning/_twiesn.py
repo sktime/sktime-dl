@@ -1,17 +1,3 @@
-# Time warping invariant echo state network, adapted from the implementation from Fawaz et. al
-# https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/twiesn.py
-#
-# Network originally proposed by:
-#
-# @inproceedings{tanisaro2016time,
-#   title={Time series classification using time warping invariant echo state networks},
-#   author={Tanisaro, Pattreeya and Heidemann, Gunther},
-#   booktitle={2016 15th IEEE International Conference on Machine Learning and Applications (ICMLA)},
-#   pages={831--836},
-#   year={2016},
-#   organization={IEEE}
-# }
-
 __author__ = "Aaron Bostrom, James Large"
 
 import numpy as np
@@ -25,9 +11,25 @@ from sklearn.metrics import accuracy_score
 
 from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
-
-# class Classifier_TWIESN:
 class TWIESNClassifier(BaseDeepClassifier):
+    """Time Warping Invariant Echo State Network (TWIESN).
+
+    Adapted from the implementation from Fawaz et. al
+
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/twiesn.py
+
+    Network originally defined in:
+
+    @inproceedings{tanisaro2016time,
+      title={Time series classification using time warping invariant echo state networks},
+      author={Tanisaro, Pattreeya and Heidemann, Gunther},
+      booktitle={2016 15th IEEE International Conference on Machine Learning and Applications (ICMLA)},
+      pages={831--836},
+      year={2016},
+      organization={IEEE}
+    }
+    """
+
     def __init__(self,
                  rho_s=[0.55, 0.9, 2.0, 5.0],
                  alpha=0.1,  # leaky rate
@@ -35,6 +37,13 @@ class TWIESNClassifier(BaseDeepClassifier):
                  random_seed=0,
                  verbose=False,
                  model_save_directory=None):
+        '''
+        :param rho_s: array of shape
+        :param alpha: float, the leakage rate
+        :param random_seed: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
+        '''
 
         self.verbose = verbose
         self.model_save_directory = model_save_directory
@@ -56,7 +65,7 @@ class TWIESNClassifier(BaseDeepClassifier):
         fourth_config = {'N_x': 800, 'connect': 0.1, 'scaleW_in': 2.0, 'lamda': 0.05}
         self.configs = [first_config, second_config, third_config, fourth_config]
         self.rho_s = rho_s
-        self.alpha = alpha  # leaky rate
+        self.alpha = alpha  # leakage rate
 
     def evaluate_paramset(self, X, y, val_X, val_y, rho, config):
 
