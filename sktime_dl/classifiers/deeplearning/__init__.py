@@ -8,5 +8,3 @@ from ._resnet import ResNetClassifier
 from ._tlenet import TLENETClassifier
 from ._twiesn import TWIESNClassifier
 from ._inceptiontime import InceptionTimeClassifier
-from ._dlensemble import DeepLearnerEnsembleClassifier
-from ._dltuner import TunedDeepLearningClassifier

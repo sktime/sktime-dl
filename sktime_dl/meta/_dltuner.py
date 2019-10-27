@@ -1,17 +1,3 @@
-# A basic tuning framework for the deep learning classifiers
-# Defaults to a grid search with 5-fold crossvalidation over the param_grid given for the
-# specified base_model
-#
-# Example inputs:
-#   base_model=CNNClassifier(),
-#   param_grid=dict(
-#        kernel_size=[3, 7],
-#        avg_pool_size=[2, 3],
-#        nb_conv_layers=[1, 2],
-#   ),
-#
-# TODO provide example param_grids for each deep learner
-
 __author__ = "James Large"
 
 import numpy as np
@@ -23,16 +9,39 @@ from sklearn.model_selection import RandomizedSearchCV
 
 
 class TunedDeepLearningClassifier(BaseDeepClassifier):
+    '''
+    A basic tuning framework for the deep learning classifiers
+    Defaults to a grid search with 5-fold crossvalidation over the param_grid given for the
+    specified base_model
+
+    Example inputs:
+      base_model=CNNClassifier(),
+      param_grid=dict(
+         kernel_size=[3, 7],
+         avg_pool_size=[2, 3],
+         nb_conv_layers=[1, 2],
+      ),
+    TODO provide example param_grids for each deep learner
+    '''
 
     def __init__(self,
                  base_model,
                  param_grid,
-                 n_jobs=1,
                  search_method='grid',
                  cv_folds=5,
                  random_seed=0,
                  verbose=False,
                  model_save_directory=None):
+        '''
+        :param base_model: implementation of BaseDeepLearner, the model to tune
+        :param param_grid: dict, parameter names corresponding to parameters of the base_model, mapped to values to
+                            search over
+        :param search_method: string out of ['grid', 'random], how to search over the param_grid
+        :param cv_folds: int, number of cross validation folds to use in evaluation of each parameter set
+        :param random_seed: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_save_directory: string, if not None; location to save the tuned, trained keras model in hdf5 format
+        '''
 
         self.verbose = verbose
         self.model_save_directory = model_save_directory
@@ -46,7 +55,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
         self.param_grid = param_grid
         self.cv_folds = cv_folds
         self.search_method = search_method
-        self.n_jobs = n_jobs
+        self.n_jobs = 1 # assuming networks themselves are threaded/on gpu, not providing this option for now
 
         # search results (computed in fit)
         self.grid_history = None
@@ -83,7 +92,8 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
             self.grid = RandomizedSearchCV(estimator=self.base_model,
                                            param_grid=self.param_grid,
                                            cv=self.cv_folds,
-                                           n_jobs=self.n_jobs)
+                                           n_jobs=self.n_jobs,
+                                           random_state=self.random_seed)
         else:
             # todo expand, give options etc
             raise Exception('Unrecognised search method provided: {}'.format(self.search_method))

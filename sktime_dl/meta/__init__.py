@@ -1,0 +1,2 @@
+from ._dlensemble import DeepLearnerEnsembleClassifier
+from ._dltuner import TunedDeepLearningClassifier
