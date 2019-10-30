@@ -1,3 +1,19 @@
+'''
+
+To run a dl experiment:
+
+    sys.argv[1] : string, data read directory
+    sys.argv[2] : string, results write directory
+    sys.argv[3] : string, classifier name (from list in setNetwork) todo make software engineer-y
+    sys.argv[1] : string, dataset same
+    sys.argv[1] : int, resample id/high-level experimental seed
+    sys.argv[1] : bool, whether to set numpy/tf seed for model initialisations
+    sys.argv[1] : int, numpy/tf seed for model initialisations
+
+    dlExperiment(sys.argv[1], sys.argv[2], classifier, sys.argv[4], int(sys.argv[5]))
+
+'''
+
 import sys
 
 if len(sys.argv) > 1:
@@ -11,13 +27,6 @@ if len(sys.argv) > 1:
         from tensorflow import set_random_seed
 
         set_random_seed(rngseed)
-
-import tensorflow as tf
-
-if tf.__version_ == '1.14':
-    # removing many future warnings for tf 1.14, warning about changes for 2.0
-    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
-    print('Tensorflow warning turned off')
 
 import gc
 import keras
