@@ -45,11 +45,9 @@ Overview
 A repository for off-the-shelf networks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The aim is to define Keras networks able to be directly used within sktime and its pipelining and strategy tools, and by extension scikit-learn, for use in applications and research. Overtime, we wish to interface or reimplement a wide range of networks from the literature in the context of time series analysis.
+The aim is to define Keras networks able to be directly used within sktime and its pipelining and strategy tools, and by extension scikit-learn, for use in applications and research. Over time, we wish to interface or reimplement a wide range of networks from the literature in the context of time series analysis.
 
-Currently, we interface with a number of networks for time series classification in particular. 
-
-A large part of this toolset currently serves as an interface to `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__, and implements the following network archtiectures: 
+Currently, we interface with a number of networks for time series classification in particular. A large part of the current toolset serves as an interface to `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__, and implements the following network archtiectures: 
 
 - Time convolutional neural network (CNN)
 - Encoder (Encoder)
@@ -63,19 +61,19 @@ A large part of this toolset currently serves as an interface to `dl-4-tsc <http
 
 We also interface with InceptionTime, as of writing the strongest deep learning approach to general time series classification.
 
-- Inception network
+- Inception network, singular. 
 
 Meta-functionality
 ~~~~~~~~~~~~~~~~~~
 
-Hyper-parameter tuning (through calls to sci-kit learns Grid and RandomizedSearch tools, currently) and ensembling methods (over different random initialisations for stability) are also available.
+Hyper-parameter tuning (through calls to sci-kit learns Grid and RandomizedSearch tools, currently) and ensembling methods (over different random initialisations for stability) are also available. These act as wrappers to networks, and can be used in high-level and experimental pipelines as with any sktime model. 
 
 Documentation
 -------------
-The full API documentation to the base sktime and an introduction can be found `here <https://alan-turing-institute.github.io/sktime/>`__.
-Tutorial notebooks for currently stable functionality are in the `examples <https://github.com/alan-turing-institute/sktime/tree/master/examples>`__ folder.
 
-Documentation for sktime-dl shall be produced in due course.
+sktime-dl is an extension package to sktime, primarily introducing different learning algorithms. All `examples <https://github.com/alan-turing-institute/sktime/tree/master/examples>`__ and `documentation <https://alan-turing-institute.github.io/sktime/>`__ from the base sktime apply to this package. 
+
+Documentation specifically for sktime-dl shall be produced in due course.
 
 Contributors
 ------------

@@ -33,6 +33,7 @@ class InceptionTimeClassifier(BaseDeepClassifier):
 
                  random_seed=0,
                  verbose=False,
+                 model_name="inception",
                  model_save_directory=None):
         '''
         :param nb_filters: int,
@@ -45,10 +46,12 @@ class InceptionTimeClassifier(BaseDeepClassifier):
         :param nb_epochs: int, the number of epochs to train the model
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and file writing purposes
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
 
         self.verbose = verbose
+        self.model_name = model_name
         self.model_save_directory = model_save_directory
 
         # predefined
@@ -172,8 +175,8 @@ class InceptionTimeClassifier(BaseDeepClassifier):
 
         if self.batch_size is None:
             self.batch_size = int(min(X.shape[0] / 10, 16))
-
-        self.batch_size = int(min(X.shape[0] / 10, self.batch_size))
+        else:
+            self.batch_size = self.batch_size
 
         self.model = self.build_model(self.input_shape, self.nb_classes)
 

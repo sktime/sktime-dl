@@ -14,7 +14,6 @@ if len(sys.argv) > 1:
 
 import gc
 import keras
-from sktime.contrib.experiments import univariate_datasets
 
 from sktime_dl.classifiers.deeplearning import CNNClassifier
 from sktime_dl.classifiers.deeplearning import EncoderClassifier
@@ -26,10 +25,127 @@ from sktime_dl.classifiers.deeplearning import ResNetClassifier
 from sktime_dl.classifiers.deeplearning import TLENETClassifier
 from sktime_dl.classifiers.deeplearning import TWIESNClassifier
 from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
-from sktime_dl.classifiers.deeplearning import DeepLearnerEnsembleClassifier
+from sktime_dl.meta import EnsembleFromFileClassifier
+from sktime_dl.meta import DeepLearnerEnsembleClassifier
+from sktime_dl.meta import TunedDeepLearningClassifier
 
 import sktime.contrib.experiments as exp
 
+
+ucr112dsets = [
+    "ACSF1",
+    "Adiac",
+    "ArrowHead",
+    "Beef",
+    "BeetleFly",
+    "BirdChicken",
+    "BME",
+    "Car",
+    "CBF",
+    "Chinatown",
+    "ChlorineConcentration",
+    "CinCECGTorso",
+    "Coffee",
+    "Computers",
+    "CricketX",
+    "CricketY",
+    "CricketZ",
+    "Crop",
+    "DiatomSizeReduction",
+    "DistalPhalanxOutlineAgeGroup",
+    "DistalPhalanxOutlineCorrect",
+    "DistalPhalanxTW",
+    "Earthquakes",
+    "ECG200",
+    "ECG5000",
+    "ECGFiveDays",
+    "ElectricDevices",
+    "EOGHorizontalSignal",
+    "EOGVerticalSignal",
+    "EthanolLevel",
+    "FaceAll",
+    "FaceFour",
+    "FacesUCR",
+    "FiftyWords",
+    "Fish",
+    "FordA",
+    "FordB",
+    "FreezerRegularTrain",
+    "FreezerSmallTrain",
+    "GunPoint",
+    "GunPointAgeSpan",
+    "GunPointMaleVersusFemale",
+    "GunPointOldVersusYoung",
+    "Ham",
+    "HandOutlines",
+    "Haptics",
+    "Herring",
+    "HouseTwenty",
+    "InlineSkate",
+    "InsectEPGRegularTrain",
+    "InsectEPGSmallTrain",
+    "InsectWingbeatSound",
+    "ItalyPowerDemand",
+    "LargeKitchenAppliances",
+    "Lightning2",
+    "Lightning7",
+    "Mallat",
+    "Meat",
+    "MedicalImages",
+    "MiddlePhalanxOutlineAgeGroup",
+    "MiddlePhalanxOutlineCorrect",
+    "MiddlePhalanxTW",
+    "MixedShapesRegularTrain",
+    "MixedShapesSmallTrain",
+    "MoteStrain",
+    "NonInvasiveFetalECGThorax1",
+    "NonInvasiveFetalECGThorax2",
+    "OliveOil",
+    "OSULeaf",
+    "PhalangesOutlinesCorrect",
+    "Phoneme",
+    "PigAirwayPressure",
+    "PigArtPressure",
+    "PigCVP",
+    "Plane",
+    "PowerCons",
+    "ProximalPhalanxOutlineAgeGroup",
+    "ProximalPhalanxOutlineCorrect",
+    "ProximalPhalanxTW",
+    "RefrigerationDevices",
+    "Rock",
+    "ScreenType",
+    "SemgHandGenderCh2",
+    "SemgHandMovementCh2",
+    "SemgHandSubjectCh2",
+    "ShapeletSim",
+    "ShapesAll",
+    "SmallKitchenAppliances",
+    "SmoothSubspace",
+    "SonyAIBORobotSurface1",
+    "SonyAIBORobotSurface2",
+    "StarLightCurves",
+    "Strawberry",
+    "SwedishLeaf",
+    "Symbols",
+    "SyntheticControl",
+    "ToeSegmentation1",
+    "ToeSegmentation2",
+    "Trace",
+    "TwoLeadECG",
+    "TwoPatterns",
+    "UMD",
+    "UWaveGestureLibraryAll",
+    "UWaveGestureLibraryX",
+    "UWaveGestureLibraryY",
+    "UWaveGestureLibraryZ",
+    "Wafer",
+    "Wine",
+    "WordSynonyms",
+    "Worms",
+    "WormsTwoClass",
+    "Yoga",
+]
 
 def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     """
@@ -59,8 +175,6 @@ def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
         return TLENETClassifier(random_seed=fold)
     elif cls.lower() == 'dl4tsc_twiesn':
         return TWIESNClassifier(random_seed=fold)
-    elif cls.lower() == 'dl4tsc_tunedcnn':
-        return TunedCNNClassifier(random_seed=fold)
     elif cls.lower() == "inception0":
         return InceptionTimeClassifier(random_seed=fold)
     elif cls.lower() == "inception1":
@@ -72,7 +186,7 @@ def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     elif cls.lower() == "inception4":
         return InceptionTimeClassifier(random_seed=fold)
     elif cls.lower() == "inceptiontime":
-        return DeepLearnerEnsembleClassifier(res_dir, dset, random_seed=fold, network_name='inception', nb_iterations=5)
+        return EnsembleFromFileClassifier(res_dir, dset, random_seed=fold, network_name='inception', nb_iterations=5)
     else:
         raise Exception('UNKNOWN CLASSIFIER: ' + cls)
 
@@ -114,13 +228,12 @@ def allComparisonExperiments():
         TLENETClassifier(),
         TWIESNClassifier(),
         InceptionTimeClassifier(),
-        DeepLearnerEnsembleClassifier(network_name="InceptionTimeClassifier")
     ]
 
     num_folds = 30
 
     for f in range(num_folds):
-        for d in univariate_datasets:
+        for d in ucr112dsets:
             for cname, c in zip(classifier_names, classifiers):
                 print(cname, d, f)
                 try:
@@ -131,6 +244,20 @@ def allComparisonExperiments():
                     print('\n\n FAILED: ', sys.exc_info()[0], '\n\n')
 
 
+def ensembleInception(data_dir, res_dir, classifier_name, fold):
+
+    missingdsets = []
+
+    for dset in ucr112dsets:
+        try:
+            classifier = setNetwork(data_dir, res_dir, classifier_name, dset, fold, classifier=None)
+            exp.run_experiment(data_dir, res_dir, classifier_name, dset, classifier=classifier, resampleID=fold)
+        except:
+            missingdsets.append(dset)
+            print(dset, " missing")
+
+    print("\n\n\n", missingdsets)
+
 if __name__ == "__main__":
     # allComparisonExperiments()
 
@@ -140,3 +267,4 @@ if __name__ == "__main__":
 
     dlExperiment(sys.argv[1], sys.argv[2], classifier, sys.argv[4], int(sys.argv[5]))
 
+    #ensembleInception("Z:/ArchiveData/Univariate_ts/", "C:/JamesLPHD/sktimeStuff/InceptionRedo/", "inceptiontime", 0)

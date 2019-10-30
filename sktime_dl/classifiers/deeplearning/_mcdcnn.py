@@ -33,16 +33,19 @@ class MCDCNNClassifier(BaseDeepClassifier):
 
                  random_seed=0,
                  verbose=False,
+                 model_name="mcdcnn",
                  model_save_directory=None):
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and file writing purposes
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
 
         self.verbose = verbose
+        self.model_name = model_name
         self.model_save_directory = model_save_directory
 
         # calced in fit

@@ -41,6 +41,7 @@ class MCNNClassifier(BaseDeepClassifier):
 
                  random_seed=0,
                  verbose=False,
+                 model_name="mcnn",
                  model_save_directory=None):
         '''
         :param pool_factors: array of shape
@@ -53,10 +54,12 @@ class MCNNClassifier(BaseDeepClassifier):
 
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and file writing purposes
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
 
         self.verbose = verbose
+        self.model_name = model_name
         self.model_save_directory = model_save_directory
 
         self.pool_factors = pool_factors  # used for hyperparameters grid search

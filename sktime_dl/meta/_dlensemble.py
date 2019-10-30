@@ -1,32 +1,183 @@
-# This may be refactored to use standard scikit-learn ensemble mechanisms in the future, currently somewhat bespoke
-# for speed of implementation
-#
-# Ensembles homogeneous randomly-initialised networks with otherwise the same architectures/parameters
-#
-# Concept originally proposed by:
-#
-# @article{fawaz2019deep,
-#   title={Deep neural network ensembles for time series classification},
-#   author={Fawaz, H Ismail and Forestier, Germain and Weber, Jonathan and Idoumghar, Lhassane and Muller, P},
-#   journal={arXiv preprint arXiv:1903.06602},
-#   year={2019}
-# }
-
 __author__ = "James Large"
 
 import numpy as np
 import pandas as pd
 import os
+import keras
+import gc
+
+from keras.models import load_model
 
 from sklearn.utils.multiclass import class_distribution
+from sklearn.base import clone
 
 from sktime.classifiers.base import BaseClassifier
 
+from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
+
 
 class DeepLearnerEnsembleClassifier(BaseClassifier):
+    '''
+    Simplified/streamlined class to ensemble over homogeneous network architectures with different random initialisations
 
-    def __init__(self, res_path, dataset_name, random_seed=0, verbose=False, nb_iterations=5,
-                 network_name='inception'):
+    This may be refactored to use standard scikit-learn ensemble mechanisms in the future, currently somewhat bespoke
+    for speed of implementation
+
+    Originally proposed by:
+
+    @article{fawaz2019deep,
+      title={Deep neural network ensembles for time series classification},
+      author={Fawaz, H Ismail and Forestier, Germain and Weber, Jonathan and Idoumghar, Lhassane and Muller, P},
+      journal={arXiv preprint arXiv:1903.06602},
+      year={2019}
+    }
+    '''
+
+    def __init__(self,
+                 base_model=InceptionTimeClassifier(),
+                 nb_iterations=5,
+                 keep_in_memory=False,
+
+                 random_seed=0,
+                 verbose=False,
+                 model_name="InceptionTime",
+                 model_save_directory=None):
+        '''
+        :param base_model: an implementation of BaseDeepLearner, the model to ensemble over. 
+                                MUST NOT have had fit called on it
+        :param nb_iterations: int, the number of models to ensemble over
+        :param keep_in_memory: boolean, if True, all models will be kept in memory while fitting/predicting.
+                Otherwise, models will be written to/read from file individually while fitting/predicting.
+                model_name and model_save_directory must be set in this case
+        :param random_seed: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and file writing purposes. if None, will default
+                to base_model.model_name + '_ensemble'
+        :param model_save_directory: string, if not None; location to save the trained BASE MODELS of the ensemble
+        '''
+
+        self.verbose = verbose
+
+        if model_name is None:
+            self.model_name = base_model.model_name + "_ensemble"
+        else:
+            self.model_name = model_name
+
+        self.model_save_directory = model_save_directory
+
+        self.base_model = base_model
+        self.nb_iterations = nb_iterations
+        self.keep_in_memory = keep_in_memory
+
+        # calced in fit
+        self.classes_ = None
+        self.nb_classes = -1
+        self.models = []
+
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
+
+    def construct_model(self, itr):
+        model = clone(self.base_model)
+        model.random_seed = self.random_seed + itr
+
+        if self.model_save_directory is not None:
+            model.model_save_directory = self.model_save_directory
+
+        model.model_name = model.model_name + str(itr)
+
+        return model
+
+    def fit(self, X, y, input_checks=True, **kwargs):
+        """
+        Build the ensemble constituents on the training set (X, y)
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+        y : array-like, shape = [n_instances]
+            The class labels.
+        input_checks: boolean
+            whether to check the X and y parameters
+        Returns
+        -------
+        self : object
+        """
+        self.models = []
+
+        # data validation shall be performed in individual network fits
+        for itr in range(self.nb_iterations):
+
+            # each construction shall have a different random initialisation
+            model = self.construct_model(itr)
+            model.fit(X, y)
+
+            if itr == 0:
+                self.classes_ = model.classes_
+                self.nb_classes = model.nb_classes
+
+            if self.keep_in_memory:
+                self.models.append(model)
+            else:
+                self.models.append(model.model_name)
+
+                del model
+                gc.collect()
+                keras.backend.clear_session()
+
+    def predict_proba(self, X, input_checks=True, **kwargs):
+        """
+        Find probability estimates for each class for all cases in X.
+        Parameters
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.
+            If a Pandas data frame is passed (sktime format)
+            If a Pandas data frame is passed, a check is performed that it only has one column.
+            If not, an exception is thrown, since this classifier does not yet have
+            multivariate capability.
+        input_checks: boolean
+            whether to check the X parameter
+        Returns
+        -------
+        output : array of shape = [n_instances, n_classes] of probabilities
+        """
+        X = self.check_and_clean_data(X, input_checks=input_checks)
+
+        probs = np.zeros(self.nb_classes)
+
+        for model in self.models:
+            if not self.keep_in_memory:
+                model = load_model(self.model_save_directory + model)
+
+            probs = probs + model.predict(X, **kwargs)
+
+            if not self.keep_in_memory:
+                del model
+                gc.collect()
+                keras.backend.clear_session()
+
+        probs = probs / len(self.models)
+
+        # check if binary classification
+        if probs.shape[1] == 1:
+            # first column is probability of class 0 and second is of class 1
+            probs = np.hstack([1 - probs, probs])
+        return probs
+
+
+class EnsembleFromFileClassifier(BaseClassifier):
+    '''
+    A simple utility for post-hoc ensembling over the results of networks that have already been trained and had their results
+    saved via sktime.contrib.experiments.py
+    '''
+
+    def __init__(self,
+                 res_path,
+                 dataset_name,
+                 nb_iterations=5,
+                 network_name='inception',
+                 random_seed=0,
+                 verbose=False):
         self.network_name = network_name
         self.nb_iterations = nb_iterations
         self.verbose = verbose
@@ -61,6 +212,8 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
             else:
                 self.y_pred = self.y_pred + y_cur
 
+        self.y_pred = self.y_pred / self.nb_iterations
+
         # check if binary classification
         if self.y_pred.shape[1] == 1:
             # first column is probability of class 0 and second is of class 1
@@ -70,117 +223,3 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
 
     def predict_proba(self, X, **kwargs):
         return self.y_pred
-
-
-# # This may be refactored to use standard scikit-learn ensemble mechanisms in the future, currently somewhat bespoke
-# # for speed of implementation
-# #
-# # Ensembles homogeneous randomly-initialised networks with otherwise the same architectures/parameters
-# #
-# # Concept originally proposed by:
-# #
-# # @article{fawaz2019deep,
-# #   title={Deep neural network ensembles for time series classification},
-# #   author={Fawaz, H Ismail and Forestier, Germain and Weber, Jonathan and Idoumghar, Lhassane and Muller, P},
-# #   journal={arXiv preprint arXiv:1903.06602},
-# #   year={2019}
-# # }
-#
-# __author__ = "James Large"
-#
-# import numpy as np
-# import pandas as pd
-#
-# from sktime.classifiers.base import BaseClassifier
-#
-# class DeepLearnerEnsembleClassifier(BaseClassifier):
-#
-#     def __init__(self, random_seed=0, verbose=False, nb_iterations=5,
-#                  network_name='inception'):
-#         self.network_name = network_name
-#         self.nb_iterations = nb_iterations
-#         self.verbose = verbose
-#
-#         # calced in fit
-#         self.classes_ = None
-#         self.nb_classes = -1
-#         self.models = []
-#
-#         self.random_seed = random_seed
-#         self.random_state = np.random.RandomState(self.random_seed)
-#
-#     def construct_network(self, model_name, random_seed, verbose=False):
-#         model = None
-#
-#         if model_name == 'CNNClassifier':
-#             from ._cnn import CNNClassifier
-#             model = CNNClassifier(random_seed, verbose)
-#         elif model_name == 'EncoderClassifier':
-#             from ._encoder import EncoderClassifier
-#             model = EncoderClassifier(random_seed, verbose)
-#         elif model_name == 'FCNClassifier':
-#             from ._fcn import FCNClassifier
-#             model = FCNClassifier(random_seed, verbose)
-#         elif model_name == 'InceptionTimeClassifier':
-#             from ._inceptiontime import InceptionTimeClassifier
-#             model = InceptionTimeClassifier(random_seed, verbose)
-#         elif model_name == 'MCDCNNClassifier':
-#             from ._mcdcnn import MCDCNNClassifier
-#             model = MCDCNNClassifier(random_seed, verbose)
-#         elif model_name == 'MCNNClassifier':
-#             from ._mcnn import MCNNClassifier
-#             model = MCNNClassifier(random_seed, verbose)
-#         elif model_name == 'MLPClassifier':
-#             from ._mlp import MLPClassifier
-#             model = MLPClassifier(random_seed, verbose)
-#         elif model_name == 'ResNetClassifier':
-#             from ._resnet import ResNetClassifier
-#             model = ResNetClassifier(random_seed, verbose)
-#         elif model_name == 'TLENETClassifier':
-#             from ._tlenet import TLENETClassifier
-#             model = TLENETClassifier(random_seed, verbose)
-#         elif model_name == 'TWIESNClassifier':
-#             from ._twiesn import TWIESNClassifier
-#             model = TWIESNClassifier(random_seed, verbose)
-#         else:
-#             raise Exception('Unrecognised network requested to ensemble over, ' + model_name)
-#
-#         return model
-#
-#     def fit(self, X, y, **kwargs):
-#
-#         # data validation shall be performed in individual network fits
-#
-#         for itr in range(self.nb_iterations):
-#             # each construction shall have a different random initialisation
-#             network = self.construct_network(self.network_name, self.random_seed + itr, self.verbose)
-#             network.fit(X, y)
-#             self.models.append(network)
-#
-#             if itr == 0:
-#                 self.classes_ = network.classes_
-#                 self.nb_classes = network.nb_classes
-#
-#     def predict_proba(self, X, **kwargs):
-#
-#         if isinstance(X, pd.DataFrame):
-#             if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-#                 raise TypeError(
-#                     "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (networks cannot yet handle multivariate problems")
-#             else:
-#                 X = np.asarray([a.values for a in X.iloc[:, 0]])
-#
-#         if len(X.shape) == 2:
-#             # add a dimension to make it multivariate with one dimension
-#             X = X.reshape((X.shape[0], X.shape[1], 1))
-#
-#         probs = np.zeros(self.nb_classes)
-#
-#         for model in self.models:
-#             probs = probs + model.predict(X, **kwargs)
-#
-#         # check if binary classification
-#         if probs.shape[1] == 1:
-#             # first column is probability of class 0 and second is of class 1
-#             probs = np.hstack([1 - probs, probs])
-#         return probs

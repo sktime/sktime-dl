@@ -33,6 +33,7 @@ class BaseDeepClassifier(BaseClassifier):
     nb_classes = None
     model_save_directory = None
     model = None
+    model_name = None
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -98,7 +99,10 @@ class BaseDeepClassifier(BaseClassifier):
 
     def save_trained_model(self):
         if self.model_save_directory is not None:
-            self.model.save(self.model_save_directory + 'trained_model.hdf5')
+            if self.model_name is None:
+                self.model.save(self.model_save_directory + 'trained_model.hdf5')
+            else:
+                self.model.save(self.model_save_directory + self.model_name + '.hdf5')
 
     def convert_y(self, y):
         self.label_encoder = LabelEncoder()

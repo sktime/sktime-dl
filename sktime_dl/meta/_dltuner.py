@@ -3,6 +3,7 @@ __author__ = "James Large"
 import numpy as np
 
 from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
+from sktime_dl.classifiers.deeplearning import CNNClassifier
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
@@ -25,25 +26,38 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
     '''
 
     def __init__(self,
-                 base_model,
-                 param_grid,
+                 base_model=CNNClassifier(),
+                 param_grid=dict(
+                     kernel_size=[3, 7],
+                     avg_pool_size=[2, 3],
+                     nb_conv_layers=[1, 2],
+                 ),
                  search_method='grid',
                  cv_folds=5,
                  random_seed=0,
                  verbose=False,
+                 model_name='tuned_cnn',
                  model_save_directory=None):
         '''
-        :param base_model: implementation of BaseDeepLearner, the model to tune
+        :param base_model: an implementation of BaseDeepLearner, the model to tune
         :param param_grid: dict, parameter names corresponding to parameters of the base_model, mapped to values to
                             search over
         :param search_method: string out of ['grid', 'random], how to search over the param_grid
         :param cv_folds: int, number of cross validation folds to use in evaluation of each parameter set
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and file writing purposes. if None, will default
+                to 'tuned_' + base_model.model_name
         :param model_save_directory: string, if not None; location to save the tuned, trained keras model in hdf5 format
         '''
 
         self.verbose = verbose
+
+        if model_name is None:
+            self.model_name = "tuned_" + base_model.model_name
+        else:
+            self.model_name = model_name
+
         self.model_save_directory = model_save_directory
 
         self.random_seed = random_seed
@@ -55,7 +69,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
         self.param_grid = param_grid
         self.cv_folds = cv_folds
         self.search_method = search_method
-        self.n_jobs = 1 # assuming networks themselves are threaded/on gpu, not providing this option for now
+        self.n_jobs = 1  # assuming networks themselves are threaded/on gpu, not providing this option for now
 
         # search results (computed in fit)
         self.grid_history = None
