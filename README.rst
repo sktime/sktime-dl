@@ -35,13 +35,11 @@ sktime-dl is under development. To guarantee that you're using the most up to da
 	
 When installing sktime-dl, `Tensorflow <https://www.tensorflow.org/install/>`__ 1.x will be installed as the backend for Keras. Tensorflow 2.x is currently unsupported. Other backends should be usable in principle but are untested.
 	
-With these instructions, the networks can be run on your CPU. If you wish to run the networks on an NVIDIA® GPU, extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library) need to be installed separately to sktime-dl. See `this page<https://www.tensorflow.org/install/gpu>`__ for more information.
+With these instructions, the networks can be run on your CPU. If you wish to run the networks on an NVIDIA® GPU, extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library) need to be installed separately to sktime-dl. See `this page <https://www.tensorflow.org/install/gpu>`__ for more information.
 
-Lastly, if you have a tensorflow version less than 1.15, `tensorflow-gpu needs to be installed<https://www.tensorflow.org/install/gpu>`__ in addition to (or in place of) the tensorflow (no suffix) that will be installed automatically, e.g.:
+Lastly, if you have a tensorflow version less than 1.15, `tensorflow-gpu needs to be installed <https://www.tensorflow.org/install/gpu>`__ in addition to (or in place of) the tensorflow (no suffix) that will be installed automatically, e.g.:
 ::
 	pip install tensorflow-gpu==1.14
-
-For windows users looking to setup Keras for GPU usage in general for the first time, we can also recommend following `this (unaffiliated) guide<https://github.com/antoniosehk/keras-tensorflow-windows-installation>`__.
 	
 This package uses the base sktime as a dependency. You can follow the `original instructions <https://alan-turing-institute.github.io/sktime/installation.html>`__ to install this separately or as the development version if wanted. The sktime-dl package currently has API calls up to date with **sktime version 0.3.1**. Updates to sktime may precede sktime-dl updates by some lag time.
 	
@@ -66,7 +64,7 @@ Currently, we interface with a number of networks for time series classification
 - Time Le-Net (tlenet)
 - Time warping invariant echo state network (twiesn)
 
-We also interface with InceptionTime, as of writing the strongest deep learning approach to general time series classification.
+We also interface with `InceptionTime <https://github.com/hfawaz/InceptionTime>`__, as of writing the strongest deep learning approach to general time series classification. 
 
 - Inception network, singular. 
 
