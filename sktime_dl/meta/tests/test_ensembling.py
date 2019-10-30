@@ -1,0 +1,68 @@
+import os
+
+from sktime.datasets import load_italy_power_demand
+from sktime_dl.meta import DeepLearnerEnsembleClassifier
+from sktime_dl.classifiers.deeplearning import CNNClassifier
+
+
+
+def test_basic_inmem(network=DeepLearnerEnsembleClassifier(
+            base_model=CNNClassifier(nb_epochs=50),
+            nb_iterations=2,
+            keep_in_memory=True,
+            model_save_directory=None,
+            verbose=True)):
+    '''
+    just a super basic test with gunpoint,
+        load data,
+        construct classifier,
+        fit,
+        score
+    '''
+
+    print("Start test_basic()")
+
+    X_train, y_train = load_italy_power_demand(split='TRAIN', return_X_y=True)
+    X_test, y_test = load_italy_power_demand(split='TEST', return_X_y=True)
+
+    hist = network.fit(X_train[:10], y_train[:10])
+
+    print(network.score(X_test[:10], y_test[:10]))
+    print("End test_basic()")
+
+
+def test_basic_saving(network=DeepLearnerEnsembleClassifier(
+            base_model=CNNClassifier(nb_epochs=50),
+            nb_iterations=2,
+            keep_in_memory=False,
+            model_save_directory="testResultsDELETE/",
+            verbose=True)):
+    '''
+    just a super basic test with gunpoint,
+        load data,
+        construct classifier,
+        fit,
+        score
+    '''
+
+    print("Start test_basic()")
+
+    os.mkdir(network.model_save_directory)
+
+    X_train, y_train = load_italy_power_demand(split='TRAIN', return_X_y=True)
+    X_test, y_test = load_italy_power_demand(split='TEST', return_X_y=True)
+
+    hist = network.fit(X_train[:10], y_train[:10])
+
+    print(network.score(X_test[:10], y_test[:10]))
+
+    os.remove(os.path.join(network.model_save_directory, network.base_model.model_name + "_0.hdf5"))
+    os.remove(os.path.join(network.model_save_directory, network.base_model.model_name + "_1.hdf5"))
+    os.rmdir(network.model_save_directory) # directory should now be empty, fails if not
+
+    print("End test_basic()")
+
+
+if __name__ == "__main__":
+    test_basic_inmem()
+    test_basic_saving()

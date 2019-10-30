@@ -12,6 +12,7 @@ from sklearn.utils.multiclass import class_distribution
 from sklearn.base import clone
 
 from sktime.classifiers.base import BaseClassifier
+from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
 
@@ -72,7 +73,8 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         # calced in fit
         self.classes_ = None
         self.nb_classes = -1
-        self.models = []
+        self.skdl_models = []
+        self.keras_models = []
 
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
@@ -84,7 +86,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         if self.model_save_directory is not None:
             model.model_save_directory = self.model_save_directory
 
-        model.model_name = model.model_name + str(itr)
+        model.model_name = model.model_name + "_" + str(itr)
 
         return model
 
@@ -102,25 +104,28 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         -------
         self : object
         """
-        self.models = []
+        self.skdl_models = []
+        self.keras_models = []
 
         # data validation shall be performed in individual network fits
         for itr in range(self.nb_iterations):
 
             # each construction shall have a different random initialisation
-            model = self.construct_model(itr)
-            model.fit(X, y)
+            skdl_model = self.construct_model(itr)
+            skdl_model.fit(X, y)
 
             if itr == 0:
-                self.classes_ = model.classes_
-                self.nb_classes = model.nb_classes
+                self.label_encoder = skdl_model.label_encoder
+                self.classes_ = skdl_model.classes_
+                self.nb_classes = skdl_model.nb_classes
 
             if self.keep_in_memory:
-                self.models.append(model)
+                self.skdl_models.append(skdl_model)
+                self.keras_models.append(skdl_model.model)
             else:
-                self.models.append(model.model_name)
+                self.skdl_models.append(skdl_model.model_name)
 
-                del model
+                del skdl_model
                 gc.collect()
                 keras.backend.clear_session()
 
@@ -141,22 +146,37 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
-        X = self.check_and_clean_data(X, input_checks=input_checks)
+        if input_checks:
+            validate_X(X)
 
-        probs = np.zeros(self.nb_classes)
+        if isinstance(X, pd.DataFrame):
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
+                raise TypeError(
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (networks cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
 
-        for model in self.models:
+        if len(X.shape) == 2:
+            # add a dimension to make it multivariate with one dimension
+            X = X.reshape((X.shape[0], X.shape[1], 1))
+
+        probs = np.zeros((X.shape[0], self.nb_classes))
+
+        for skdl_model in self.skdl_models:
+            if self.keep_in_memory:
+                keras_model = skdl_model.model
+            else:
+                keras_model = load_model(self.model_save_directory + skdl_model + '.hdf5')
+
+            # keras models' predict is same as what we/sklearn means by predict_proba, i.e. give prob distributions
+            probs = probs + keras_model.predict(X, **kwargs)
+
             if not self.keep_in_memory:
-                model = load_model(self.model_save_directory + model)
-
-            probs = probs + model.predict(X, **kwargs)
-
-            if not self.keep_in_memory:
-                del model
+                del keras_model
                 gc.collect()
                 keras.backend.clear_session()
 
-        probs = probs / len(self.models)
+        probs = probs / len(self.skdl_models)
 
         # check if binary classification
         if probs.shape[1] == 1:

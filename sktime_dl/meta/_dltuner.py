@@ -15,13 +15,6 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
     Defaults to a grid search with 5-fold crossvalidation over the param_grid given for the
     specified base_model
 
-    Example inputs:
-      base_model=CNNClassifier(),
-      param_grid=dict(
-         kernel_size=[3, 7],
-         avg_pool_size=[2, 3],
-         nb_conv_layers=[1, 2],
-      ),
     TODO provide example param_grids for each deep learner
     '''
 
@@ -117,7 +110,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
         self.tuned_params = self.grid.best_params_
 
         # copying data-wrangling info up
-        self.label_encoder = self.grid.best_estimator_.label_encoder  #
+        self.label_encoder = self.grid.best_estimator_.label_encoder
         self.classes_ = self.grid.best_estimator_.classes_
         self.nb_classes = self.grid.best_estimator_.nb_classes
 

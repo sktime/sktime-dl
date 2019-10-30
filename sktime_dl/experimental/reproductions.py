@@ -27,10 +27,8 @@ from sktime_dl.classifiers.deeplearning import TWIESNClassifier
 from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
 from sktime_dl.meta import EnsembleFromFileClassifier
 from sktime_dl.meta import DeepLearnerEnsembleClassifier
-from sktime_dl.meta import TunedDeepLearningClassifier
 
 import sktime.contrib.experiments as exp
-
 
 ucr112dsets = [
     "ACSF1",
@@ -147,6 +145,7 @@ ucr112dsets = [
     "Yoga",
 ]
 
+
 def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     """
     Basic way of determining the classifier to build. To differentiate settings just and another elif. So, for example, if
@@ -213,8 +212,12 @@ def allComparisonExperiments():
         "dl4tsc_tlenet",
         "dl4tsc_twiesn",
         "dl4tsc_tunedcnn",
-        "inception_single",
-        "inception_time"
+        "inception0",
+        "inception1",
+        "inception2",
+        "inception3",
+        "inception4",
+        "inceptiontime",
     ]
 
     classifiers = [
@@ -245,7 +248,6 @@ def allComparisonExperiments():
 
 
 def ensembleInception(data_dir, res_dir, classifier_name, fold):
-
     missingdsets = []
 
     for dset in ucr112dsets:
@@ -258,13 +260,14 @@ def ensembleInception(data_dir, res_dir, classifier_name, fold):
 
     print("\n\n\n", missingdsets)
 
+
 if __name__ == "__main__":
     # allComparisonExperiments()
 
     classifier = sys.argv[3]
     if classifier == "inception":  # seeding inception ensemble exps for bakeoff redux
-       classifier = classifier + sys.argv[7]
+        classifier = classifier + sys.argv[7]
 
     dlExperiment(sys.argv[1], sys.argv[2], classifier, sys.argv[4], int(sys.argv[5]))
 
-    #ensembleInception("Z:/ArchiveData/Univariate_ts/", "C:/JamesLPHD/sktimeStuff/InceptionRedo/", "inceptiontime", 0)
+    # ensembleInception("Z:/ArchiveData/Univariate_ts/", "C:/JamesLPHD/sktimeStuff/InceptionRedo/", "inceptiontime", 0)
