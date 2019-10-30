@@ -41,9 +41,6 @@ Lastly, if you have a tensorflow version less than 1.15, `tensorflow-gpu needs t
 ::
 	pip install tensorflow-gpu==1.14
 	
-This package uses the base sktime as a dependency. You can follow the `original instructions <https://alan-turing-institute.github.io/sktime/installation.html>`__ to install this separately or as the development version if wanted. The sktime-dl package currently has API calls up to date with **sktime version 0.3.1**. Updates to sktime may precede sktime-dl updates by some lag time.
-	
-
 Overview
 --------
 
@@ -78,7 +75,7 @@ These act as wrappers to networks, and can be used in high-level and experimenta
 Documentation
 -------------
 
-sktime-dl is an extension package to sktime, primarily introducing different learning algorithms. All `examples <https://github.com/alan-turing-institute/sktime/tree/master/examples>`__ and `documentation <https://alan-turing-institute.github.io/sktime/>`__ from the base sktime apply to this package. 
+sktime-dl is an extension package to sktime, primarily introducing different learning algorithms. All `examples <https://github.com/alan-turing-institute/sktime/tree/master/examples>`__ and `documentation <https://alan-turing-institute.github.io/sktime/>`__ on higher level funtionality and usage from the base sktime apply to this package. 
 
 Documentation specifically for sktime-dl shall be produced in due course.
 
