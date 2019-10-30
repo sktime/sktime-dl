@@ -35,9 +35,9 @@ sktime-dl is under development. To guarantee that you're using the most up to da
 	
 When installing sktime-dl, `Tensorflow <https://www.tensorflow.org/install/>`__ 1.x will be installed as the backend for Keras. Tensorflow 2.x is currently unsupported. Other backends should be usable in principle but are untested.
 	
-With these instructions, the networks can be run on your CPU. If you wish to run the networks on an NVIDIA® GPU, extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library) need to be installed separately to sktime-dl. See `this page <https://www.tensorflow.org/install/gpu>`__ for more information.
+With these instructions, the networks can be run on your CPU. If you wish to run the networks on an NVIDIA® GPU, extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library) need to be installed separately to sktime-dl. See `this page <https://www.tensorflow.org/install/gpu#software_requirements>`__ for more information.
 
-Lastly, if you have a tensorflow version less than 1.15, `tensorflow-gpu needs to be installed <https://www.tensorflow.org/install/gpu>`__ in addition to (or in place of) the tensorflow (no suffix) that will be installed automatically, e.g.:
+Lastly, if you have a tensorflow version less than 1.15, `tensorflow-gpu needs to be installed <https://www.tensorflow.org/install/gpu#older_versions_of_tensorflow>`__ in addition to (or in place of) the tensorflow (no suffix) that will be installed automatically, e.g.:
 ::
 	pip install tensorflow-gpu==1.14
 	
