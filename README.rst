@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.com/uea-machine-learning/sktime-dl.svg?branch=master
-    :target: https://travis-ci.com/uea-machine-learning/sktime-dl
+.. image:: https://travis-ci.com/sktime/sktime-dl.svg?branch=master
+    :target: https://travis-ci.com/sktime/sktime-dl
 .. image:: https://badge.fury.io/py/sktime-dl.svg
     :target: https://badge.fury.io/py/sktime-dl
 .. image:: https://badges.gitter.im/sktime/community.svg
@@ -15,28 +15,35 @@ sktime-dl is under development and we welcome new contributors.
 Installation
 ------------
 
+sktime-dl requires `keras-contrib <https://github.com/keras-team/keras-contrib>`__, which is not available on pypi. 
+
 The simplest installation method is:
 ::
 
-	pip install git+https://www.github.com/keras-team/keras-contrib.git
 	pip install sktime-dl
-	
-sktime-dl is under development. To use the most up to date code, you can install the development version: 
-::
-
 	pip install git+https://www.github.com/keras-team/keras-contrib.git
 	
+sktime-dl is under development. To guarantee that you're using the most up to date code, you can install the development version: 
+::
 	git clone https://github.com/uea-machine-learning/sktime-dl.git
 	cd sktime-dl
 	git checkout dev
 	git pull origin dev
 	pip install . 
 	
-With these instructions, the networks can be run on your CPU. If you want to run the networks on an NVIDIA® GPU, extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library) need to be installed separately to sktime-dl. See `this <https://www.tensorflow.org/install/gpu>`__ page for more information. For windows users looking to setup Keras for GPU uasge for the first time, we can also recommend following `this <https://github.com/antoniosehk/keras-tensorflow-windows-installation>`__ (unaffiliated) guide.
+	pip install git+https://www.github.com/keras-team/keras-contrib.git
 	
-This package uses the base sktime as a dependency. You can follow the `original instructions <https://alan-turing-institute.github.io/sktime/installation.html>`__ to install this separately or as as the development version if wanted. The sktime-dl package currently has API calls up to date with **sktime version 0.3.0**. Updates to sktime may precede sktime-dl updates by some lag time.
+When installing sktime-dl, `Tensorflow <https://www.tensorflow.org/install/>`__ 1.x will be installed as the backend for Keras. Tensorflow 2.x is currently unsupported. Other backends should be usable in principle but are untested.
+	
+With these instructions, the networks can be run on your CPU. If you wish to run the networks on an NVIDIA® GPU, extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library) need to be installed separately to sktime-dl. See `this page<https://www.tensorflow.org/install/gpu>`__ for more information.
 
-sktime-dl requires `keras-contrib <https://github.com/keras-team/keras-contrib>`__. When installing sktime-dl, `Tensorflow <https://www.tensorflow.org/install/>`__ will be installed as the backend. Other backends should be usable but are untested. 
+Lastly, if you have a tensorflow version less than 1.15, `tensorflow-gpu needs to be installed<https://www.tensorflow.org/install/gpu>`__ in addition to (or in place of) the tensorflow (no suffix) that will be installed automatically, e.g.:
+::
+	pip install tensorflow-gpu==1.14
+
+For windows users looking to setup Keras for GPU usage in general for the first time, we can also recommend following `this (unaffiliated) guide<https://github.com/antoniosehk/keras-tensorflow-windows-installation>`__.
+	
+This package uses the base sktime as a dependency. You can follow the `original instructions <https://alan-turing-institute.github.io/sktime/installation.html>`__ to install this separately or as the development version if wanted. The sktime-dl package currently has API calls up to date with **sktime version 0.3.1**. Updates to sktime may precede sktime-dl updates by some lag time.
 	
 
 Overview
@@ -45,9 +52,9 @@ Overview
 A repository for off-the-shelf networks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The aim is to define Keras networks able to be directly used within sktime and its pipelining and strategy tools, and by extension scikit-learn, for use in applications and research. Over time, we wish to interface or reimplement a wide range of networks from the literature in the context of time series analysis.
+The aim is to define Keras networks able to be directly used within sktime and its pipelining and strategy tools, and by extension scikit-learn, for use in applications and research. Over time, we wish to interface or implement a wide range of networks from the literature in the context of time series analysis.
 
-Currently, we interface with a number of networks for time series classification in particular. A large part of the current toolset serves as an interface to `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__, and implements the following network archtiectures: 
+Currently, we interface with a number of networks for time series classification in particular. A large part of the current toolset serves as an interface to `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__, and implements the following network architectures: 
 
 - Time convolutional neural network (CNN)
 - Encoder (Encoder)
@@ -66,7 +73,9 @@ We also interface with InceptionTime, as of writing the strongest deep learning 
 Meta-functionality
 ~~~~~~~~~~~~~~~~~~
 
-Hyper-parameter tuning (through calls to sci-kit learns Grid and RandomizedSearch tools, currently) and ensembling methods (over different random initialisations for stability) are also available. These act as wrappers to networks, and can be used in high-level and experimental pipelines as with any sktime model. 
+-	Hyper-parameter tuning (through calls to sci-kit learns Grid and RandomizedSearch tools, currently) 
+-	Ensembling methods (over different random initialisations for stability) 
+These act as wrappers to networks, and can be used in high-level and experimental pipelines as with any sktime model. 
 
 Documentation
 -------------
