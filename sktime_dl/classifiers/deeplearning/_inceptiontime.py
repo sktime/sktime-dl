@@ -53,6 +53,7 @@ class InceptionTimeClassifier(BaseDeepClassifier):
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
+        self.is_fitted_ = False
 
         # predefined
         self.nb_filters = nb_filters
@@ -187,5 +188,6 @@ class InceptionTimeClassifier(BaseDeepClassifier):
                                       verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
+        self.is_fitted_ = True
 
         return self

@@ -55,6 +55,7 @@ class CNNClassifier(BaseDeepClassifier):
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
+        self.is_fitted_ = False
 
         self.callbacks = []
         self.random_seed = random_seed
@@ -145,5 +146,6 @@ class CNNClassifier(BaseDeepClassifier):
                                       verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
+        self.is_fitted_ = True
 
         return self

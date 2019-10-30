@@ -55,6 +55,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
 
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
+        self.is_fitted_ = False
 
         self.base_model = base_model
 
@@ -118,6 +119,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
             self.print_search_summary()
 
         self.save_trained_model()
+        self.is_fitted_ = True
 
         return self
 

@@ -12,6 +12,13 @@ if len(sys.argv) > 1:
 
         set_random_seed(rngseed)
 
+import tensorflow as tf
+
+if tf.__version_ == '1.14':
+    # removing many future warnings for tf 1.14, warning about changes for 2.0
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+    print('Tensorflow warning turned off')
+
 import gc
 import keras
 
@@ -26,7 +33,6 @@ from sktime_dl.classifiers.deeplearning import TLENETClassifier
 from sktime_dl.classifiers.deeplearning import TWIESNClassifier
 from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
 from sktime_dl.meta import EnsembleFromFileClassifier
-from sktime_dl.meta import DeepLearnerEnsembleClassifier
 
 import sktime.contrib.experiments as exp
 

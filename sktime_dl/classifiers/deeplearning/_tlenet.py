@@ -43,6 +43,7 @@ class TLENETClassifier(BaseDeepClassifier):
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
+        self.is_fitted_ = False
 
         self.warping_ratios = [0.5, 1, 2]
         self.slice_ratio = 0.1
@@ -239,6 +240,7 @@ class TLENETClassifier(BaseDeepClassifier):
                                    verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
+        self.is_fitted_ = True
 
         return self
 

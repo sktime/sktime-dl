@@ -12,7 +12,7 @@ from sklearn.utils.multiclass import class_distribution
 from sklearn.base import clone
 
 from sktime.classifiers.base import BaseClassifier
-from sktime.utils.validation.supervised import validate_X, validate_X_y
+from sktime.utils.validation.supervised import validate_X
 
 from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
 
@@ -65,6 +65,10 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
             self.model_name = model_name
 
         self.model_save_directory = model_save_directory
+        self.is_fitted_ = False
+
+        if base_model.is_fitted_:
+            raise ValueError("base_model to ensemble over cannot have already been fit(...) to data")
 
         self.base_model = base_model
         self.nb_iterations = nb_iterations
@@ -104,6 +108,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         -------
         self : object
         """
+
         self.skdl_models = []
         self.keras_models = []
 
@@ -128,6 +133,8 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
                 del skdl_model
                 gc.collect()
                 keras.backend.clear_session()
+
+        self.is_fitted_ = True
 
     def predict_proba(self, X, input_checks=True, **kwargs):
         """

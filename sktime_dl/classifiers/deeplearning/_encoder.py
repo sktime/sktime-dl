@@ -46,6 +46,7 @@ class EncoderClassifier(BaseDeepClassifier):
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
+        self.is_fitted_ = False
 
         # calced in fit
         self.classes_ = None
@@ -143,5 +144,6 @@ class EncoderClassifier(BaseDeepClassifier):
                                       verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
+        self.is_fitted_ = True
 
         return self

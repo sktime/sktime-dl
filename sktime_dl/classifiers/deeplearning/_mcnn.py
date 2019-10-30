@@ -61,6 +61,7 @@ class MCNNClassifier(BaseDeepClassifier):
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
+        self.is_fitted_ = False
 
         self.pool_factors = pool_factors  # used for hyperparameters grid search
         self.filter_sizes = filter_sizes  # used for hyperparameters grid search
@@ -485,6 +486,7 @@ class MCNNClassifier(BaseDeepClassifier):
         _, self.model = self.train(X, y, pool_factor, filter_size)
 
         self.save_trained_model()
+        self.is_fitted_ = True
 
         return self
 
