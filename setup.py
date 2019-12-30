@@ -8,6 +8,7 @@ import os
 import re
 import sys
 import platform
+from packaging import version
 
 try:
     import numpy as np
@@ -42,6 +43,30 @@ def find_version(*file_paths):
         raise RuntimeError("Unable to find version string.")
 
 
+def find_install_requires():
+	'''Return a list of dependencies. 
+	
+	tensorflow>=1.8.0 and/or tensorflow-gpu 1.8.0 is required. If not 
+	found, then tensorflow>=1.8.0 is added to the install_requires list.
+	'''
+	install_tf = True
+	tf_version_required = '1.8.0'
+	try:
+		import tensorflow as tf
+		install_tf = version.parse(tf.__version__) < version.parse(tf_version_required)
+	except:
+		pass
+	install_requires = [
+		# 'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master', # doesn't work with pypi
+		# 'keras_contrib', # use once keras_contrib is available on pypi
+		'sktime>=0.3.0',
+		'keras>=2.2.4'
+	]
+	if install_tf:
+		install_requires.append('tensorflow>='+tf_version_required)
+	return install_requires
+
+
 DISTNAME = 'sktime-dl'  # package name is sktime-dl, to have a valid module path, module name is sktime_dl
 DESCRIPTION = 'Deep learning extension package for sktime, a scikit-learn compatible toolbox for ' \
               'learning with time series data'
@@ -58,13 +83,9 @@ PROJECT_URLS = {
     'Source Code': 'https://github.com/uea-machine-learning/sktime-dl'
 }
 VERSION = find_version('sktime_dl', '__init__.py')
-INSTALL_REQUIRES = [
-    # 'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master', # doesn't work with pypi
-    # 'keras_contrib', # use once keras_contrib is available on pypi
-    'sktime>=0.3.0',
-    'keras>=2.2.4',
-    'tensorflow>=1.8.0'  # and/or tensorflow-gpu 1.8.0
-]
+INSTALL_REQUIRES = find_install_requires()
+
+
 CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Intended Audience :: Developers',
                'License :: OSI Approved',
