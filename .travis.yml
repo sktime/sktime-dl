@@ -3,7 +3,6 @@ branches:
     only:
         - master
         - dev
-        - tensorflow_install
 
 dist: trusty
 sudo: false
