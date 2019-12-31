@@ -65,10 +65,10 @@ def find_install_requires():
     has_tf = False
 
     if working_set.find(Requirement.parse('tensorflow')) is not None:
-            has_tf = True
+        has_tf = True
 
     if working_set.find(Requirement.parse('tensorflow-gpu')) is not None:
-            has_tf_gpu = True
+        has_tf_gpu = True
 
     if has_tf_gpu:
         # Specify tensorflow-gpu version if it is already installed.
