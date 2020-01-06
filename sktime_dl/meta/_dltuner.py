@@ -29,7 +29,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
                  cv_folds=5,
                  random_seed=0,
                  verbose=False,
-                 model_name='tuned_cnn',
+                 model_name=None,
                  model_save_directory=None):
         '''
         :param base_model: an implementation of BaseDeepLearner, the model to tune
@@ -94,11 +94,13 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
         if self.search_method is 'grid':
             self.grid = GridSearchCV(estimator=self.base_model,
                                      param_grid=self.param_grid,
+                                     refit=True,
                                      cv=self.cv_folds,
                                      n_jobs=self.n_jobs)
         elif self.search_method is 'random':
             self.grid = RandomizedSearchCV(estimator=self.base_model,
-                                           param_grid=self.param_grid,
+                                           param_distributions=self.param_grid,
+                                           refit=True,
                                            cv=self.cv_folds,
                                            n_jobs=self.n_jobs,
                                            random_state=self.random_seed)
@@ -106,7 +108,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
             # todo expand, give options etc
             raise Exception('Unrecognised search method provided: {}'.format(self.search_method))
 
-        self.grid_history = self.grid.fit(X, y, refit=True)
+        self.grid_history = self.grid.fit(X, y)
         self.model = self.grid.best_estimator_.model
         self.tuned_params = self.grid.best_params_
 
