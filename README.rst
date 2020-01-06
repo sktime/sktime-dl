@@ -81,6 +81,6 @@ Documentation specifically for sktime-dl shall be produced in due course.
 
 Contributors
 ------------
-Former and current active contributors are as follows. 
+Former and current active contributors are as follows:
 
-James Large (@James-Large, `@jammylarge <https://twitter.com/jammylarge>`__, james.large@uea.ac.uk), Aaron Bostrom (@ABostrom), Hassan Ismail Fawaz (@hfawaz), Markus Löning (@mloning)
+James Large (@James-Large, `@jammylarge <https://twitter.com/jammylarge>`__, james.large@uea.ac.uk), Aaron Bostrom (@ABostrom), Hassan Ismail Fawaz (@hfawaz), Markus Löning (@mloning), @Withington
