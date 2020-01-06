@@ -8,6 +8,8 @@ import os
 import re
 import sys
 import platform
+from pkg_resources import Requirement
+from pkg_resources import working_set
 
 try:
     import numpy as np
@@ -42,6 +44,43 @@ def find_version(*file_paths):
         raise RuntimeError("Unable to find version string.")
 
 
+def find_install_requires():
+    '''Return a list of dependencies.
+
+    A supported version of tensorflow and/or tensorflow-gpu is required. If not 
+    found, then tensorflow is added to the install_requires list.
+    '''
+    # tensorflow version requirements
+    version_start = '1.8.0'
+    version_end = '2'
+
+    install_requires = [
+        # 'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master', # doesn't work with pypi
+        # 'keras_contrib', # use once keras_contrib is available on pypi
+        'sktime>=0.3.0',
+        'keras>=2.2.4'
+    ]
+    
+    has_tf_gpu = False
+    has_tf = False
+
+    if working_set.find(Requirement.parse('tensorflow')) is not None:
+        has_tf = True
+
+    if working_set.find(Requirement.parse('tensorflow-gpu')) is not None:
+        has_tf_gpu = True
+
+    if has_tf_gpu:
+        # Specify tensorflow-gpu version if it is already installed.
+        install_requires.append('tensorflow-gpu>='+version_start+',<'+version_end)
+    if has_tf or not has_tf_gpu:
+        # If tensorflow-gpu is not installed, then install tensorflow because
+        # it includes GPU support from 1.15 onwards.
+        install_requires.append('tensorflow>='+version_start+',<'+version_end)
+
+    return install_requires
+
+
 DISTNAME = 'sktime-dl'  # package name is sktime-dl, to have a valid module path, module name is sktime_dl
 DESCRIPTION = 'Deep learning extension package for sktime, a scikit-learn compatible toolbox for ' \
               'learning with time series data'
@@ -58,13 +97,7 @@ PROJECT_URLS = {
     'Source Code': 'https://github.com/uea-machine-learning/sktime-dl'
 }
 VERSION = find_version('sktime_dl', '__init__.py')
-INSTALL_REQUIRES = [
-    # 'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master', # doesn't work with pypi
-    # 'keras_contrib', # use once keras_contrib is available on pypi
-    'sktime>=0.3.0',
-    'keras>=2.2.4',
-    'tensorflow>=1.8.0'  # and/or tensorflow-gpu 1.8.0
-]
+INSTALL_REQUIRES = find_install_requires()
 CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Intended Audience :: Developers',
                'License :: OSI Approved',
