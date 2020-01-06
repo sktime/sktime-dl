@@ -12,7 +12,7 @@ An extension package for deep learning with Keras for `sktime <https://github.co
 
 sktime-dl is under development and we welcome new contributors.
 
-Installation 
+Installation
 ------------
 
 sktime-dl requires `keras-contrib <https://github.com/keras-team/keras-contrib>`__, which is not available on pypi. 
