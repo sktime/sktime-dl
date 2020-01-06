@@ -3,6 +3,7 @@ branches:
     only:
         - master
         - dev
+        - fix_test
 
 dist: trusty
 sudo: false
