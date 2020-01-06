@@ -1,33 +1,52 @@
-# Encoder, adapted from the implementation from Fawaz et. al
-# https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/encoder.py
-#
-# Network originally proposed by:
-#
-# @article{serra2018towards,
-#   title={Towards a universal neural network encoder for time series},
-#   author={Serr{\`a}, J and Pascual, S and Karatzoglou, A},
-#   journal={Artif Intell Res Dev Curr Chall New Trends Appl},
-#   volume={308},
-#   pages={120},
-#   year={2018}
-# }
-
 __author__ = "James Large"
 
 import keras
 import keras_contrib
 import numpy as np
-import pandas as pd
 
 from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
 class EncoderClassifier(BaseDeepClassifier):
+    """Encoder
+
+    Adapted from the implementation from Fawaz et. al
+
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/encoder.py
+
+    Network originally defined in:
+
+    @article{serra2018towards,
+       title={Towards a universal neural network encoder for time series},
+       author={Serr{\`a}, J and Pascual, S and Karatzoglou, A},
+       journal={Artif Intell Res Dev Curr Chall New Trends Appl},
+       volume={308},
+       pages={120},
+       year={2018}
+    }
+    """
 
     def __init__(self,
+                 nb_epochs=100,
+                 batch_size=12,
+
                  random_seed=0,
-                 verbose=False):
+                 verbose=False,
+                 model_name="encoder",
+                 model_save_directory=None):
+        '''
+        :param nb_epochs: int, the number of epochs to train the model
+        :param batch_size: int, specifying the length of the 1D convolution window
+        :param random_seed: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and file writing purposes
+        :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
+        '''
+
         self.verbose = verbose
+        self.model_name = model_name
+        self.model_save_directory = model_save_directory
+        self.is_fitted_ = False
 
         # calced in fit
         self.classes_ = None
@@ -37,14 +56,25 @@ class EncoderClassifier(BaseDeepClassifier):
         self.history = None
 
         # predefined
-        self.nb_epochs = 100
-        self.batch_size = 12
+        self.nb_epochs = nb_epochs
+        self.batch_size = batch_size
         self.callbacks = None
 
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
 
     def build_model(self, input_shape, nb_classes, **kwargs):
+        """
+        Construct a compiled, un-trained, keras model that is ready for training
+        ----------
+        input_shape : tuple
+            The shape of the data fed into the input layer
+        nb_classes: int
+            The number of classes, which shall become the size of the output layer
+        Returns
+        -------
+        output : a compiled Keras Model
+        """
         input_layer = keras.layers.Input(input_shape)
 
         # conv block -1
@@ -82,26 +112,25 @@ class EncoderClassifier(BaseDeepClassifier):
         model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(0.00001),
                       metrics=['accuracy'])
 
-        # file_path = self.output_directory + 'best_model.hdf5'
-        # model_checkpoint = keras.callbacks.ModelCheckpoint(filepath=file_path,
-        #                                                   monitor='loss', save_best_only=True)
-        # self.callbacks = [model_checkpoint]
         self.callbacks = []
 
         return model
 
-    def fit(self, X, y, **kwargs):
-
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
+    def fit(self, X, y, input_checks=True, **kwargs):
+        """
+        Build the classifier on the training set (X, y)
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+        y : array-like, shape = [n_instances]
+            The class labels.
+        input_checks: boolean
+            whether to check the X and y parameters
+        Returns
+        -------
+        self : object
+        """
+        X = self.check_and_clean_data(X, y, input_checks=input_checks)
 
         y_onehot = self.convert_y(y)
         self.input_shape = X.shape[1:]
@@ -113,3 +142,8 @@ class EncoderClassifier(BaseDeepClassifier):
 
         self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
                                       verbose=self.verbose, callbacks=self.callbacks)
+
+        self.save_trained_model()
+        self.is_fitted_ = True
+
+        return self

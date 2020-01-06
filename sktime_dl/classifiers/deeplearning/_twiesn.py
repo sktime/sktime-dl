@@ -1,21 +1,6 @@
-# Time warping invariant echo state network, adapted from the implementation from Fawaz et. al
-# https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/twiesn.py
-#
-# Network originally proposed by:
-#
-# @inproceedings{tanisaro2016time,
-#   title={Time series classification using time warping invariant echo state networks},
-#   author={Tanisaro, Pattreeya and Heidemann, Gunther},
-#   booktitle={2016 15th IEEE International Conference on Machine Learning and Applications (ICMLA)},
-#   pages={831--836},
-#   year={2016},
-#   organization={IEEE}
-# }
-
 __author__ = "Aaron Bostrom, James Large"
 
 import numpy as np
-import pandas as pd
 
 from scipy import sparse
 from scipy.sparse import linalg as slinalg
@@ -26,14 +11,46 @@ from sklearn.metrics import accuracy_score
 
 from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
-
-# class Classifier_TWIESN:
 class TWIESNClassifier(BaseDeepClassifier):
+    """Time Warping Invariant Echo State Network (TWIESN).
+
+    Adapted from the implementation from Fawaz et. al
+
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/twiesn.py
+
+    Network originally defined in:
+
+    @inproceedings{tanisaro2016time,
+      title={Time series classification using time warping invariant echo state networks},
+      author={Tanisaro, Pattreeya and Heidemann, Gunther},
+      booktitle={2016 15th IEEE International Conference on Machine Learning and Applications (ICMLA)},
+      pages={831--836},
+      year={2016},
+      organization={IEEE}
+    }
+    """
+
     def __init__(self,
+                 rho_s=[0.55, 0.9, 2.0, 5.0],
+                 alpha=0.1,  # leaky rate
+
                  random_seed=0,
-                 verbose=False):
+                 verbose=False,
+                 model_name="twiesn",
+                 model_save_directory=None):
+        '''
+        :param rho_s: array of shape
+        :param alpha: float, the leakage rate
+        :param random_seed: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and file writing purposes
+        :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
+        '''
 
         self.verbose = verbose
+        self.model_name = model_name
+        self.model_save_directory = model_save_directory
+        self.is_fitted_ = False
 
         # calced in fit
         self.classes_ = None
@@ -51,14 +68,8 @@ class TWIESNClassifier(BaseDeepClassifier):
         third_config = {'N_x': 500, 'connect': 0.1, 'scaleW_in': 2.0, 'lamda': 0.05}
         fourth_config = {'N_x': 800, 'connect': 0.1, 'scaleW_in': 2.0, 'lamda': 0.05}
         self.configs = [first_config, second_config, third_config, fourth_config]
-        self.rho_s = [0.55, 0.9, 2.0, 5.0]
-        self.alpha = 0.1  # leaky rate
-
-    def build_model(self, input_shape, nb_classes, **kwargs):
-        self.init_matrices()
-
-        # construct the riger classifier model
-        self.ridge_classifier = Ridge(alpha=self.lamda)
+        self.rho_s = rho_s
+        self.alpha = alpha  # leakage rate
 
     def evaluate_paramset(self, X, y, val_X, val_y, rho, config):
 
@@ -92,19 +103,21 @@ class TWIESNClassifier(BaseDeepClassifier):
         # argmax the val_y because it is in onehot encoding.
         return accuracy_score(np.argmax(val_y, axis=1), y_pred_val)
 
-    def fit(self, X, y, **kwargs):
-
-        # check and convert input to a univariate Numpy array
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
+    def fit(self, X, y, input_checks=True, **kwargs):
+        """
+        Build the classifier on the training set (X, y)
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+        y : array-like, shape = [n_instances]
+            The class labels.
+        input_checks: boolean
+            whether to check the X and y parameters
+        Returns
+        -------
+        self : object
+        """
+        X = self.check_and_clean_data(X, y, input_checks=input_checks)
 
         onehot_y = self.convert_y(y)
 
@@ -160,18 +173,29 @@ class TWIESNClassifier(BaseDeepClassifier):
         self.model = Ridge(alpha=self.lamda)
         self.model.fit(x_transformed, new_labels)
 
-    def predict_proba(self, X, input_checks=True, **kwargs):
-        # check input is univariate etc.
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
+        self.save_trained_model()
+        self.is_fitted_ = True
 
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
+        return self
+
+    def predict_proba(self, X, input_checks=True, **kwargs):
+        """
+        Find probability estimates for each class for all cases in X.
+        Parameters
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.
+            If a Pandas data frame is passed (sktime format)
+            If a Pandas data frame is passed, a check is performed that it only has one column.
+            If not, an exception is thrown, since this classifier does not yet have
+            multivariate capability.
+        input_checks: boolean
+            whether to check the X parameter
+        Returns
+        -------
+        output : array of shape = [n_instances, n_classes] of probabilities
+        """
+        X = self.check_and_clean_data(X, input_checks=input_checks)
 
         # transform and predict prodba on the ridge classifier.
         new_x_test = self.transform_to_feature_space(X)

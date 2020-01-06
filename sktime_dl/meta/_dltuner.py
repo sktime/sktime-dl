@@ -1,59 +1,69 @@
-# Time convolutional neural network, adapted from the implementation from Fawaz et. al
-# https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/cnn.py
-#
-# Default parameters (without tuning) corresponds to the exact setup defined in cnn, i.e. the parameters in
-# Fawaz et. al
-#
-# Network originally proposed by:
-#
-# @article{zhao2017convolutional,
-#   title={Convolutional neural networks for time series classification},
-#   author={Zhao, Bendong and Lu, Huanzhang and Chen, Shangfeng and Liu, Junliang and Wu, Dongya},
-#   journal={Journal of Systems Engineering and Electronics},
-#   volume={28},
-#   number={1},
-#   pages={162--169},
-#   year={2017},
-#   publisher={BIAI}
-# }
-
 __author__ = "James Large"
 
 import numpy as np
 
 from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
+from sktime_dl.classifiers.deeplearning import CNNClassifier
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
-from sktime_dl.classifiers.deeplearning._cnn import CNNClassifier
 
 
-class TunedCNNClassifier(BaseDeepClassifier):
+class TunedDeepLearningClassifier(BaseDeepClassifier):
+    '''
+    A basic tuning framework for the deep learning classifiers
+    Defaults to a grid search with 5-fold crossvalidation over the param_grid given for the
+    specified base_model
+
+    TODO provide example param_grids for each deep learner
+    '''
 
     def __init__(self,
-                 random_seed=0,
-                 verbose=False,
-                 n_jobs=1,
+                 base_model=CNNClassifier(),
                  param_grid=dict(
                      kernel_size=[3, 7],
                      avg_pool_size=[2, 3],
                      nb_conv_layers=[1, 2],
                  ),
                  search_method='grid',
-                 cv_folds=5):
+                 cv_folds=5,
+                 random_seed=0,
+                 verbose=False,
+                 model_name='tuned_cnn',
+                 model_save_directory=None):
+        '''
+        :param base_model: an implementation of BaseDeepLearner, the model to tune
+        :param param_grid: dict, parameter names corresponding to parameters of the base_model, mapped to values to
+                            search over
+        :param search_method: string out of ['grid', 'random], how to search over the param_grid
+        :param cv_folds: int, number of cross validation folds to use in evaluation of each parameter set
+        :param random_seed: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and file writing purposes. if None, will default
+                to 'tuned_' + base_model.model_name
+        :param model_save_directory: string, if not None; location to save the tuned, trained keras model in hdf5 format
+        '''
+
         self.verbose = verbose
+
+        if model_name is None:
+            self.model_name = "tuned_" + base_model.model_name
+        else:
+            self.model_name = model_name
+
+        self.model_save_directory = model_save_directory
+
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
+        self.is_fitted_ = False
 
-        self.base_model = CNNClassifier()
-        # todo make decisions on wrapping each network
-        #  separately or generalise the parameters across networks, etc.
+        self.base_model = base_model
 
         # search parameters
         self.param_grid = param_grid
         self.cv_folds = cv_folds
         self.search_method = search_method
-        self.n_jobs = n_jobs
+        self.n_jobs = 1  # assuming networks themselves are threaded/on gpu, not providing this option for now
 
         # search results (computed in fit)
         self.grid_history = None
@@ -68,6 +78,19 @@ class TunedCNNClassifier(BaseDeepClassifier):
             return self.base_model.build_model(input_shape, nb_classes, self.tuned_params)
 
     def fit(self, X, y, **kwargs):
+        """
+        Searches the best parameters for and fits classifier on the training set (X, y)
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+        y : array-like, shape = [n_instances]
+            The class labels.
+        input_checks: boolean
+            whether to check the X and y parameters
+        Returns
+        -------
+        self : object
+        """
         if self.search_method is 'grid':
             self.grid = GridSearchCV(estimator=self.base_model,
                                      param_grid=self.param_grid,
@@ -77,7 +100,8 @@ class TunedCNNClassifier(BaseDeepClassifier):
             self.grid = RandomizedSearchCV(estimator=self.base_model,
                                            param_grid=self.param_grid,
                                            cv=self.cv_folds,
-                                           n_jobs=self.n_jobs)
+                                           n_jobs=self.n_jobs,
+                                           random_state=self.random_seed)
         else:
             # todo expand, give options etc
             raise Exception('Unrecognised search method provided: {}'.format(self.search_method))
@@ -87,12 +111,15 @@ class TunedCNNClassifier(BaseDeepClassifier):
         self.tuned_params = self.grid.best_params_
 
         # copying data-wrangling info up
-        self.label_encoder = self.grid.best_estimator_.label_encoder  #
+        self.label_encoder = self.grid.best_estimator_.label_encoder
         self.classes_ = self.grid.best_estimator_.classes_
         self.nb_classes = self.grid.best_estimator_.nb_classes
 
         if self.verbose:
             self.print_search_summary()
+
+        self.save_trained_model()
+        self.is_fitted_ = True
 
         return self
 

@@ -22,6 +22,7 @@ import numpy as np
 import pandas as pd
 
 from sktime.classifiers.base import BaseClassifier
+from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
@@ -30,25 +31,42 @@ from sklearn.preprocessing import OneHotEncoder
 class BaseDeepClassifier(BaseClassifier):
     classes_ = None
     nb_classes = None
+    model_save_directory = None
+    model = None
+    model_name = None
 
     def build_model(self, input_shape, nb_classes, **kwargs):
+        """
+        Construct a compiled, un-trained, keras model that is ready for training
+        ----------
+        input_shape : tuple
+            The shape of the data fed into the input layer
+        nb_classes: int
+            The number of classes, which shall become the size of the output layer
+        Returns
+        -------
+        output : a compiled Keras Model
+        """
         raise NotImplementedError('this is an abstract method')
 
-    def fit(self, X, y, input_checks=True, **kwargs):
-        raise NotImplementedError()
-
     def predict_proba(self, X, input_checks=True, **kwargs):
-
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
+        """
+        Find probability estimates for each class for all cases in X.
+        Parameters
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.
+            If a Pandas data frame is passed (sktime format)
+            If a Pandas data frame is passed, a check is performed that it only has one column.
+            If not, an exception is thrown, since this classifier does not yet have
+            multivariate capability.
+        input_checks: boolean
+            whether to check the X parameter
+        Returns
+        -------
+        output : array of shape = [n_instances, n_classes] of probabilities
+        """
+        X = self.check_and_clean_data(X, input_checks=input_checks)
 
         probs = self.model.predict(X, **kwargs)
 
@@ -56,7 +74,35 @@ class BaseDeepClassifier(BaseClassifier):
         if probs.shape[1] == 1:
             # first column is probability of class 0 and second is of class 1
             probs = np.hstack([1 - probs, probs])
+
         return probs
+
+    def check_and_clean_data(self, X, y=None, input_checks=True):
+        if input_checks:
+            if y is None:
+                validate_X(X)
+            else:
+                validate_X_y(X, y)
+
+        if isinstance(X, pd.DataFrame):
+            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
+                raise TypeError(
+                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (networks cannot yet handle multivariate problems")
+            else:
+                X = np.asarray([a.values for a in X.iloc[:, 0]])
+
+        if len(X.shape) == 2:
+            # add a dimension to make it multivariate with one dimension
+            X = X.reshape((X.shape[0], X.shape[1], 1))
+
+        return X
+
+    def save_trained_model(self):
+        if self.model_save_directory is not None:
+            if self.model_name is None:
+                self.model.save(self.model_save_directory + 'trained_model.hdf5')
+            else:
+                self.model.save(self.model_save_directory + self.model_name + '.hdf5')
 
     def convert_y(self, y):
         self.label_encoder = LabelEncoder()

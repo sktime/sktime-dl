@@ -1,15 +1,3 @@
-# Multi-scale convolutional neural network, adapted from the implementation from Fawaz et. al
-# https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mcnn.py
-#
-# Network originally proposed by:
-#
-# @article{cui2016multi,
-#   title={Multi-scale convolutional neural networks for time series classification},
-#   author={Cui, Zhicheng and Chen, Wenlin and Chen, Yixin},
-#   journal={arXiv preprint arXiv:1603.06995},
-#   year={2016}
-# }
-#
 # todo keras/tesnorflow memory problem when search over network parameters
 #      currently just deleting EVERY model and retraining the best parameters
 #      at the end, see **1
@@ -18,7 +6,6 @@ __author__ = "Aaron Bostrom, James Large"
 
 import keras
 import numpy as np
-import pandas as pd
 import gc
 
 from sklearn.model_selection import train_test_split
@@ -27,18 +14,62 @@ from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
 class MCNNClassifier(BaseDeepClassifier):
+    """Multi-scale Convolutional Neural Network (MCNN).
+
+    Adapted from the implementation from Fawaz et. al
+
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mcnn.py
+
+    Network originally defined in:
+
+    @article{cui2016multi,
+      title={Multi-scale convolutional neural networks for time series classification},
+      author={Cui, Zhicheng and Chen, Wenlin and Chen, Yixin},
+      journal={arXiv preprint arXiv:1603.06995},
+      year={2016}
+    }
+    """
 
     def __init__(self,
+                 pool_factors=[2, 3, 5],
+                 filter_sizes=[0.05, 0.1, 0.2],
+                 window_size=0.2,
+                 nb_train_batch=10,
+                 nb_epochs=200,
+                 max_train_batch_size=256,
+                 slice_ratio=0.9,
+
+                 random_seed=0,
                  verbose=False,
-                 random_seed=0):
+                 model_name="mcnn",
+                 model_save_directory=None):
+        '''
+        :param pool_factors: array of shape
+        :param filter_sizes: array of shape
+        :param window_size: int,
+        :param nb_train_batch: int,
+        :param nb_epochs: int, the number of epochs to train the model
+        :param max_train_batch_size: int,
+        :param slice_ratio: int,
+
+        :param random_seed: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and file writing purposes
+        :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
+        '''
+
         self.verbose = verbose
-        self.pool_factors = [2, 3, 5]  # used for hyperparameters grid search
-        self.filter_sizes = [0.05, 0.1, 0.2]  # used for hyperparameters grid search
-        self.window_size = 0.2
-        self.n_train_batch = 10
-        self.n_epochs = 200
-        self.max_train_batch_size = 256
-        self.slice_ratio = 0.9
+        self.model_name = model_name
+        self.model_save_directory = model_save_directory
+        self.is_fitted_ = False
+
+        self.pool_factors = pool_factors  # used for hyperparameters grid search
+        self.filter_sizes = filter_sizes  # used for hyperparameters grid search
+        self.window_size = window_size
+        self.n_train_batch = nb_train_batch
+        self.n_epochs = nb_epochs
+        self.max_train_batch_size = max_train_batch_size
+        self.slice_ratio = slice_ratio
 
         # *******set up the ma and ds********#
         self.ma_base = 5
@@ -386,19 +417,21 @@ class MCNNClassifier(BaseDeepClassifier):
 
         return model
 
-    def fit(self, X, y, **kwargs):
-
-        # check and convert input to a univariate Numpy array
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
+    def fit(self, X, y, input_checks=True, **kwargs):
+        """
+        Build the classifier on the training set (X, y)
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+        y : array-like, shape = [n_instances]
+            The class labels.
+        input_checks: boolean
+            whether to check the X and y parameters
+        Returns
+        -------
+        self : object
+        """
+        X = self.check_and_clean_data(X, y, input_checks=input_checks)
 
         y = self.convert_y(y)
 
@@ -452,19 +485,29 @@ class MCNNClassifier(BaseDeepClassifier):
         #  to be able to run multiple of these in a single execution
         _, self.model = self.train(X, y, pool_factor, filter_size)
 
-    def predict_proba(self, X, input_checks=True, **kwargs):
-        #### get predictions out of the model.
-        # check and convert input to a univariate Numpy array
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (CNN cannot yet handle multivariate problems")
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
+        self.save_trained_model()
+        self.is_fitted_ = True
 
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
+        return self
+
+    def predict_proba(self, X, input_checks=True, **kwargs):
+        """
+        Find probability estimates for each class for all cases in X.
+        Parameters
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.
+            If a Pandas data frame is passed (sktime format)
+            If a Pandas data frame is passed, a check is performed that it only has one column.
+            If not, an exception is thrown, since this classifier does not yet have
+            multivariate capability.
+        input_checks: boolean
+            whether to check the X parameter
+        Returns
+        -------
+        output : array of shape = [n_instances, n_classes] of probabilities
+        """
+        X = self.check_and_clean_data(X, input_checks=input_checks)
 
         ori_len = X.shape[1]  # original_length of time series
 
