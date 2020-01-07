@@ -52,7 +52,6 @@ def find_install_requires():
     '''
     # tensorflow version requirements
     version_start = '1.8.0'
-    version_end = '2'
 
     install_requires = [
         # 'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master', # doesn't work with pypi
@@ -72,11 +71,11 @@ def find_install_requires():
 
     if has_tf_gpu:
         # Specify tensorflow-gpu version if it is already installed.
-        install_requires.append('tensorflow-gpu>='+version_start+',<'+version_end)
+        install_requires.append('tensorflow-gpu>='+version_start)
     if has_tf or not has_tf_gpu:
         # If tensorflow-gpu is not installed, then install tensorflow because
         # it includes GPU support from 1.15 onwards.
-        install_requires.append('tensorflow>='+version_start+',<'+version_end)
+        install_requires.append('tensorflow>='+version_start)
 
     return install_requires
 
