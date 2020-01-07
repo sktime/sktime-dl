@@ -33,7 +33,7 @@ install:
     - conda create -n testenv --yes python=$PYTHON_VERSION pip
     - source activate testenv
     - conda install -n testenv --yes pip numpy=$NUMPY_VERSION cython nose pytest pytest-cov sphinx jupyter
-    - pip install tensorflow=$TF_VERSION
+    - pip install tensorflow==$TF_VERSION
     - pip install sphinx_rtd_theme
     - pip install nbsphinx
 
