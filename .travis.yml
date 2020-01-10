@@ -50,6 +50,8 @@ script:
     - cd for_test
     - pytest -v --cov=sktime_dl --pyargs ../sktime_dl
 
+after_success:
+    - coveralls
 
 
 

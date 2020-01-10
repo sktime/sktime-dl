@@ -1,0 +1,7 @@
+[run]
+source = sktime_dl/*
+omit = sktime_dl/*/tests/*
+
+[report]
+include = sktime_dl/*
+omit = sktime_dl/*/tests/*
