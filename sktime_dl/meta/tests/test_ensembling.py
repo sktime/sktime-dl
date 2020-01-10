@@ -35,7 +35,7 @@ def test_basic_saving(network=DeepLearnerEnsembleClassifier(
             base_model=CNNClassifier(nb_epochs=50),
             nb_iterations=2,
             keep_in_memory=False,
-            model_save_directory="testResultsDELETE/",
+            model_save_directory="testResultsDELETE",
             verbose=True)):
     '''
     just a super basic test with gunpoint,
