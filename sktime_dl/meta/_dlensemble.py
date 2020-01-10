@@ -38,10 +38,9 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
                  base_model=InceptionTimeClassifier(),
                  nb_iterations=5,
                  keep_in_memory=False,
-
                  random_seed=0,
                  verbose=False,
-                 model_name="InceptionTime",
+                 model_name=None,
                  model_save_directory=None):
         '''
         :param base_model: an implementation of BaseDeepLearner, the model to ensemble over. 
