@@ -20,6 +20,7 @@ except ModuleNotFoundError:
 
 # raise warning for Python versions not equal to 3.6
 # TODO find fix for tensorflow interacting with python 3.7, some particular factor of the environment does not work
+# keras is compatible with Python 2.7-3.6
 if sys.version_info < (3, 6) or sys.version_info >= (3, 7):
     raise RuntimeError("sktime-dl requires Python 3.6. The current"
                        " Python version is %s installed in %s."
@@ -57,7 +58,7 @@ def find_install_requires():
         # 'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master', # doesn't work with pypi
         # 'keras_contrib', # use once keras_contrib is available on pypi
         'sktime>=0.3.0',
-        'keras>=2.2.4'
+        'keras>=2.3.0'
     ]
     
     has_tf_gpu = False

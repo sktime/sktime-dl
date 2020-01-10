@@ -36,7 +36,7 @@ install:
     - pip install tensorflow==$TF_VERSION
     - pip install sphinx_rtd_theme
     - pip install nbsphinx
-    - pip install coveralls==1.10.0
+    - pip install coveralls
 
     # install keras contrib manually as currently not available on pypi
     - pip install git+https://github.com/keras-team/keras-contrib.git@master
