@@ -6,6 +6,8 @@ import os
 import keras
 import gc
 
+from pathlib import Path
+
 from keras.models import load_model
 
 from sklearn.utils.multiclass import class_distribution
@@ -172,7 +174,8 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
             if self.keep_in_memory:
                 keras_model = skdl_model.model
             else:
-                keras_model = load_model(self.model_save_directory + skdl_model + '.hdf5')
+                keras_model = load_model(
+                    Path(self.model_save_directory) / (skdl_model + '.hdf5'))
 
             # keras models' predict is same as what we/sklearn means by predict_proba, i.e. give prob distributions
             probs = probs + keras_model.predict(X, **kwargs)

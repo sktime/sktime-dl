@@ -57,8 +57,8 @@ def test_basic_saving(network=DeepLearnerEnsembleClassifier(
 
     print(network.score(X_test[:10], y_test[:10]))
 
-    Path(path / (network.base_model.model_name + "_0.hdf5")).unlink() # delete file
-    Path(path / (network.base_model.model_name + "_1.hdf5")).unlink() # delete file
+    (path / (network.base_model.model_name + "_0.hdf5")).unlink() # delete file
+    (path / (network.base_model.model_name + "_1.hdf5")).unlink() # delete file
     path.rmdir() # directory should now be empty, fails if not
 
     print("End test_basic()")
