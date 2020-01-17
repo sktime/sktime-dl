@@ -3,6 +3,7 @@ branches:
     only:
         - master
         - dev
+        - regressors
 
 dist: trusty
 sudo: false
