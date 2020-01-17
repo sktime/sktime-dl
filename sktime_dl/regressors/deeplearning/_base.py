@@ -46,7 +46,7 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
         predictions : 1d numpy array
             array of predictions of each instance
         """
-        # TODO add check_is_fitted as per BaseRegressor instructions
+        # TODO add check_is_fitted as per BaseRegressor doc
 
         X = self.check_and_clean_data(X, input_checks=input_checks)
 
@@ -56,7 +56,7 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
             y_pred.ravel()
         return y_pred
 
-    # TODO can this and save_trained model be made common with classifier base?
+    # TODO can this and save_trained_model be made common with classifier base?
     def check_and_clean_data(self, X, y=None, input_checks=True):
         if input_checks:
             if y is None:
