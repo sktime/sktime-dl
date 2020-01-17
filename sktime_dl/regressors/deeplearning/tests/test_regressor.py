@@ -43,9 +43,12 @@ def test_regressor():
     print('@@@@@@@@@@@@@@@@@@@@@@@@@ CNNRegressor y_test:', y_test[:10])
     print('@@@@@@@@@@@@@@@@@@@@@@@@@ y_pred.shape:', y_pred.shape)
     
-    print('Estimator score:', estimator.score(X_test[:10], y_test[:10]))
+    score = estimator.score(X_test[:10], y_test[:10])
+    print('Estimator score:', score)
 
-    #assert(1==0)
+    #np.testing.assert_almost_equal(score, -2.819824144071425)
+    assert(score > -3 and score < -2)
+
     print("End test_regressor()")
 
 
@@ -95,7 +98,8 @@ def test_regressor_forecasting():
 
     # Compare the prediction to the test data
     test = update.iloc[0, 0][y_pred.index]
-    print('++++++++++++++++++++++++++++++++CNNRegressor error:', np.sqrt(mean_squared_error(test, y_pred)))
+    mse = np.sqrt(mean_squared_error(test, y_pred))
+    print('++++++++++++++++++++++++++++++++CNNRegressor error:', mse)
 
-    #assert(1==0)
+    assert(mse > 360 and mse < 380)
     print("End test_regressor_forecasting()")
