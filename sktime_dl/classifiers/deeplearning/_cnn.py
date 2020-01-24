@@ -4,6 +4,7 @@ import keras
 import numpy as np
 
 from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
+from sktime_dl.networks.deeplearning import CNNNetwork
 
 
 class CNNClassifier(BaseDeepClassifier):
@@ -34,7 +35,6 @@ class CNNClassifier(BaseDeepClassifier):
                  avg_pool_size=3,
                  nb_conv_layers=2,
                  filter_sizes=[6, 12],
-
                  random_seed=0,
                  verbose=False,
                  model_name="cnn",
@@ -84,33 +84,11 @@ class CNNClassifier(BaseDeepClassifier):
         -------
         output : a compiled Keras Model
         """
-        padding = 'valid'
-        input_layer = keras.layers.Input(input_shape)
+        network = CNNNetwork(self.kernel_size, self.avg_pool_size,
+                    self.nb_conv_layers, self.filter_sizes, self.random_seed)
+        input_layer, output_layer = network.build_network(input_shape, **kwargs)
 
-        if input_shape[0] < 60:  # for italypowerondemand dataset
-            padding = 'same'
-
-        if len(self.filter_sizes) > self.nb_conv_layers:
-            self.filter_sizes = self.filter_sizes[:self.nb_conv_layers]
-        elif len(self.filter_sizes) < self.nb_conv_layers:
-            self.filter_sizes = self.filter_sizes + [self.filter_sizes[-1]] * (
-                    self.nb_conv_layers - len(self.filter_sizes))
-
-        conv = keras.layers.Conv1D(filters=self.filter_sizes[0],
-                                   kernel_size=self.kernel_size,
-                                   padding=padding,
-                                   activation='sigmoid')(input_layer)
-        conv = keras.layers.AveragePooling1D(pool_size=self.avg_pool_size)(conv)
-
-        for i in range(1, self.nb_conv_layers):
-            conv = keras.layers.Conv1D(filters=self.filter_sizes[i],
-                                       kernel_size=self.kernel_size,
-                                       padding=padding,
-                                       activation='sigmoid')(conv)
-            conv = keras.layers.AveragePooling1D(pool_size=self.avg_pool_size)(conv)
-
-        flatten_layer = keras.layers.Flatten()(conv)
-        output_layer = keras.layers.Dense(units=nb_classes, activation='sigmoid')(flatten_layer)
+        output_layer = keras.layers.Dense(units=nb_classes, activation='sigmoid')(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),

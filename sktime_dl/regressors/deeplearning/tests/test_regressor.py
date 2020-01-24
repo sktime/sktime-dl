@@ -41,8 +41,8 @@ def test_regressor():
 
     print('Estimator score:', score)
     print(y_pred)
-    assert(False)
-    #assert(score > -3 and score < -2)
+    #assert(False)
+    assert(score > 0.7 and score < 0.85)
     print("End test_regressor()")
 
 
@@ -101,6 +101,6 @@ def test_regressor_forecasting():
     mse = np.sqrt(mean_squared_error(test, y_pred))
     print('Error:', mse)
 
-    assert(False)
-    #assert(mse > 360 and mse < 380)
+    #assert(False)
+    assert(mse > 0 and mse < 2)
     print("End test_regressor_forecasting()")

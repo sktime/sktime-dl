@@ -44,7 +44,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
                  model_name="InceptionTime",
                  model_save_directory=None):
         '''
-        :param base_model: an implementation of BaseDeepLearner, the model to ensemble over. 
+        :param base_model: an implementation of BaseDeepClassifier, the model to ensemble over. 
                                 MUST NOT have had fit called on it
         :param nb_iterations: int, the number of models to ensemble over
         :param keep_in_memory: boolean, if True, all models will be kept in memory while fitting/predicting.

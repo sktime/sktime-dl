@@ -27,6 +27,7 @@ from sktime.utils.validation.supervised import validate_X, validate_X_y
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
+from sktime_dl.utils import save_trained_model
 
 class BaseDeepClassifier(BaseClassifier):
     classes_ = None
@@ -98,11 +99,10 @@ class BaseDeepClassifier(BaseClassifier):
         return X
 
     def save_trained_model(self):
-        if self.model_save_directory is not None:
-            if self.model_name is None:
-                self.model.save(self.model_save_directory + 'trained_model.hdf5')
-            else:
-                self.model.save(self.model_save_directory + self.model_name + '.hdf5')
+        save_trained_model(
+            self.model,
+            self.model_save_directory,
+            self.model_name)
 
     def convert_y(self, y):
         self.label_encoder = LabelEncoder()

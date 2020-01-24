@@ -10,6 +10,7 @@ from sklearn.base import RegressorMixin
 from sktime.regressors.base import BaseRegressor
 from sktime.utils.validation.supervised import validate_X, validate_X_y
 
+from sktime_dl.utils import save_trained_model
 
 class BaseDeepRegressor(BaseRegressor, RegressorMixin):
     model_save_directory = None
@@ -56,7 +57,6 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
             y_pred.ravel()
         return y_pred
 
-    # TODO can this and save_trained_model be made common with classifier base?
     def check_and_clean_data(self, X, y=None, input_checks=True):
         if input_checks:
             if y is None:
@@ -78,3 +78,9 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
             X = X.reshape((X.shape[0], X.shape[1], 1))
 
         return X
+
+    def save_trained_model(self):
+        save_trained_model(
+            self.model,
+            self.model_save_directory,
+            self.model_name)
