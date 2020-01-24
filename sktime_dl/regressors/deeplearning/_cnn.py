@@ -11,6 +11,7 @@ from sktime.utils.validation.supervised import validate_X, validate_X_y
 from sktime_dl.regressors.deeplearning._base import BaseDeepRegressor
 from sktime_dl.networks.deeplearning import CNNNetwork
 
+
 class CNNRegressor(BaseDeepRegressor, RegressorMixin):
     """Time Convolutional Neural Network (CNN).
 
@@ -72,12 +73,12 @@ class CNNRegressor(BaseDeepRegressor, RegressorMixin):
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
 
-        self.network = CNNNetwork(
-            kernel_size=kernel_size,
-            avg_pool_size=avg_pool_size,
-            nb_conv_layers=nb_conv_layers,
-            filter_sizes=filter_sizes,
-            random_seed=random_seed)
+        self.nb_epochs = nb_epochs
+        self.batch_size = batch_size
+        self.kernel_size = kernel_size
+        self.avg_pool_size = avg_pool_size
+        self.nb_conv_layers = nb_conv_layers
+        self.filter_sizes = filter_sizes
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -89,8 +90,9 @@ class CNNRegressor(BaseDeepRegressor, RegressorMixin):
         -------
         output : a compiled Keras Model
         """
-        
-        input_layer, output_layer = self.network.build_network(input_shape, **kwargs)
+        network = CNNNetwork(self.kernel_size, self.avg_pool_size,
+                    self.nb_conv_layers, self.filter_sizes, self.random_seed)
+        input_layer, output_layer = network.build_network(input_shape, **kwargs)
 
         output_layer = keras.layers.Dense(units=1)(output_layer)
 

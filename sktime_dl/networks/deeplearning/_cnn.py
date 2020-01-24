@@ -4,9 +4,8 @@ import keras
 import numpy as np
 import pandas as pd
 
-from keras import Sequential
-
 from sktime_dl.networks.deeplearning._base import BaseDeepNetwork
+
 
 class CNNNetwork(BaseDeepNetwork):
     """Time Convolutional Neural Network (CNN).

@@ -6,9 +6,11 @@ import numpy as np
 import pandas as pd
 
 from sklearn.base import RegressorMixin
+from sklearn.utils.validation import check_is_fitted
 
 from sktime.regressors.base import BaseRegressor
 from sktime.utils.validation.supervised import validate_X, validate_X_y
+
 
 from sktime_dl.utils import save_trained_model
 
@@ -47,7 +49,7 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
         predictions : 1d numpy array
             array of predictions of each instance
         """
-        # TODO add check_is_fitted as per BaseRegressor doc
+        check_is_fitted(self, 'estimators_')
 
         X = self.check_and_clean_data(X, input_checks=input_checks)
 

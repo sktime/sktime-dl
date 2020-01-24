@@ -13,9 +13,11 @@ from sktime.datasets import load_italy_power_demand
 
 from sktime_dl.classifiers.deeplearning import CNNClassifier
 from sktime_dl.regressors.deeplearning import CNNRegressor
-from sktime_dl.regressors.deeplearning import TempCNNRegressor
+from sktime_dl.regressors.deeplearning import MLPRegressor
+from sktime_dl.regressors.deeplearning import TempCNNRegressor # TODO remove
 
-def test_regressor():
+
+def test_regressor(estimator=MLPRegressor()):
     '''
     test a regressor
     '''
@@ -27,8 +29,6 @@ def test_regressor():
     # Create some regression values
     y_train = np.multiply(y_train.astype(int), 5.1)
     y_test = np.multiply(y_test.astype(int), 5.1)
-
-    estimator = CNNRegressor()
 
     if False:
         estimator.fit(X_train[:10], y_train[:10])
@@ -79,7 +79,7 @@ def test_regressor_forecasting():
 
     #regressor = RandomForestRegressor(n_estimators=2)
     #regressor = CNNRegressor(kernel_size=3, filter_sizes=[16, 32], avg_pool_size=1)
-    regressor = TempCNNRegressor()
+    regressor = MLPRegressor()
 
     # define simple time-series regressor using time-series as features
     steps = [
