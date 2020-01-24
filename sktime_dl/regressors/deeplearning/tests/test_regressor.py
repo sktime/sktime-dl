@@ -13,93 +13,94 @@ from sktime.datasets import load_italy_power_demand
 
 from sktime_dl.classifiers.deeplearning import CNNClassifier
 from sktime_dl.regressors.deeplearning import CNNRegressor
-
-
+from sktime_dl.regressors.deeplearning import TempCNNRegressor
 
 def test_regressor():
     '''
-    Test 
+    test a regressor
     '''
 
-    print("Start test_regressor()")
+    print("Start test_regressor() ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     X_train, y_train = load_italy_power_demand(split='TRAIN', return_X_y=True)
     X_test, y_test = load_italy_power_demand(split='TEST', return_X_y=True)
 
-    y_train = y_train.astype(int)
-    y_train = np.multiply(y_train, 5.1)
-    y_test = y_test.astype(int)
-    y_test = np.multiply(y_test, 5.1)
-    print(y_train[:5])
+    # Create some regression values
+    y_train = np.multiply(y_train.astype(int), 5.1)
+    y_test = np.multiply(y_test.astype(int), 5.1)
 
-
-    # CNNRegressor
     estimator = CNNRegressor()
 
-    print(X_train.shape)
-    estimator.fit(X_train[:10], y_train[:10], input_checks=True, verbose=2)
+    if False:
+        estimator.fit(X_train[:10], y_train[:10])
+        y_pred = estimator.predict(X_test[:10])
+        score = estimator.score(X_test[:10], y_test[:10])
+    else:
+        estimator.fit(X_train, y_train)
+        y_pred = estimator.predict(X_test)
+        score = estimator.score(X_test, y_test)
 
-    y_pred = estimator.predict(X_test[:10])
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@ CNNRegressor y_pred:', y_pred)
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@ CNNRegressor y_test:', y_test[:10])
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@ y_pred.shape:', y_pred.shape)
-    
-    score = estimator.score(X_test[:10], y_test[:10])
     print('Estimator score:', score)
-
-    #np.testing.assert_almost_equal(score, -2.819824144071425)
-    assert(score > -3 and score < -2)
-
+    print(y_pred)
+    assert(False)
+    #assert(score > -3 and score < -2)
     print("End test_regressor()")
 
 
 def test_regressor_forecasting():
     '''
-    Test 
+    test a regressor used for forecasting 
     '''
 
-    print("Start test_regressor_forecasting()")
+    print("Start test_regressor_forecasting() ++++++++++++++++++++++++++++++++")
 
     # get data into expected nested format
+    
     shampoo = load_shampoo_sales(return_y_as_dataframe=True)
-    train = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[:24]]), columns=shampoo.columns)
-    update = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[:30]]), columns=shampoo.columns)
-    test = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[30:]]), columns=shampoo.columns)
+    shampoo_train = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[:24]]), columns=shampoo.columns)
+    shampoo_update = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[:30]]), columns=shampoo.columns)
+    #shampoo_test = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[30:]]), columns=shampoo.columns)
+
+    raw_seq = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130])
+    seq_df = pd.DataFrame(pd.Series(raw_seq))
+    seq = pd.DataFrame(pd.Series([pd.Series(seq_df.squeeze())]), columns=['ShampooSales'])
+    seq_train = pd.DataFrame(pd.Series([seq.iloc[0, 0].iloc[:12]]), columns=['ShampooSales'])
+    seq_update = pd.DataFrame(pd.Series([seq.iloc[0, 0].iloc[12:]]), columns=['ShampooSales'])
+    #seq_train = pd.DataFrame(pd.Series([raw_seq[:9]]), columns=['ShampooSales'])
+    #seq_update = pd.DataFrame(pd.Series([raw_seq[9:]]), columns=['ShampooSales'])
+    
+    #print(shampoo_train)
+    #print(seq_train)
+
+
+    # Set the problem to forecast
+    train = seq_train
+    update = seq_update
+    window_len = 9
+
+    #regressor = RandomForestRegressor(n_estimators=2)
+    #regressor = CNNRegressor(kernel_size=3, filter_sizes=[16, 32], avg_pool_size=1)
+    regressor = TempCNNRegressor()
 
     # define simple time-series regressor using time-series as features
     steps = [
         ('tabularise', Tabulariser()),
-        ('clf', RandomForestRegressor(n_estimators=100))
+        ('rgs', regressor)
     ]
     estimator = Pipeline(steps)
 
-    task = ForecastingTask(target='ShampooSales', fh=[1, 2], metadata=train)
+    task = ForecastingTask(target='ShampooSales', fh=[1], metadata=train)
 
-    s = Forecasting2TSRReductionStrategy(estimator=estimator, window_length=9)
+
+    s = Forecasting2TSRReductionStrategy(estimator=estimator, 
+            window_length=window_len)
     s.fit(task, train)
     y_pred = s.predict()
-    print('RandomForestRegressor y_pred:', y_pred)
-    # Compare the prediction to the test data
-    test = update.iloc[0, 0][y_pred.index]
-    print('RandomForestRegressor error:', np.sqrt(mean_squared_error(test, y_pred)))
-
-    # CNNRegressor
-    steps = [
-        ('tabularise', Tabulariser()),
-        ('clf', CNNRegressor())
-    ]
-    estimator = Pipeline(steps)
-
-    task = ForecastingTask(target='ShampooSales', fh=[1, 2], metadata=train)
-
-    s = Forecasting2TSRReductionStrategy(estimator=estimator, window_length=9)
-    s.fit(task, train)
-    y_pred = s.predict()
-    print('CNNRegressor y_pred:', y_pred)
-
+    print('Prediction y_pred:', y_pred)
     # Compare the prediction to the test data
     test = update.iloc[0, 0][y_pred.index]
     mse = np.sqrt(mean_squared_error(test, y_pred))
-    print('++++++++++++++++++++++++++++++++CNNRegressor error:', mse)
+    print('Error:', mse)
 
-    assert(mse > 360 and mse < 380)
+    assert(False)
+    #assert(mse > 360 and mse < 380)
     print("End test_regressor_forecasting()")
