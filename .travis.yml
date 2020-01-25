@@ -3,6 +3,7 @@ branches:
     only:
         - master
         - dev
+        - tensorflow_v2
 
 dist: trusty
 sudo: false
