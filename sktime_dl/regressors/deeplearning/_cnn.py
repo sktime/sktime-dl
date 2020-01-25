@@ -1,4 +1,4 @@
-__author__ = "Withington"
+__author__ = "James Large, Withington"
 
 import keras
 import numpy as np
