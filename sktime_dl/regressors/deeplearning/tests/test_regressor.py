@@ -1,15 +1,13 @@
 import numpy as np
 import pandas as pd
 
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 
 from sktime.highlevel.tasks import ForecastingTask
 from sktime.highlevel.strategies import Forecasting2TSRReductionStrategy
-from sktime.datasets import load_shampoo_sales
+from sktime.datasets import load_shampoo_sales, load_italy_power_demand
 from sktime.transformers.compose import Tabulariser
 from sktime.pipeline import Pipeline
-from sktime.datasets import load_italy_power_demand 
 
 from sktime_dl.regressors.deeplearning import CNNRegressor
 from sktime_dl.regressors.deeplearning import MLPRegressor

@@ -35,6 +35,7 @@ class CNNClassifier(BaseDeepClassifier):
                  avg_pool_size=3,
                  nb_conv_layers=2,
                  filter_sizes=[6, 12],
+
                  random_seed=0,
                  verbose=False,
                  model_name="cnn",

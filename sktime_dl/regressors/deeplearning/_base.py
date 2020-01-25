@@ -11,8 +11,8 @@ from sklearn.utils.validation import check_is_fitted
 from sktime.regressors.base import BaseRegressor
 from sktime.utils.validation.supervised import validate_X, validate_X_y
 
-
 from sktime_dl.utils import save_trained_model
+
 
 class BaseDeepRegressor(BaseRegressor, RegressorMixin):
     model_save_directory = None
