@@ -49,7 +49,7 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
         predictions : 1d numpy array
             array of predictions of each instance
         """
-        check_is_fitted(self, 'estimators_')
+        check_is_fitted(self)
 
         X = self.check_and_clean_data(X, input_checks=input_checks)
 
