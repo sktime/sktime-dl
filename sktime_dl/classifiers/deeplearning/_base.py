@@ -18,6 +18,8 @@
 
 __author__ = "James Large, Aaron Bostrom"
 
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
@@ -97,12 +99,27 @@ class BaseDeepClassifier(BaseClassifier):
 
         return X
 
-    def save_trained_model(self):
+    def save_trained_model(self, save_format='h5'):
+        """
+        Saves the model to an HDF file.
+        
+        Saved models can be reinstantiated via `keras.models.load_model`.
+        Parameters
+        ----------
+        save_format: string
+            'h5'. Defaults to 'h5' currently but future releases
+            will default to 'tf', the TensorFlow SavedModel format.
+        """
+        if save_format is not 'h5':
+            raise ValueError("save_format must be 'h5'. This is the only format currently supported.")
         if self.model_save_directory is not None:
             if self.model_name is None:
-                self.model.save(self.model_save_directory + 'trained_model.hdf5')
+                file_name = 'trained_model.hdf5'
             else:
-                self.model.save(self.model_save_directory + self.model_name + '.hdf5')
+                file_name = self.model_name + '.hdf5'
+            path = Path(self.model_save_directory) / file_name
+            self.model.save(path) # Add save_format here upon migration from keras to tf.keras
+
 
     def convert_y(self, y):
         self.label_encoder = LabelEncoder()

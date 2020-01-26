@@ -1,0 +1,9 @@
+[run]
+source = sktime_dl/*
+omit = sktime_dl/classifiers/deeplearning/tests/*
+omit = sktime_dl/meta/tests/*
+
+[report]
+include = sktime_dl/*
+omit = sktime_dl/classifiers/deeplearning/tests/*
+omit = sktime_dl/meta/tests/*
