@@ -18,6 +18,8 @@
 
 __author__ = "James Large, Aaron Bostrom"
 
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 

@@ -17,7 +17,8 @@ cache:
 matrix:
     include:
         # add more combinations here as per requirement
-        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.16"
+        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.16" TF_VERSION="1.15"
+        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.16" TF_VERSION="2.0"
 
 install:
     # install miniconda
@@ -32,8 +33,10 @@ install:
     - conda create -n testenv --yes python=$PYTHON_VERSION pip
     - source activate testenv
     - conda install -n testenv --yes pip numpy=$NUMPY_VERSION cython nose pytest pytest-cov sphinx jupyter
+    - pip install tensorflow==$TF_VERSION
     - pip install sphinx_rtd_theme
     - pip install nbsphinx
+    - pip install coveralls
 
     # install keras contrib manually as currently not available on pypi
     - pip install git+https://github.com/keras-team/keras-contrib.git@master
@@ -48,6 +51,8 @@ script:
     - cd for_test
     - pytest -v --cov=sktime_dl --pyargs ../sktime_dl
 
+after_success:
+    - coveralls
 
 
 
