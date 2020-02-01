@@ -1,4 +1,6 @@
-# Base class for networks
+# Base class for networks - partially built neural networks. A final 
+# output layer can be added to a BaseDeepNetwork to create a classifier
+# or a regressor. 
 
 __author__ = "Withington"
 

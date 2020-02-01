@@ -8,7 +8,7 @@ from sktime_dl.base.estimators import BaseDeepNetwork
 
 
 class CNNNetwork(BaseDeepNetwork):
-    """Time Convolutional Neural Network (CNN).
+    """Time Convolutional Neural Network (CNN) (minus the final output layer).
 
     Adapted from the implementation from Fawaz et. al
 

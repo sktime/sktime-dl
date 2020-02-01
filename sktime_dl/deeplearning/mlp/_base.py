@@ -8,7 +8,7 @@ from sktime_dl.base.estimators import BaseDeepNetwork
 
 
 class MLPNetwork(BaseDeepNetwork):
-    """Multi Layer Perceptron (MLP).
+    """Multi Layer Perceptron (MLP) (minus the final output layer).
 
     Adapted from the implementation from Fawaz et. al
 
