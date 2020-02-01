@@ -1,1 +1,2 @@
-from ._mlp import MLPClassifier
+from ._classifier import MLPClassifier
+from ._regressor import MLPRegressor

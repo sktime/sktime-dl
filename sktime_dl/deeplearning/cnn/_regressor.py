@@ -1,13 +1,18 @@
-__author__ = "James Large"
+__author__ = "James Large, Withington"
 
 import keras
 import numpy as np
+import pandas as pd
 
-from sktime_dl.base.estimators._classifier import BaseDeepClassifier
+from sklearn.base import RegressorMixin
+
+from sktime.utils.validation.supervised import validate_X, validate_X_y
+
+from sktime_dl.base.estimators import BaseDeepRegressor
 from sktime_dl.networks.deeplearning import CNNNetwork
 
 
-class CNNClassifier(BaseDeepClassifier):
+class CNNRegressor(BaseDeepRegressor, RegressorMixin):
     """Time Convolutional Neural Network (CNN).
 
     Adapted from the implementation from Fawaz et. al
@@ -35,10 +40,9 @@ class CNNClassifier(BaseDeepClassifier):
                  avg_pool_size=3,
                  nb_conv_layers=2,
                  filter_sizes=[6, 12],
-
                  random_seed=0,
                  verbose=False,
-                 model_name="cnn",
+                 model_name="cnn_regressor",
                  model_save_directory=None):
         '''
         :param nb_epochs: int, the number of epochs to train the model
@@ -68,19 +72,20 @@ class CNNClassifier(BaseDeepClassifier):
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+
+        self.nb_epochs = nb_epochs
+        self.batch_size = batch_size
         self.kernel_size = kernel_size
         self.avg_pool_size = avg_pool_size
         self.nb_conv_layers = nb_conv_layers
         self.filter_sizes = filter_sizes
 
-    def build_model(self, input_shape, nb_classes, **kwargs):
+    def build_model(self, input_shape, **kwargs):
         """
         Construct a compiled, un-trained, keras model that is ready for training
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
-        nb_classes: int
-            The number of classes, which shall become the size of the output layer
         Returns
         -------
         output : a compiled Keras Model
@@ -89,7 +94,7 @@ class CNNClassifier(BaseDeepClassifier):
                     self.nb_conv_layers, self.filter_sizes, self.random_seed)
         input_layer, output_layer = network.build_network(input_shape, **kwargs)
 
-        output_layer = keras.layers.Dense(units=nb_classes, activation='sigmoid')(output_layer)
+        output_layer = keras.layers.Dense(units=1)(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
@@ -99,12 +104,12 @@ class CNNClassifier(BaseDeepClassifier):
 
     def fit(self, X, y, input_checks=True, **kwargs):
         """
-        Build the classifier on the training set (X, y)
+        Build the regressor on the training set (X, y)
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
             The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
         y : array-like, shape = [n_instances]
-            The class labels.
+            The regression values.
         input_checks: boolean
             whether to check the X and y parameters
         Returns
@@ -112,16 +117,14 @@ class CNNClassifier(BaseDeepClassifier):
         self : object
         """
         X = self.check_and_clean_data(X, y, input_checks=input_checks)
-
-        y_onehot = self.convert_y(y)
         self.input_shape = X.shape[1:]
 
-        self.model = self.build_model(self.input_shape, self.nb_classes)
+        self.model = self.build_model(self.input_shape)
 
         if self.verbose:
             self.model.summary()
 
-        self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
+        self.history = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
                                       verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
