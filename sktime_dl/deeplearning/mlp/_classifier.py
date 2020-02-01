@@ -4,7 +4,7 @@ import keras
 import numpy as np
 
 from sktime_dl.base.estimators import BaseDeepClassifier
-from sktime_dl.networks.deeplearning import MLPNetwork
+from sktime_dl.deeplearning.mlp._base import MLPNetwork
 
 
 class MLPClassifier(BaseDeepClassifier):

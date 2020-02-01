@@ -9,7 +9,7 @@ from sklearn.base import RegressorMixin
 from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sktime_dl.base.estimators import BaseDeepRegressor
-from sktime_dl.networks.deeplearning import CNNNetwork
+from sktime_dl.deeplearning.cnn._base import CNNNetwork
 
 
 class CNNRegressor(BaseDeepRegressor, RegressorMixin):
