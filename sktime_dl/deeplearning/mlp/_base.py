@@ -4,7 +4,7 @@ import keras
 import numpy as np
 import pandas as pd
 
-from sktime_dl.networks.deeplearning._base import BaseDeepNetwork
+from sktime_dl.base.estimators import BaseDeepNetwork
 
 
 class MLPNetwork(BaseDeepNetwork):
