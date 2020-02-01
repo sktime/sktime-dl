@@ -9,8 +9,8 @@ from sktime.datasets import load_shampoo_sales, load_italy_power_demand
 from sktime.transformers.compose import Tabulariser
 from sktime.pipeline import Pipeline
 
-from sktime_dl.deeplearning.cnn import CNNRegressor
-from sktime_dl.deeplearning.mlp import MLPRegressor
+from sktime_dl.deeplearning import CNNRegressor
+from sktime_dl.deeplearning import MLPRegressor
 
 
 def test_regressor(estimator=MLPRegressor(nb_epochs=50)):

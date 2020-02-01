@@ -2,12 +2,12 @@
 
 from sktime.datasets import load_italy_power_demand  # , load_basic_motions
 
-from sktime_dl.deeplearning.cnn import CNNClassifier
+from sktime_dl.deeplearning import CNNClassifier
 from sktime_dl.deeplearning import EncoderClassifier
 from sktime_dl.deeplearning import FCNClassifier
 from sktime_dl.deeplearning import MCDCNNClassifier
 from sktime_dl.deeplearning import MCNNClassifier
-from sktime_dl.deeplearning.mlp import MLPClassifier
+from sktime_dl.deeplearning import MLPClassifier
 from sktime_dl.deeplearning import ResNetClassifier
 from sktime_dl.deeplearning import TLENETClassifier
 from sktime_dl.deeplearning import TWIESNClassifier

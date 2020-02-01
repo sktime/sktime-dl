@@ -31,7 +31,7 @@ if len(sys.argv) > 1:
 import gc
 import keras
 
-from sktime_dl.deeplearning.cnn import CNNClassifier
+from sktime_dl.deeplearning import CNNClassifier
 from sktime_dl.deeplearning import EncoderClassifier
 from sktime_dl.deeplearning import FCNClassifier
 from sktime_dl.deeplearning import MCDCNNClassifier
