@@ -1,7 +1,7 @@
 import keras
 import numpy as np
 
-from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
+from sktime_dl.base.estimators._classifier import BaseDeepClassifier
 
 
 class InceptionTimeClassifier(BaseDeepClassifier):

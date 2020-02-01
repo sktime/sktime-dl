@@ -31,16 +31,16 @@ if len(sys.argv) > 1:
 import gc
 import keras
 
-from sktime_dl.classifiers.deeplearning import CNNClassifier
-from sktime_dl.classifiers.deeplearning import EncoderClassifier
-from sktime_dl.classifiers.deeplearning import FCNClassifier
-from sktime_dl.classifiers.deeplearning import MCDCNNClassifier
-from sktime_dl.classifiers.deeplearning import MCNNClassifier
-from sktime_dl.classifiers.deeplearning import MLPClassifier
-from sktime_dl.classifiers.deeplearning import ResNetClassifier
-from sktime_dl.classifiers.deeplearning import TLENETClassifier
-from sktime_dl.classifiers.deeplearning import TWIESNClassifier
-from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
+from sktime_dl.deeplearning.cnn import CNNClassifier
+from sktime_dl.deeplearning import EncoderClassifier
+from sktime_dl.deeplearning import FCNClassifier
+from sktime_dl.deeplearning import MCDCNNClassifier
+from sktime_dl.deeplearning import MCNNClassifier
+from sktime_dl.deeplearning import MLPClassifier
+from sktime_dl.deeplearning import ResNetClassifier
+from sktime_dl.deeplearning import TLENETClassifier
+from sktime_dl.deeplearning import TWIESNClassifier
+from sktime_dl.deeplearning import InceptionTimeClassifier
 from sktime_dl.meta import EnsembleFromFileClassifier
 
 import sktime.contrib.experiments as exp

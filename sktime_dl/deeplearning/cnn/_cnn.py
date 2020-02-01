@@ -3,40 +3,50 @@ __author__ = "James Large"
 import keras
 import numpy as np
 
-from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
-from sktime_dl.networks.deeplearning import MLPNetwork
+from sktime_dl.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.networks.deeplearning import CNNNetwork
 
 
-class MLPClassifier(BaseDeepClassifier):
-    """Multi Layer Perceptron (MLP).
+class CNNClassifier(BaseDeepClassifier):
+    """Time Convolutional Neural Network (CNN).
 
     Adapted from the implementation from Fawaz et. al
 
-    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mlp.py
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/cnn.py
 
     Network originally defined in:
 
-    @inproceedings{wang2017time,
-      title={Time series classification from scratch with deep neural networks: A strong baseline},
-      author={Wang, Zhiguang and Yan, Weizhong and Oates, Tim},
-      booktitle={2017 International joint conference on neural networks (IJCNN)},
-      pages={1578--1585},
+    @article{zhao2017convolutional,
+      title={Convolutional neural networks for time series classification},
+      author={Zhao, Bendong and Lu, Huanzhang and Chen, Shangfeng and Liu, Junliang and Wu, Dongya},
+      journal={Journal of Systems Engineering and Electronics},
+      volume={28},
+      number={1},
+      pages={162--169},
       year={2017},
-      organization={IEEE}
+      publisher={BIAI}
     }
     """
 
     def __init__(self,
-                 nb_epochs=5000,
+                 nb_epochs=2000,
                  batch_size=16,
+                 kernel_size=7,
+                 avg_pool_size=3,
+                 nb_conv_layers=2,
+                 filter_sizes=[6, 12],
 
                  random_seed=0,
                  verbose=False,
-                 model_name="mlp",
+                 model_name="cnn",
                  model_save_directory=None):
         '''
         :param nb_epochs: int, the number of epochs to train the model
-        :param batch_size: int, specifying the length of the 1D convolution window
+        :param batch_size: int, the number of samples per gradient update.
+        :param kernel_size: int, specifying the length of the 1D convolution window
+        :param avg_pool_size: int, size of the average pooling windows
+        :param nb_conv_layers: int, the number of convolutional plus average pooling layers
+        :param filter_sizes: int, array of shape = (nb_conv_layers)
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -48,20 +58,20 @@ class MLPClassifier(BaseDeepClassifier):
         self.model_save_directory = model_save_directory
         self.is_fitted_ = False
 
-        # calced in fit
-        self.classes_ = None
-        self.nb_classes = -1
+        self.callbacks = []
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
+
         self.input_shape = None
         self.model = None
         self.history = None
 
-        # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = None
-
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
+        self.kernel_size = kernel_size
+        self.avg_pool_size = avg_pool_size
+        self.nb_conv_layers = nb_conv_layers
+        self.filter_sizes = filter_sizes
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -75,18 +85,15 @@ class MLPClassifier(BaseDeepClassifier):
         -------
         output : a compiled Keras Model
         """
-        network = MLPNetwork(self.random_seed)
+        network = CNNNetwork(self.kernel_size, self.avg_pool_size,
+                    self.nb_conv_layers, self.filter_sizes, self.random_seed)
         input_layer, output_layer = network.build_network(input_shape, **kwargs)
-        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(output_layer)
+
+        output_layer = keras.layers.Dense(units=nb_classes, activation='sigmoid')(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
-
-        model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adadelta(),
+        model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
                       metrics=['accuracy'])
-
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=200, min_lr=0.1)
-
-        self.callbacks = [reduce_lr]
 
         return model
 
@@ -108,8 +115,6 @@ class MLPClassifier(BaseDeepClassifier):
 
         y_onehot = self.convert_y(y)
         self.input_shape = X.shape[1:]
-
-        self.batch_size = int(min(X.shape[0] / 10, self.batch_size))
 
         self.model = self.build_model(self.input_shape, self.nb_classes)
 

@@ -5,7 +5,7 @@ import numpy as np
 
 from sklearn.model_selection import train_test_split
 
-from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
+from sktime_dl.base.estimators._classifier import BaseDeepClassifier
 
 
 class MCDCNNClassifier(BaseDeepClassifier):

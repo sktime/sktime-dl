@@ -3,15 +3,16 @@ __author__ = "James Large"
 import keras
 import numpy as np
 
-from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
+from sktime_dl.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.networks.deeplearning import MLPNetwork
 
 
-class FCNClassifier(BaseDeepClassifier):
-    """Fully convolutional neural network (FCN).
+class MLPClassifier(BaseDeepClassifier):
+    """Multi Layer Perceptron (MLP).
 
     Adapted from the implementation from Fawaz et. al
 
-    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/fcn.py
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mlp.py
 
     Network originally defined in:
 
@@ -26,12 +27,12 @@ class FCNClassifier(BaseDeepClassifier):
     """
 
     def __init__(self,
-                 nb_epochs=2000,
+                 nb_epochs=5000,
                  batch_size=16,
 
                  random_seed=0,
                  verbose=False,
-                 model_name="fcn",
+                 model_name="mlp",
                  model_save_directory=None):
         '''
         :param nb_epochs: int, the number of epochs to train the model
@@ -74,31 +75,16 @@ class FCNClassifier(BaseDeepClassifier):
         -------
         output : a compiled Keras Model
         """
-        input_layer = keras.layers.Input(input_shape)
-
-        conv1 = keras.layers.Conv1D(filters=128, kernel_size=8, padding='same')(input_layer)
-        conv1 = keras.layers.normalization.BatchNormalization()(conv1)
-        conv1 = keras.layers.Activation(activation='relu')(conv1)
-
-        conv2 = keras.layers.Conv1D(filters=256, kernel_size=5, padding='same')(conv1)
-        conv2 = keras.layers.normalization.BatchNormalization()(conv2)
-        conv2 = keras.layers.Activation('relu')(conv2)
-
-        conv3 = keras.layers.Conv1D(128, kernel_size=3, padding='same')(conv2)
-        conv3 = keras.layers.normalization.BatchNormalization()(conv3)
-        conv3 = keras.layers.Activation('relu')(conv3)
-
-        gap_layer = keras.layers.pooling.GlobalAveragePooling1D()(conv3)
-
-        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(gap_layer)
+        network = MLPNetwork(self.random_seed)
+        input_layer, output_layer = network.build_network(input_shape, **kwargs)
+        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
-        model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(),
+        model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adadelta(),
                       metrics=['accuracy'])
 
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
-                                                      min_lr=0.0001)
+        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=200, min_lr=0.1)
 
         self.callbacks = [reduce_lr]
 

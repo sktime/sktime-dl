@@ -3,50 +3,39 @@ __author__ = "James Large"
 import keras
 import numpy as np
 
-from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
-from sktime_dl.networks.deeplearning import CNNNetwork
+from sktime_dl.base.estimators._classifier import BaseDeepClassifier
 
 
-class CNNClassifier(BaseDeepClassifier):
-    """Time Convolutional Neural Network (CNN).
+class FCNClassifier(BaseDeepClassifier):
+    """Fully convolutional neural network (FCN).
 
     Adapted from the implementation from Fawaz et. al
 
-    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/cnn.py
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/fcn.py
 
     Network originally defined in:
 
-    @article{zhao2017convolutional,
-      title={Convolutional neural networks for time series classification},
-      author={Zhao, Bendong and Lu, Huanzhang and Chen, Shangfeng and Liu, Junliang and Wu, Dongya},
-      journal={Journal of Systems Engineering and Electronics},
-      volume={28},
-      number={1},
-      pages={162--169},
+    @inproceedings{wang2017time,
+      title={Time series classification from scratch with deep neural networks: A strong baseline},
+      author={Wang, Zhiguang and Yan, Weizhong and Oates, Tim},
+      booktitle={2017 International joint conference on neural networks (IJCNN)},
+      pages={1578--1585},
       year={2017},
-      publisher={BIAI}
+      organization={IEEE}
     }
     """
 
     def __init__(self,
                  nb_epochs=2000,
                  batch_size=16,
-                 kernel_size=7,
-                 avg_pool_size=3,
-                 nb_conv_layers=2,
-                 filter_sizes=[6, 12],
 
                  random_seed=0,
                  verbose=False,
-                 model_name="cnn",
+                 model_name="fcn",
                  model_save_directory=None):
         '''
         :param nb_epochs: int, the number of epochs to train the model
-        :param batch_size: int, the number of samples per gradient update.
-        :param kernel_size: int, specifying the length of the 1D convolution window
-        :param avg_pool_size: int, size of the average pooling windows
-        :param nb_conv_layers: int, the number of convolutional plus average pooling layers
-        :param filter_sizes: int, array of shape = (nb_conv_layers)
+        :param batch_size: int, specifying the length of the 1D convolution window
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -58,20 +47,20 @@ class CNNClassifier(BaseDeepClassifier):
         self.model_save_directory = model_save_directory
         self.is_fitted_ = False
 
-        self.callbacks = []
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
-
+        # calced in fit
+        self.classes_ = None
+        self.nb_classes = -1
         self.input_shape = None
         self.model = None
         self.history = None
 
+        # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.kernel_size = kernel_size
-        self.avg_pool_size = avg_pool_size
-        self.nb_conv_layers = nb_conv_layers
-        self.filter_sizes = filter_sizes
+        self.callbacks = None
+
+        self.random_seed = random_seed
+        self.random_state = np.random.RandomState(self.random_seed)
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -85,15 +74,33 @@ class CNNClassifier(BaseDeepClassifier):
         -------
         output : a compiled Keras Model
         """
-        network = CNNNetwork(self.kernel_size, self.avg_pool_size,
-                    self.nb_conv_layers, self.filter_sizes, self.random_seed)
-        input_layer, output_layer = network.build_network(input_shape, **kwargs)
+        input_layer = keras.layers.Input(input_shape)
 
-        output_layer = keras.layers.Dense(units=nb_classes, activation='sigmoid')(output_layer)
+        conv1 = keras.layers.Conv1D(filters=128, kernel_size=8, padding='same')(input_layer)
+        conv1 = keras.layers.normalization.BatchNormalization()(conv1)
+        conv1 = keras.layers.Activation(activation='relu')(conv1)
+
+        conv2 = keras.layers.Conv1D(filters=256, kernel_size=5, padding='same')(conv1)
+        conv2 = keras.layers.normalization.BatchNormalization()(conv2)
+        conv2 = keras.layers.Activation('relu')(conv2)
+
+        conv3 = keras.layers.Conv1D(128, kernel_size=3, padding='same')(conv2)
+        conv3 = keras.layers.normalization.BatchNormalization()(conv3)
+        conv3 = keras.layers.Activation('relu')(conv3)
+
+        gap_layer = keras.layers.pooling.GlobalAveragePooling1D()(conv3)
+
+        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(gap_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
-        model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
+
+        model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(),
                       metrics=['accuracy'])
+
+        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
+                                                      min_lr=0.0001)
+
+        self.callbacks = [reduce_lr]
 
         return model
 
@@ -115,6 +122,8 @@ class CNNClassifier(BaseDeepClassifier):
 
         y_onehot = self.convert_y(y)
         self.input_shape = X.shape[1:]
+
+        self.batch_size = int(min(X.shape[0] / 10, self.batch_size))
 
         self.model = self.build_model(self.input_shape, self.nb_classes)
 

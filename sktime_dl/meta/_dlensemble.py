@@ -16,7 +16,7 @@ from sklearn.base import clone
 from sktime.classifiers.base import BaseClassifier
 from sktime.utils.validation.supervised import validate_X
 
-from sktime_dl.classifiers.deeplearning import InceptionTimeClassifier
+from sktime_dl.deeplearning import InceptionTimeClassifier
 
 
 class DeepLearnerEnsembleClassifier(BaseClassifier):
