@@ -7,7 +7,7 @@ from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
 
 
-class MLPClassifier(BaseDeepClassifier):
+class MLPClassifier(BaseDeepClassifier, MLPNetwork):
     """Multi Layer Perceptron (MLP).
 
     Adapted from the implementation from Fawaz et. al
@@ -34,6 +34,8 @@ class MLPClassifier(BaseDeepClassifier):
                  verbose=False,
                  model_name="mlp",
                  model_save_directory=None):
+        super().__init__(
+            random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
@@ -60,9 +62,6 @@ class MLPClassifier(BaseDeepClassifier):
         self.batch_size = batch_size
         self.callbacks = None
 
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
-
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
         Construct a compiled, un-trained, keras model that is ready for training
@@ -75,8 +74,7 @@ class MLPClassifier(BaseDeepClassifier):
         -------
         output : a compiled Keras Model
         """
-        network = MLPNetwork(self.random_seed)
-        input_layer, output_layer = network.build_network(input_shape, **kwargs)
+        input_layer, output_layer = self.build_network(input_shape, **kwargs)
         output_layer = keras.layers.Dense(nb_classes, activation='softmax')(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)

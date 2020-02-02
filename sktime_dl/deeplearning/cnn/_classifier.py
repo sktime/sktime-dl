@@ -7,7 +7,7 @@ from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.cnn._base import CNNNetwork
 
 
-class CNNClassifier(BaseDeepClassifier):
+class CNNClassifier(BaseDeepClassifier, CNNNetwork):
     """Time Convolutional Neural Network (CNN).
 
     Adapted from the implementation from Fawaz et. al
@@ -40,6 +40,12 @@ class CNNClassifier(BaseDeepClassifier):
                  verbose=False,
                  model_name="cnn",
                  model_save_directory=None):
+        super().__init__(
+            kernel_size=kernel_size,
+            avg_pool_size=avg_pool_size,
+            nb_conv_layers=nb_conv_layers,
+            filter_sizes=filter_sizes,
+            random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
@@ -59,8 +65,6 @@ class CNNClassifier(BaseDeepClassifier):
         self.is_fitted_ = False
 
         self.callbacks = []
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
 
         self.input_shape = None
         self.model = None
@@ -68,10 +72,6 @@ class CNNClassifier(BaseDeepClassifier):
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.kernel_size = kernel_size
-        self.avg_pool_size = avg_pool_size
-        self.nb_conv_layers = nb_conv_layers
-        self.filter_sizes = filter_sizes
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -85,9 +85,7 @@ class CNNClassifier(BaseDeepClassifier):
         -------
         output : a compiled Keras Model
         """
-        network = CNNNetwork(self.kernel_size, self.avg_pool_size,
-                    self.nb_conv_layers, self.filter_sizes, self.random_seed)
-        input_layer, output_layer = network.build_network(input_shape, **kwargs)
+        input_layer, output_layer = self.build_network(input_shape, **kwargs)
 
         output_layer = keras.layers.Dense(units=nb_classes, activation='sigmoid')(output_layer)
 

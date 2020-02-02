@@ -12,7 +12,7 @@ from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
 
 
-class MLPRegressor(BaseDeepRegressor, RegressorMixin):
+class MLPRegressor(BaseDeepRegressor, RegressorMixin, MLPNetwork):
     """Multi Layer Perceptron (MLP).
 
     Adapted from the implementation from Fawaz et. al
@@ -39,6 +39,8 @@ class MLPRegressor(BaseDeepRegressor, RegressorMixin):
                  verbose=False,
                  model_name="mlp_regressor",
                  model_save_directory=None):
+        super().__init__(
+            random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
@@ -65,9 +67,6 @@ class MLPRegressor(BaseDeepRegressor, RegressorMixin):
         self.batch_size = batch_size
         self.callbacks = None
 
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
-
     def build_model(self, input_shape, **kwargs):
         """
         Construct a compiled, un-trained, keras model that is ready for training
@@ -78,8 +77,7 @@ class MLPRegressor(BaseDeepRegressor, RegressorMixin):
         -------
         output : a compiled Keras Model
         """
-        network = MLPNetwork(self.random_seed)
-        input_layer, output_layer = network.build_network(input_shape, **kwargs)
+        input_layer, output_layer = self.build_network(input_shape, **kwargs)
         output_layer = keras.layers.Dense(units=1)(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
