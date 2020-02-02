@@ -8,7 +8,7 @@ from sklearn.base import RegressorMixin
 
 from sktime.utils.validation.supervised import validate_X, validate_X_y
 
-from sktime_dl.base.estimators import BaseDeepRegressor
+from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
 
 

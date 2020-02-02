@@ -2,7 +2,7 @@ __author__ = "James Large"
 
 import numpy as np
 
-from sktime_dl.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
 from sktime_dl.deeplearning import CNNClassifier
 
 from sklearn.model_selection import GridSearchCV

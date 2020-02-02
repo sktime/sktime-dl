@@ -4,7 +4,7 @@ import keras
 import keras_contrib
 import numpy as np
 
-from sktime_dl.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
 
 
 class EncoderClassifier(BaseDeepClassifier):

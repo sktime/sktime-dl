@@ -4,7 +4,7 @@ import keras
 import numpy as np
 import pandas as pd
 
-from sktime_dl.base.estimators import BaseDeepNetwork
+from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
 
 
 class CNNNetwork(BaseDeepNetwork):
