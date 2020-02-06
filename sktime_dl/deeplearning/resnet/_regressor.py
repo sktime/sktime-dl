@@ -9,15 +9,15 @@ from sklearn.base import RegressorMixin
 from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
-from sktime_dl.deeplearning.fcn._base import FCNNetwork
+from sktime_dl.deeplearning.resnet._base import ResNetNetwork
 
 
-class FCNRegressor(BaseDeepRegressor, RegressorMixin, FCNNetwork):
-    """Fully convolutional neural network (FCN).
+class ResNetRegressor(BaseDeepRegressor, RegressorMixin, ResNetNetwork):
+    """Residual Network (ResNet).
 
     Adapted from the implementation from Fawaz et. al
 
-    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/fcn.py
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/resnet.py
 
     Network originally defined in:
 
@@ -32,16 +32,15 @@ class FCNRegressor(BaseDeepRegressor, RegressorMixin, FCNNetwork):
     """
 
     def __init__(self,
-                 nb_epochs=2000,
+                 nb_epochs=1500,
                  batch_size=16,
 
                  random_seed=0,
                  verbose=False,
-                 model_name="fcn_regressor",
+                 model_name="resnet_regressor",
                  model_save_directory=None):
-        super().__init__(
-            random_seed=random_seed)
-        '''    
+        super().__init__(random_seed=random_seed)
+        '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
         :param random_seed: int, seed to any needed random actions
@@ -75,6 +74,8 @@ class FCNRegressor(BaseDeepRegressor, RegressorMixin, FCNNetwork):
         -------
         output : a compiled Keras Model
         """
+        save_best_model = False
+
         input_layer, output_layer = self.build_network(input_shape, **kwargs)
 
         output_layer = keras.layers.Dense(units=1)(output_layer)
@@ -84,16 +85,21 @@ class FCNRegressor(BaseDeepRegressor, RegressorMixin, FCNNetwork):
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
                       metrics=['accuracy'])
 
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
-                                                      min_lr=0.0001)
+        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50, min_lr=0.0001)
 
-        self.callbacks = [reduce_lr]
+        if save_best_model:
+            file_path = self.model_save_directory + 'best_model.hdf5'
+            model_checkpoint = keras.callbacks.ModelCheckpoint(
+                filepath=file_path, monitor='loss', save_best_only=True)
+            self.callbacks = [reduce_lr, model_checkpoint]
+        else:
+            self.callbacks = [reduce_lr]
 
         return model
 
     def fit(self, X, y, input_checks=True, **kwargs):
         """
-        Build the classifier on the training set (X, y)
+        Build the regressor on the training set (X, y)
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
             The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
@@ -123,3 +129,4 @@ class FCNRegressor(BaseDeepRegressor, RegressorMixin, FCNNetwork):
         self.is_fitted_ = True
 
         return self
+    

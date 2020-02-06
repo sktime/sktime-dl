@@ -8,6 +8,7 @@ from .mcnn._classifier import MCNNClassifier
 from .mlp._classifier import MLPClassifier
 from .mlp._regressor import MLPRegressor
 from .resnet._classifier import ResNetClassifier
+from .resnet._regressor import ResNetRegressor
 from .tlenet._classifier import TLENETClassifier
 from .twiesn._classifier import TWIESNClassifier
 from .inceptiontime._classifier import InceptionTimeClassifier
