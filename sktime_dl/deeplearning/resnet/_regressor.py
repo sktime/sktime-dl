@@ -30,7 +30,7 @@ class ResNetRegressor(BaseDeepRegressor, RegressorMixin, ResNetNetwork):
       organization={IEEE}
     }
     """
-
+ 
     def __init__(self,
                  nb_epochs=1500,
                  batch_size=16,
