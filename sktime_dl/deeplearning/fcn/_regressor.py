@@ -9,15 +9,15 @@ from sklearn.base import RegressorMixin
 from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
-from sktime_dl.deeplearning.mlp._base import MLPNetwork
+from sktime_dl.deeplearning.fcn._base import FCNNetwork
 
 
-class MLPRegressor(BaseDeepRegressor, RegressorMixin, MLPNetwork):
-    """Multi Layer Perceptron (MLP).
+class FCNRegressor(BaseDeepRegressor, RegressorMixin, FCNNetwork):
+    """Fully convolutional neural network (FCN).
 
     Adapted from the implementation from Fawaz et. al
 
-    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mlp.py
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/fcn.py
 
     Network originally defined in:
 
@@ -37,13 +37,13 @@ class MLPRegressor(BaseDeepRegressor, RegressorMixin, MLPNetwork):
 
                  random_seed=0,
                  verbose=False,
-                 model_name="mlp_regressor",
+                 model_name="fcn_regressor",
                  model_save_directory=None):
         super().__init__(
             random_seed=random_seed)
-        '''
+        '''    
         :param nb_epochs: int, the number of epochs to train the model
-        :param batch_size: int, the number of samples per gradient update.
+        :param batch_size: int, specifying the length of the 1D convolution window
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -71,18 +71,23 @@ class MLPRegressor(BaseDeepRegressor, RegressorMixin, MLPNetwork):
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
+        nb_classes: int
+            The number of classes, which shall become the size of the output layer
         Returns
         -------
         output : a compiled Keras Model
         """
         input_layer, output_layer = self.build_network(input_shape, **kwargs)
+
         output_layer = keras.layers.Dense(units=1)(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
-        model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adadelta(),
+
+        model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
                       metrics=['accuracy'])
 
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=200, min_lr=0.1)
+        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
+                                                      min_lr=0.0001)
 
         self.callbacks = [reduce_lr]
 
@@ -90,12 +95,12 @@ class MLPRegressor(BaseDeepRegressor, RegressorMixin, MLPNetwork):
 
     def fit(self, X, y, input_checks=True, **kwargs):
         """
-        Build the regressor on the training set (X, y)
+        Build the classifier on the training set (X, y)
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
             The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
         y : array-like, shape = [n_instances]
-            The regression values.
+            The class labels.
         input_checks: boolean
             whether to check the X and y parameters
         Returns
@@ -103,6 +108,7 @@ class MLPRegressor(BaseDeepRegressor, RegressorMixin, MLPNetwork):
         self : object
         """
         X = self.check_and_clean_data(X, y, input_checks=input_checks)
+
         self.input_shape = X.shape[1:]
 
         self.batch_size = int(max(1, min(X.shape[0] / 10, self.batch_size)))
