@@ -29,7 +29,7 @@ def is_not_value_error(err, *args):
 
 def accuracy_test(network=CNNClassifier(), lower=0.94, upper=1.0):
     '''
-    Test the classifier accuracy.
+    Test the classifier accuracy against expected lower and upper bounds.
     '''
     print("Start accuracy_test:", network.__class__.__name__)
 
