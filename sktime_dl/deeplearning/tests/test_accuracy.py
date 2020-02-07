@@ -67,6 +67,7 @@ def test_mcdcnn_accuracy():
     accuracy_test(network=MCDCNNClassifier(), lower=0.955-2*0.019)
 
 
+@pytest.mark.skip(reason="Very slow running, causes Travis to time out.")
 @pytest.mark.slow
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_mcnn_accuracy(): 
