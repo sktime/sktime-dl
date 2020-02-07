@@ -49,8 +49,8 @@ install:
 script:
     - mkdir for_test
     - cd for_test
-    - pytest -v --cov=sktime_dl --pyargs ../sktime_dl # Runs the slow tests too.
-    # - pytest -v -m="not slow" --cov=sktime_dl --pyargs ../sktime_dl
+    #- pytest -v --cov=sktime_dl --pyargs ../sktime_dl # 45mins Travis run
+    - pytest -v -m="not slow" --cov=sktime_dl --pyargs ../sktime_dl 
 
 after_success:
     - coveralls
