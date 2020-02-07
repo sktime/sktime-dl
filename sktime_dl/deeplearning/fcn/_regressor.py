@@ -93,12 +93,12 @@ class FCNRegressor(BaseDeepRegressor, RegressorMixin, FCNNetwork):
 
     def fit(self, X, y, input_checks=True, **kwargs):
         """
-        Build the classifier on the training set (X, y)
+        Build the regressor on the training set (X, y)
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+            The training input samples.  If a Pandas data frame of Series objects is passed, column 0 is extracted.
         y : array-like, shape = [n_instances]
-            The class labels.
+            The regression values.
         input_checks: boolean
             whether to check the X and y parameters
         Returns

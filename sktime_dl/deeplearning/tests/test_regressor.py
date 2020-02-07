@@ -13,6 +13,7 @@ from sktime_dl.deeplearning import CNNRegressor
 from sktime_dl.deeplearning import FCNRegressor
 from sktime_dl.deeplearning import MLPRegressor
 from sktime_dl.deeplearning import ResNetRegressor
+from sktime_dl.deeplearning import InceptionTimeRegressor
 
 
 def test_regressor(estimator=MLPRegressor(nb_epochs=50)):
@@ -75,7 +76,8 @@ def test_all_regressors():
         CNNRegressor(nb_epochs=50),
         FCNRegressor(nb_epochs=50),
         MLPRegressor(nb_epochs=50),
-        ResNetRegressor(nb_epochs=50)
+        ResNetRegressor(nb_epochs=50),
+        InceptionTimeRegressor(nb_epochs=50)
     ]
 
     for network in networks:
@@ -89,7 +91,8 @@ def test_all_forecasters():
         CNNRegressor(nb_epochs=50, kernel_size=3, avg_pool_size=1),
         FCNRegressor(nb_epochs=50),
         MLPRegressor(nb_epochs=50),
-        ResNetRegressor(nb_epochs=50)
+        ResNetRegressor(nb_epochs=50),
+        InceptionTimeRegressor(nb_epochs=50)
     ]
 
     for network in networks:

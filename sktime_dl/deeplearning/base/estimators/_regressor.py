@@ -38,9 +38,9 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
             The training input samples.
-            If a Pandas data frame is passed (sktime format)
-            If a Pandas data frame is passed, a check is performed that it only has one column.
-            If not, an exception is thrown, since this classifier does not yet have
+            If a Pandas data frame of Series objects is passed (sktime format), 
+            a check is performed that it only has one column.
+            If not, an exception is thrown, since this regressor does not yet have
             multivariate capability.
         input_checks: boolean
             whether to check the X parameter
@@ -69,7 +69,7 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
         if isinstance(X, pd.DataFrame):
             if X.shape[1] == 1 and not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2D array, or a pandas dataframe with a single column of Series objects (networks cannot yet handle multivariate problems")
+                    "Input should either be a 2D array of values or a pandas dataframe with a single column of Series objects (networks cannot yet handle multivariate problems")
             elif X.shape[1] > 1:
                 X = X.to_numpy()
             else:

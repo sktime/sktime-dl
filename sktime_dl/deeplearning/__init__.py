@@ -12,3 +12,4 @@ from .resnet._regressor import ResNetRegressor
 from .tlenet._classifier import TLENETClassifier
 from .twiesn._classifier import TWIESNClassifier
 from .inceptiontime._classifier import InceptionTimeClassifier
+from .inceptiontime._regressor import InceptionTimeRegressor
