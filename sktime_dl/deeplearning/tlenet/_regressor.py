@@ -1,13 +1,19 @@
-__author__ = "Aaron Bostrom, James Large"
+__author__ = "James Large, Withington"
 
 import keras
 import numpy as np
+import pandas as pd
 
-from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
+from sklearn.base import RegressorMixin
+from sklearn.utils.validation import check_is_fitted
+
+from sktime.utils.validation.supervised import validate_X, validate_X_y
+
+from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
 
 
-class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
+class TLENETRegressor(BaseDeepRegressor, RegressorMixin, TLENETNetwork):
     """Time Le-Net (TLENET).
 
     Adapted from the implementation from Fawaz et. al
@@ -27,10 +33,9 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
     def __init__(self,
                  nb_epochs=1000,
                  batch_size=256,
-
                  verbose=False,
                  random_seed=0,
-                 model_name="tlenet",
+                 model_name="tlenet_regressor",
                  model_save_directory=None):
         super().__init__(
             random_seed=random_seed)
@@ -52,49 +57,48 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         self.batch_size = batch_size
 
         # calced in fit
-        self.classes_ = None
-        self.nb_classes = -1
         self.input_shape = None
         self.model = None
         self.history = None
 
-    def build_model(self, input_shape, nb_classes, **kwargs):
+    def build_model(self, input_shape, **kwargs):
         """
         Construct a compiled, un-trained, keras model that is ready for training
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
-        nb_classes: int
-            The number of classes, which shall become the size of the output layer
         Returns
         -------
         output : a compiled Keras Model
         """
+        save_best_model = False
+
         input_layer, output_layer = self.build_network(input_shape, **kwargs)
-        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(output_layer)
+        output_layer = keras.layers.Dense(units=1)(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
         model.compile(optimizer=keras.optimizers.Adam(lr=0.01, decay=0.005),
-                      loss='categorical_crossentropy', metrics=['accuracy'])
+                      loss='mean_squared_error', metrics=['accuracy'])
 
-        # file_path = self.output_directory+'best_model.hdf5'
-
-        # model_checkpoint = keras.callbacks.ModelCheckpoint(filepath=file_path, monitor='loss',
-        # save_best_only=True)
-
-        self.callbacks = []
+        if save_best_model:
+            file_path = self.model_save_directory + 'best_model.hdf5'
+            model_checkpoint = keras.callbacks.ModelCheckpoint(
+                filepath=file_path, monitor='loss', save_best_only=True)
+            self.callbacks = [model_checkpoint]
+        else:
+            self.callbacks = []
 
         return model
 
     def fit(self, X, y, input_checks=True, **kwargs):
         """
-        Build the classifier on the training set (X, y)
+        Build the regressor on the training set (X, y)
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+            The training input samples.  If a Pandas data frame of Series objects is passed, column 0 is extracted.
         y : array-like, shape = [n_instances]
-            The class labels.
+            The regression values.
         input_checks: boolean
             whether to check the X and y parameters
         Returns
@@ -102,19 +106,12 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         self : object
         """
         X = self.check_and_clean_data(X, y, input_checks=input_checks)
-
-        y = self.convert_y(y)
-
-        self.nb_classes = y.shape[1]
-
+        
         self.adjust_parameters(X)
-        X, y, tot_increase_num = self.pre_processing(X, y)
-        # print(y.shape)
-
-        # print('Total increased number for each MTS: ', tot_increase_num)
+        X, y, __ = self.pre_processing(X, y)
 
         input_shape = X.shape[1:] # pylint: disable=E1136  # pylint/issues/3139
-        self.model = self.build_model(input_shape, self.nb_classes)
+        self.model = self.build_model(input_shape)
 
         self.hist = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
                                    verbose=self.verbose, callbacks=self.callbacks)
@@ -124,29 +121,32 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         return self
 
-    def predict_proba(self, X, input_checks=True, **kwargs):
+    def predict(self, X, input_checks=True, **kwargs):
         """
-        Find probability estimates for each class for all cases in X.
+        Find regression estimate for all cases in X.
         Parameters
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
             The training input samples.
-            If a Pandas data frame is passed (sktime format)
-            If a Pandas data frame is passed, a check is performed that it only has one column.
-            If not, an exception is thrown, since this classifier does not yet have
+            If a Pandas data frame of Series objects is passed (sktime format), 
+            a check is performed that it only has one column.
+            If not, an exception is thrown, since this regressor does not yet have
             multivariate capability.
         input_checks: boolean
             whether to check the X parameter
         Returns
         -------
-        output : array of shape = [n_instances, n_classes] of probabilities
+        predictions : 1d numpy array
+            array of predictions of each instance
         """
+        check_is_fitted(self)
+
         X = self.check_and_clean_data(X, input_checks=input_checks)
 
         X, _, tot_increase_num = self.pre_processing(X)
 
         preds = self.model.predict(X, batch_size=self.batch_size)
-
+        
         y_predicted = []
         test_num_batch = int(X.shape[0] / tot_increase_num) # pylint: disable=E1136  # pylint/issues/3139
 
@@ -155,6 +155,9 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
             y_predicted.append(np.average(preds[i * tot_increase_num: ((i + 1) * tot_increase_num) - 1], axis=0))
 
         y_pred = np.array(y_predicted)
+
+        if y_pred.ndim == 1:
+            y_pred.ravel()
 
         keras.backend.clear_session()
 
