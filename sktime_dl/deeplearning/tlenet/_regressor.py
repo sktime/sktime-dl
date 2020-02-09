@@ -2,7 +2,6 @@ __author__ = "James Large, Withington"
 
 import keras
 import numpy as np
-import pandas as pd
 
 from sklearn.base import RegressorMixin
 from sklearn.utils.validation import check_is_fitted
@@ -158,7 +157,5 @@ class TLENETRegressor(BaseDeepRegressor, RegressorMixin, TLENETNetwork):
 
         if y_pred.ndim == 1:
             y_pred.ravel()
-
-        keras.backend.clear_session()
 
         return y_pred
