@@ -1,6 +1,7 @@
 from .cnn._classifier import CNNClassifier
 from .cnn._regressor import CNNRegressor
 from .encoder._classifier import EncoderClassifier
+from .encoder._regressor import EncoderRegressor
 from .fcn._classifier import FCNClassifier
 from .fcn._regressor import FCNRegressor
 from .mcdcnn._classifier import MCDCNNClassifier
