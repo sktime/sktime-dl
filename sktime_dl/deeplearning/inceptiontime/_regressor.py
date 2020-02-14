@@ -4,15 +4,13 @@ import keras
 import numpy as np
 import pandas as pd
 
-from sklearn.base import RegressorMixin
-
 from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.inceptiontime._base import InceptionTimeNetwork
 
 
-class InceptionTimeRegressor(BaseDeepRegressor, RegressorMixin, InceptionTimeNetwork):
+class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
     """InceptionTime
 
     Adapted from the implementation from Fawaz et. al

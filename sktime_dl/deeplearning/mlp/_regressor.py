@@ -4,15 +4,13 @@ import keras
 import numpy as np
 import pandas as pd
 
-from sklearn.base import RegressorMixin
-
 from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
 
 
-class MLPRegressor(BaseDeepRegressor, RegressorMixin, MLPNetwork):
+class MLPRegressor(BaseDeepRegressor, MLPNetwork):
     """Multi Layer Perceptron (MLP).
 
     Adapted from the implementation from Fawaz et. al

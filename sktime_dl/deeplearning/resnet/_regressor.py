@@ -4,15 +4,13 @@ import keras
 import numpy as np
 import pandas as pd
 
-from sklearn.base import RegressorMixin
-
 from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.resnet._base import ResNetNetwork
 
 
-class ResNetRegressor(BaseDeepRegressor, RegressorMixin, ResNetNetwork):
+class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
     """Residual Network (ResNet).
 
     Adapted from the implementation from Fawaz et. al

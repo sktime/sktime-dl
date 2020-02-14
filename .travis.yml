@@ -3,7 +3,6 @@ branches:
     only:
         - master
         - dev
-        - regressors
 
 dist: trusty
 sudo: false
@@ -49,7 +48,7 @@ install:
 script:
     - mkdir for_test
     - cd for_test
-    #- pytest -v --cov=sktime_dl --pyargs ../sktime_dl # 45mins Travis run
+    # long running tests are marked as "slow" and are excluded with -m="not slow"
     - pytest -v -m="not slow" --cov=sktime_dl --pyargs ../sktime_dl 
 
 after_success:
