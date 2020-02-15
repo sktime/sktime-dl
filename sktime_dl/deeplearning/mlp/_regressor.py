@@ -38,7 +38,9 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
                  model_name="mlp_regressor",
                  model_save_directory=None):
         super().__init__(
-            random_seed=random_seed)
+            model_name=model_name, 
+            model_save_directory=model_save_directory)
+        MLPNetwork.__init__(self, random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
@@ -47,15 +49,11 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
         :param model_name: string, the name of this model for printing and file writing purposes
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
-
         self.verbose = verbose
-        self.model_name = model_name
-        self.model_save_directory = model_save_directory
         self.is_fitted_ = False
 
         # calced in fit
         self.input_shape = None
-        self.model = None
         self.history = None
 
         # predefined

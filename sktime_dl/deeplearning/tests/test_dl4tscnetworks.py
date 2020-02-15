@@ -13,6 +13,7 @@ from sktime_dl.deeplearning import TLENETClassifier
 from sktime_dl.deeplearning import TWIESNClassifier
 from sktime_dl.deeplearning import InceptionTimeClassifier
 
+
 def test_basic_univariate(network=CNNClassifier(nb_epochs=50)):
     '''
     just a super basic test with gunpoint,

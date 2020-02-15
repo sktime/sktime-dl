@@ -43,6 +43,10 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
                  model_name="cnn_regressor",
                  model_save_directory=None):
         super().__init__(
+            model_name=model_name, 
+            model_save_directory=model_save_directory)
+        CNNNetwork.__init__(
+            self,
             kernel_size=kernel_size,
             avg_pool_size=avg_pool_size,
             nb_conv_layers=nb_conv_layers,
@@ -60,16 +64,12 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         :param model_name: string, the name of this model for printing and file writing purposes
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
-
         self.verbose = verbose
-        self.model_name = model_name
-        self.model_save_directory = model_save_directory
         self.is_fitted_ = False
 
         self.callbacks = []
 
         self.input_shape = None
-        self.model = None
         self.history = None
 
         self.nb_epochs = nb_epochs

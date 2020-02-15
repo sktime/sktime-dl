@@ -96,7 +96,7 @@ def test_tlenet_accuracy():
     accuracy_test(network=TLENETClassifier(), lower=0.90)
 
 
-@pytest.mark.skip(reason="TWIESN accuracy is 0.49 whilst Fawaz accuracy is 0.88.")
+@pytest.mark.skip(reason="TWIESN accuracy is 0.49 whilst dl-4-tsc accuracy is 0.88.")
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_twiesn_accuracy(): 
     accuracy_test(network=TWIESNClassifier(), lower=0.88-2*0.022)

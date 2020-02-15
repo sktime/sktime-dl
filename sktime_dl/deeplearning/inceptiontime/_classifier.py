@@ -37,6 +37,10 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
                  model_name="inception",
                  model_save_directory=None):
         super().__init__(
+            model_name=model_name, 
+            model_save_directory=model_save_directory)
+        InceptionTimeNetwork.__init__(
+            self,
             nb_filters=nb_filters,
             use_residual=use_residual,
             use_bottleneck=use_bottleneck,
@@ -58,10 +62,7 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
         :param model_name: string, the name of this model for printing and file writing purposes
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
-
         self.verbose = verbose
-        self.model_name = model_name
-        self.model_save_directory = model_save_directory
         self.is_fitted_ = False
 
         # predefined
@@ -69,10 +70,7 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
         self.nb_epochs = nb_epochs
 
         # calced in fit
-        self.classes_ = None
-        self.nb_classes = -1
         self.input_shape = None
-        self.model = None
         self.history = None
         self.callbacks = None
 

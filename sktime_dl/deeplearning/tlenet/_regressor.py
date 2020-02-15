@@ -36,7 +36,9 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
                  model_name="tlenet_regressor",
                  model_save_directory=None):
         super().__init__(
-            random_seed=random_seed)
+            model_name=model_name, 
+            model_save_directory=model_save_directory)
+        TLENETNetwork.__init__(self, random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
@@ -47,8 +49,6 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         '''
 
         self.verbose = verbose
-        self.model_name = model_name
-        self.model_save_directory = model_save_directory
         self.is_fitted_ = False
 
         self.nb_epochs = nb_epochs
@@ -56,7 +56,6 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
 
         # calced in fit
         self.input_shape = None
-        self.model = None
         self.history = None
 
     def build_model(self, input_shape, **kwargs):

@@ -33,7 +33,10 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
                  verbose=False,
                  model_name="resnet",
                  model_save_directory=None):
-        super().__init__(random_seed=random_seed)
+        super().__init__(
+            model_name=model_name, 
+            model_save_directory=model_save_directory)
+        ResNetNetwork.__init__(self, random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
@@ -44,15 +47,10 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
         '''
 
         self.verbose = verbose
-        self.model_name = model_name
-        self.model_save_directory = model_save_directory
         self.is_fitted_ = False
 
         # calced in fit
-        self.classes_ = None
-        self.nb_classes = -1
         self.input_shape = None
-        self.model = None
         self.history = None
 
         # predefined

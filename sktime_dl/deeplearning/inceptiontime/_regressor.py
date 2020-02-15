@@ -41,6 +41,10 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
                  model_name="inception_regressor",
                  model_save_directory=None):
         super().__init__(
+            model_name=model_name, 
+            model_save_directory=model_save_directory)
+        InceptionTimeNetwork.__init__(
+            self,
             nb_filters=nb_filters,
             use_residual=use_residual,
             use_bottleneck=use_bottleneck,
@@ -64,8 +68,6 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
         '''   
 
         self.verbose = verbose
-        self.model_name = model_name
-        self.model_save_directory = model_save_directory
         self.is_fitted_ = False
 
         # predefined
@@ -74,7 +76,6 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
 
         # calced in fit
         self.input_shape = None
-        self.model = None
         self.history = None
         self.callbacks = None
 

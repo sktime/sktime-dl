@@ -15,9 +15,13 @@ from sktime_dl.utils import save_trained_model
 
 
 class BaseDeepRegressor(BaseRegressor, RegressorMixin):
-    model_save_directory = None
-    model = None
-    model_name = None
+    
+    def __init__(self,
+                 model_name=None,
+                 model_save_directory=None):
+        self.model_save_directory = model_save_directory
+        self.model = None
+        self.model_name = model_name
 
     def build_model(self, input_shape, **kwargs):
         """
