@@ -9,7 +9,7 @@ from sklearn.linear_model import Ridge
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
 
 class TWIESNClassifier(BaseDeepClassifier):
     """Time Warping Invariant Echo State Network (TWIESN).

@@ -1,13 +1,13 @@
 __author__ = "James Large"
 
 import keras
-import keras_contrib
 import numpy as np
 
-from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.deeplearning.encoder._base import EncoderNetwork
 
 
-class EncoderClassifier(BaseDeepClassifier):
+class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
     """Encoder
 
     Adapted from the implementation from Fawaz et. al
@@ -34,6 +34,10 @@ class EncoderClassifier(BaseDeepClassifier):
                  verbose=False,
                  model_name="encoder",
                  model_save_directory=None):
+        super().__init__(
+            model_name=model_name, 
+            model_save_directory=model_save_directory)
+        EncoderNetwork.__init__(self, random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
@@ -44,24 +48,16 @@ class EncoderClassifier(BaseDeepClassifier):
         '''
 
         self.verbose = verbose
-        self.model_name = model_name
-        self.model_save_directory = model_save_directory
         self.is_fitted_ = False
 
         # calced in fit
-        self.classes_ = None
-        self.nb_classes = -1
         self.input_shape = None
-        self.model = None
         self.history = None
 
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
         self.callbacks = None
-
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -75,37 +71,8 @@ class EncoderClassifier(BaseDeepClassifier):
         -------
         output : a compiled Keras Model
         """
-        input_layer = keras.layers.Input(input_shape)
-
-        # conv block -1
-        conv1 = keras.layers.Conv1D(filters=128, kernel_size=5, strides=1, padding='same')(input_layer)
-        conv1 = keras_contrib.layers.InstanceNormalization()(conv1)
-        conv1 = keras.layers.PReLU(shared_axes=[1])(conv1)
-        conv1 = keras.layers.Dropout(rate=0.2)(conv1)
-        conv1 = keras.layers.MaxPooling1D(pool_size=2)(conv1)
-        # conv block -2
-        conv2 = keras.layers.Conv1D(filters=256, kernel_size=11, strides=1, padding='same')(conv1)
-        conv2 = keras_contrib.layers.InstanceNormalization()(conv2)
-        conv2 = keras.layers.PReLU(shared_axes=[1])(conv2)
-        conv2 = keras.layers.Dropout(rate=0.2)(conv2)
-        conv2 = keras.layers.MaxPooling1D(pool_size=2)(conv2)
-        # conv block -3
-        conv3 = keras.layers.Conv1D(filters=512, kernel_size=21, strides=1, padding='same')(conv2)
-        conv3 = keras_contrib.layers.InstanceNormalization()(conv3)
-        conv3 = keras.layers.PReLU(shared_axes=[1])(conv3)
-        conv3 = keras.layers.Dropout(rate=0.2)(conv3)
-        # split for attention
-        attention_data = keras.layers.Lambda(lambda x: x[:, :, :256])(conv3)
-        attention_softmax = keras.layers.Lambda(lambda x: x[:, :, 256:])(conv3)
-        # attention mechanism
-        attention_softmax = keras.layers.Softmax()(attention_softmax)
-        multiply_layer = keras.layers.Multiply()([attention_softmax, attention_data])
-        # last layer
-        dense_layer = keras.layers.Dense(units=256, activation='sigmoid')(multiply_layer)
-        dense_layer = keras_contrib.layers.InstanceNormalization()(dense_layer)
-        # output layer
-        flatten_layer = keras.layers.Flatten()(dense_layer)
-        output_layer = keras.layers.Dense(units=nb_classes, activation='softmax')(flatten_layer)
+        input_layer, output_layer = self.build_network(input_shape, **kwargs)
+        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 

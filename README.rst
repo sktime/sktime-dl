@@ -65,6 +65,19 @@ We also interface with `InceptionTime <https://github.com/hfawaz/InceptionTime>`
 
 - Inception network, singular. 
 
+Regression
+~~~~~~~~~~
+
+Most of the classifier architectures have been adapted to provide regressors. These are:
+- Time convolutional neural network (CNN)
+- Encoder (Encoder)
+- Fully convolutional neural network (FCNN)
+- Multi layer perceptron (MLP)
+- Residual network (resnet)
+- Time Le-Net (tlenet)
+- InceptionTime (inception)
+
+
 Meta-functionality
 ~~~~~~~~~~~~~~~~~~
 

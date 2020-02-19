@@ -2,7 +2,7 @@ from pathlib import Path
 
 from sktime.datasets import load_italy_power_demand
 from sktime_dl.meta import DeepLearnerEnsembleClassifier
-from sktime_dl.classifiers.deeplearning import CNNClassifier
+from sktime_dl.deeplearning import CNNClassifier
 
 
 
@@ -25,7 +25,7 @@ def test_basic_inmem(network=DeepLearnerEnsembleClassifier(
     X_train, y_train = load_italy_power_demand(split='TRAIN', return_X_y=True)
     X_test, y_test = load_italy_power_demand(split='TEST', return_X_y=True)
 
-    hist = network.fit(X_train[:10], y_train[:10])
+    __ = network.fit(X_train[:10], y_train[:10])
 
     print(network.score(X_test[:10], y_test[:10]))
     print("End test_basic()")

@@ -31,7 +31,7 @@ install:
     # create the testing environment
     - conda create -n testenv --yes python=$PYTHON_VERSION pip
     - source activate testenv
-    - conda install -n testenv --yes pip numpy=$NUMPY_VERSION cython nose pytest pytest-cov sphinx jupyter
+    - conda install -n testenv --yes pip numpy=$NUMPY_VERSION cython nose pytest pytest-cov flaky sphinx jupyter
     - pip install tensorflow==$TF_VERSION
     - pip install sphinx_rtd_theme
     - pip install nbsphinx
@@ -48,7 +48,8 @@ install:
 script:
     - mkdir for_test
     - cd for_test
-    - pytest -v --cov=sktime_dl --pyargs ../sktime_dl
+    # long running tests are marked as "slow" and are excluded with -m="not slow"
+    - pytest -v -m="not slow" --cov=sktime_dl --pyargs ../sktime_dl 
 
 after_success:
     - coveralls

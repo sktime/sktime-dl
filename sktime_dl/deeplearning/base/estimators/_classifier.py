@@ -1,4 +1,4 @@
-# Base class for the Keras neural networks adapted from Fawaz et. al
+# Base class for the Keras neural network classifiers adapted from Fawaz et. al
 # https://github.com/hfawaz/dl-4-tsc
 #
 # @article{fawaz2019deep,
@@ -29,13 +29,19 @@ from sktime.utils.validation.supervised import validate_X, validate_X_y
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
+from sktime_dl.utils import save_trained_model
+
 
 class BaseDeepClassifier(BaseClassifier):
-    classes_ = None
-    nb_classes = None
-    model_save_directory = None
-    model = None
-    model_name = None
+
+    def __init__(self,
+                 model_name=None,
+                 model_save_directory=None):
+        self.classes_ = None
+        self.nb_classes = None
+        self.model_save_directory = model_save_directory
+        self.model = None
+        self.model_name = model_name 
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -99,27 +105,11 @@ class BaseDeepClassifier(BaseClassifier):
 
         return X
 
-    def save_trained_model(self, save_format='h5'):
-        """
-        Saves the model to an HDF file.
-        
-        Saved models can be reinstantiated via `keras.models.load_model`.
-        Parameters
-        ----------
-        save_format: string
-            'h5'. Defaults to 'h5' currently but future releases
-            will default to 'tf', the TensorFlow SavedModel format.
-        """
-        if save_format is not 'h5':
-            raise ValueError("save_format must be 'h5'. This is the only format currently supported.")
-        if self.model_save_directory is not None:
-            if self.model_name is None:
-                file_name = 'trained_model.hdf5'
-            else:
-                file_name = self.model_name + '.hdf5'
-            path = Path(self.model_save_directory) / file_name
-            self.model.save(path) # Add save_format here upon migration from keras to tf.keras
-
+    def save_trained_model(self):
+        save_trained_model(
+            self.model,
+            self.model_save_directory,
+            self.model_name)
 
     def convert_y(self, y):
         self.label_encoder = LabelEncoder()
