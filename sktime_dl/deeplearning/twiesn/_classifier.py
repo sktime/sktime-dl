@@ -84,24 +84,22 @@ class TWIESNClassifier(BaseDeepClassifier):
         self.init_matrices()
 
         # transformed X
-        x_transformed = self.transform_to_feature_space(X)
+        X_transformed = self.transform_to_feature_space(X)
 
-        new_train_labels = np.repeat(y, self.T, axis=0)
+        y_new = np.repeat(y, self.T, axis=0)
 
         ridge_classifier = Ridge(alpha=self.lamda)
-        ridge_classifier.fit(x_transformed, new_train_labels)
+        ridge_classifier.fit(X_transformed, y_new)
 
         # transform Validation and labels
-        x_val_transformed = self.transform_to_feature_space(val_X)
-        new_val_labels = np.repeat(val_y, self.T, axis=0)
+        val_X_transformed = self.transform_to_feature_space(val_X)
 
-        val_preds = ridge_classifier.predict(x_val_transformed)
-
-        y_pred_val = self.reshape_prediction(val_preds, val_X.shape[0], self.T)
+        val_preds = ridge_classifier.predict(val_X_transformed)
+        val_preds = self.reshape_prediction(val_preds, val_X.shape[0], self.T)
 
         # calculate validation accuracy
         # argmax the val_y because it is in onehot encoding.
-        return accuracy_score(np.argmax(val_y, axis=1), y_pred_val)
+        return accuracy_score(np.argmax(val_y, axis=1), val_preds)
 
     def fit(self, X, y, input_checks=True, **kwargs):
         """
@@ -164,14 +162,14 @@ class TWIESNClassifier(BaseDeepClassifier):
         self.init_matrices()
 
         # transformed X
-        x_transformed = self.transform_to_feature_space(X)
+        X_transformed = self.transform_to_feature_space(X)
 
         # transform the corresponding labels
-        new_labels = np.repeat(y, X.shape[1], axis=0)
+        y_new = np.repeat(onehot_y, self.T, axis=0)
 
         # create and fit the tuned ridge classifier.
         self.model = Ridge(alpha=self.lamda)
-        self.model.fit(x_transformed, new_labels)
+        self.model.fit(X_transformed, y_new)
 
         self.save_trained_model()
         self.is_fitted_ = True
@@ -198,13 +196,14 @@ class TWIESNClassifier(BaseDeepClassifier):
         X = self.check_and_clean_data(X, input_checks=input_checks)
 
         # transform and predict prodba on the ridge classifier.
-        new_x_test = self.transform_to_feature_space(X)
+        X_transformed = self.transform_to_feature_space(X)
+        y_pred = self.model.predict(X_transformed)
 
-        # TODO: need to get the probabilities. this is not correct #need to convert but not argmax.
-        y_pred = self.model.predict(new_x_test)
+        # self.reshape_prediction will give us PREDICTIONS, not DISTRIBUTIONS (even if only one-hot)
+        # Computing first 2 lines of that but not the last here
 
         # reshape so the first axis has the number of instances
-        new_y_pred = y_pred.reshape(X.shape[0], X.shape[1], -1)
+        new_y_pred = y_pred.reshape(X.shape[0], X.shape[1], y_pred.shape[-1])
         # average the predictions of instances
         return np.average(new_y_pred, axis=1)
 
