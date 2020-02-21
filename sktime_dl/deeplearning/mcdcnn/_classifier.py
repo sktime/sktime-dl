@@ -149,11 +149,9 @@ class MCDCNNClassifier(BaseDeepClassifier):
         """
         X = self.check_and_clean_data(X, y, input_checks=input_checks)
 
-        x_train, x_val, y_train, y_val = \
-            train_test_split(X, y, test_size=0.33)
-
-        y_train_onehot = self.convert_y(y_train)
-        y_val_onehot = self.convert_y(y_val)
+        y_onehot = self.convert_y(y)
+        x_train, x_val, y_train_onehot, y_val_onehot = \
+            train_test_split(X, y_onehot, test_size=0.33)
 
         x_train = self.prepare_input(x_train)
         x_val = self.prepare_input(x_val)
