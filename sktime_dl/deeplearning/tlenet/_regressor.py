@@ -1,11 +1,9 @@
 __author__ = "James Large, Withington"
 
-import keras
+from tensorflow import keras
 import numpy as np
 
 from sklearn.utils.validation import check_is_fitted
-
-from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork

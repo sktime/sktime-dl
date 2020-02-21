@@ -7,7 +7,6 @@ standard deviations (also published) on the ItalyPowerDemand dataset.
 
 import pytest
 from flaky import flaky
-import numpy as np
 
 from sktime.datasets import load_italy_power_demand 
 

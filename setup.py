@@ -58,7 +58,7 @@ def find_install_requires():
         # 'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master', # doesn't work with pypi
         # 'keras_contrib', # use once keras_contrib is available on pypi
         'sktime>=0.3.0',
-        'keras>=2.3.0'
+        #'keras>=2.3.0'
     ]
     
     has_tf_gpu = False
@@ -77,6 +77,8 @@ def find_install_requires():
         # If tensorflow-gpu is not installed, then install tensorflow because
         # it includes GPU support from 1.15 onwards.
         install_requires.append('tensorflow>='+version_start)
+
+    install_requires.append('tensorflow-addons')
 
     return install_requires
 

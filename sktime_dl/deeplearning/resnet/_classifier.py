@@ -1,7 +1,6 @@
 __author__ = "James Large"
 
-import keras
-import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
 from sktime_dl.deeplearning.resnet._base import ResNetNetwork

@@ -1,7 +1,6 @@
 __author__ = "James Large"
 
-import keras
-import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.cnn._base import CNNNetwork

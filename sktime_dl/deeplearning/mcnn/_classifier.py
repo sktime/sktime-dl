@@ -4,7 +4,7 @@
 
 __author__ = "Aaron Bostrom, James Large"
 
-import keras
+from tensorflow import keras
 import numpy as np
 import gc
 

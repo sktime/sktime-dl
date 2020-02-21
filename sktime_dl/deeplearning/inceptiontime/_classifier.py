@@ -1,5 +1,4 @@
-import keras
-import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
 from sktime_dl.deeplearning.inceptiontime._base import InceptionTimeNetwork
