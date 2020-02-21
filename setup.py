@@ -11,11 +11,11 @@ import platform
 from pkg_resources import Requirement
 from pkg_resources import working_set
 
-try:
-    import numpy as np
-except ModuleNotFoundError:
-    raise ModuleNotFoundError("No module named 'numpy'. Please install "
-                              "numpy first using `pip install numpy`.")
+#try:
+#    import numpy as np
+#except ModuleNotFoundError:
+#    raise ModuleNotFoundError("No module named 'numpy'. Please install "
+#                              "numpy first using `pip install numpy`.")
 
 
 # raise warning for Python versions not equal to 3.6
@@ -57,7 +57,9 @@ def find_install_requires():
     install_requires = [
         # 'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master', # doesn't work with pypi
         # 'keras_contrib', # use once keras_contrib is available on pypi
+        #'numpy>=1.16.0'
         'sktime>=0.3.0',
+
         #'keras>=2.3.0'
     ]
     
@@ -139,5 +141,5 @@ setup(name=DISTNAME,
       include_package_data=True,
       install_requires=INSTALL_REQUIRES,
       extras_require=EXTRAS_REQUIRE,
-      include_dirs=[np.get_include()]
+      #include_dirs=[np.get_include()]
       )

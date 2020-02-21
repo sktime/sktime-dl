@@ -32,9 +32,7 @@ if len(sys.argv) > 1:
         tf.random.set_seed(rngseed)
 
 import gc
-import tensorflow
-
-print(tensorflow.keras.__version__)
+from tensorflow import keras
 
 from sktime_dl.deeplearning import CNNClassifier
 from sktime_dl.deeplearning import EncoderClassifier
