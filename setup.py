@@ -21,8 +21,8 @@ from pkg_resources import working_set
 
 
 # raise warning for Python versions not equal to 3.6
-if sys.version_info < (3, 6) or sys.version_info >= (3, 7):
-    raise RuntimeError("sktime-dl requires Python 3.6. The current"
+if sys.version_info < (3, 6) or sys.version_info >= (3, 8):
+    raise RuntimeError("sktime-dl requires Python 3.6 or 3.7 (only with tensorflow>=1.13.1). The current"
                        " Python version is %s installed in %s."
                        % (platform.python_version(), sys.executable))
 
@@ -62,8 +62,8 @@ def find_install_requires():
     # tensorflow version requirements
     # by default, make sure anything already installed is above 1.8.0, or if installing from new 
     # get the most recent stable (i.e. not nightly) version
-    version_min = '1.9.0'
-    tf_requires = 'tensorflow>=' + version_min
+    MINIMUM_TF_VERSION = '1.9.0'
+    tf_requires = 'tensorflow>=' + MINIMUM_TF_VERSION
 
     has_tf_gpu = False
     has_tf = False
@@ -81,7 +81,7 @@ def find_install_requires():
     if has_tf_gpu and not has_tf:   
         # have -gpu only (1.x), make sure it's above 1.8.0
         # Specify tensorflow-gpu version if it is already installed.
-        tf_requires = 'tensorflow-gpu>='+version_min
+        tf_requires = 'tensorflow-gpu>='+MINIMUM_TF_VERSION
 
     install_requires.append(tf_requires)
 
