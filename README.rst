@@ -8,34 +8,42 @@
 
 sktime-dl
 =========
-An extension package for deep learning with Keras for `sktime <https://github.com/alan-turing-institute/sktime>`__, a `scikit-learn <https://github.com/scikit-learn/scikit-learn>`__ compatible Python toolbox for learning with time series and panel data. 
+An extension package for deep learning with Tensorflow/Keras for `sktime <https://github.com/alan-turing-institute/sktime>`__, a `scikit-learn <https://github.com/scikit-learn/scikit-learn>`__ compatible Python toolbox for learning with time series and panel data. 
 
 sktime-dl is under development and we welcome new contributors.
 
 Installation
 ------------
 
-sktime-dl requires `keras-contrib <https://github.com/keras-team/keras-contrib>`__, which is not available on pypi. 
-
-The simplest installation method is:
+The simplest installation method is to install in a new environment via pip:
 ::
-
-	pip install sktime-dl
-	pip install git+https://www.github.com/keras-team/keras-contrib.git
+	# if using anaconda for environment management
+	conda create -n sktime-dl python=3.6
+	conda activate sktime-dl
 	
-sktime-dl is under development. To guarantee that you're using the most up to date code, you can install the development version: 
+	# if using virtualenv for environment management
+	virtualenv sktime-dl
+	source bin/activate            #unix
+	sktime-dl\Scipts\activate      #windows
+	
+	pip install sktime-dl
+	
+sktime-dl is under development. To ensure that you're using the most up to date code, you can instead install the development version in your environment: 
 ::
-	git clone https://github.com/uea-machine-learning/sktime-dl.git
+	git clone https://github.com/sktime-dl/sktime-dl.git
 	cd sktime-dl
 	git checkout dev
 	git pull origin dev
 	pip install . 
 	
-	pip install git+https://www.github.com/keras-team/keras-contrib.git
+When installing sktime-dl from scratch, the latest stable version of `Tensorflow <https://www.tensorflow.org/install/>`__ 2.x will be installed. Tensorflow 1.x is also supported beyond 1.9, if you have an existing installation in your environment that you wish to maintain. 
 	
-When installing sktime-dl, `Tensorflow <https://www.tensorflow.org/install/>`__ 1.x will be installed as the backend for Keras. Tensorflow 2.0 is also supported. Other backends should be usable in principle but are untested.
+Users with Tensorflow versions older than 2.1.0 shall also need to install `keras-contrib <https://github.com/keras-team/keras-contrib>`__ after installing sktime-dl, using the `installation instructions for tf.keras <https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras>`__. 
 	
-With these instructions, the networks can be run on your CPU. If you wish to run the networks on an NVIDIA® GPU, extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library) need to be installed separately to sktime-dl. See `this page <https://www.tensorflow.org/install/gpu#software_requirements>`__ for more information.
+Using GPUS
+~~~~~~~~~~
+	
+With the above instructions, the networks can be run out the box on your CPU. If you wish to run the networks on an NVIDIA® GPU, extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library) need to be installed separately to sktime-dl. See `this page <https://www.tensorflow.org/install/gpu#software_requirements>`__ for links and instructions, and also `this page <https://www.tensorflow.org/install/source#tested_build_configurations>`__ to ensure versioning compatability.       
 
 Lastly, if you have a tensorflow version less than 1.15, `tensorflow-gpu needs to be installed <https://www.tensorflow.org/install/gpu#older_versions_of_tensorflow>`__ in addition to (or in place of) the tensorflow (no suffix) that will be installed automatically, e.g.:
 ::
@@ -48,6 +56,9 @@ A repository for off-the-shelf networks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The aim is to define Keras networks able to be directly used within sktime and its pipelining and strategy tools, and by extension scikit-learn, for use in applications and research. Over time, we wish to interface or implement a wide range of networks from the literature in the context of time series analysis.
+
+Classification
+~~~~~~~~~~~~~~
 
 Currently, we interface with a number of networks for time series classification in particular. A large part of the current toolset serves as an interface to `dl-4-tsc <https://github.com/hfawaz/dl-4-tsc>`__, and implements the following network architectures: 
 
@@ -77,11 +88,17 @@ Most of the classifier architectures have been adapted to provide regressors. Th
 - Time Le-Net (tlenet)
 - InceptionTime (inception)
 
+Forecasting
+~~~~~~~~~~~
+
+The regression networks can also be used to perform time series forecasting via sktimes reduction strategies.
+
+We aim to incorporate bespoke forecasting networks in future updates, both specific architectures and general RNNs/LSTMs. 
 
 Meta-functionality
 ~~~~~~~~~~~~~~~~~~
 
--	Hyper-parameter tuning (through calls to sci-kit learns Grid and RandomizedSearch tools, currently) 
+-	Hyper-parameter tuning (through calls to sci-kit learn's Grid and RandomizedSearch tools, currently) 
 -	Ensembling methods (over different random initialisations for stability) 
 These act as wrappers to networks, and can be used in high-level and experimental pipelines as with any sktime model. 
 
