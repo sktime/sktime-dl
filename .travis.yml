@@ -16,8 +16,9 @@ cache:
 matrix:
     include:
         # add more combinations here as per requirement
-        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.16" TF_VERSION="1.15"
-        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.16" TF_VERSION="2.0"
+        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.16" TF_VERSION="1.9"
+        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.18" TF_VERSION="1.15"
+        - env: PYTHON_VERSION="3.7" NUMPY_VERSION="1.18" TF_VERSION="2.1"
 
 install:
     # install miniconda
@@ -37,14 +38,22 @@ install:
     - pip install nbsphinx
     - pip install coveralls
 
-    # install keras contrib manually as currently not available on pypi
-    - pip install git+https://github.com/keras-team/keras-contrib.git@master
-
     # for test pypi add dependency installs manually
     # - pip install --index-url --no-deps https://test.pypi.org/simple sktime_dl==0.2.dev1
     - pip install .
     - python setup.py build_ext -i
 
+    # install keras contrib manually as currently not available on pypi
+    # pip install git+https://github.com/keras-team/keras-contrib.git@master
+    
+    # now need to install keras-contrib for tf.keras instead of standalone keras
+    # not needed for the tf_version 2.1 env, but does not hurt either. investigate 
+    # conditional installation 
+    - git clone https://www.github.com/keras-team/keras-contrib.git
+    - cd keras-contrib
+    - python convert_to_tf_keras.py
+    - USE_TF_KERAS=1 python setup.py install
+		
 script:
     - mkdir for_test
     - cd for_test
