@@ -44,10 +44,6 @@ Using GPUS
 ~~~~~~~~~~
 	
 With the above instructions, the networks can be run out the box on your CPU. If you wish to run the networks on an NVIDIA® GPU, extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library) need to be installed separately to sktime-dl. See `this page <https://www.tensorflow.org/install/gpu#software_requirements>`__ for links and instructions, and also `this page <https://www.tensorflow.org/install/source#tested_build_configurations>`__ for a list of definite versioning compatabilities.       
-
-Lastly, if you have a tensorflow version less than 1.15, `tensorflow-gpu needs to be installed <https://www.tensorflow.org/install/gpu#older_versions_of_tensorflow>`__ in addition to (or in place of) the tensorflow (no suffix) that will be installed automatically, e.g.:
-::
-	pip install tensorflow-gpu==1.14
 	
 Overview
 --------
