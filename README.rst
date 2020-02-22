@@ -76,6 +76,7 @@ Regression
 ~~~~~~~~~~
 
 Most of the classifier architectures have been adapted to provide regressors. These are:
+
 - Time convolutional neural network (CNN)
 - Encoder (Encoder)
 - Fully convolutional neural network (FCNN)
@@ -87,7 +88,7 @@ Most of the classifier architectures have been adapted to provide regressors. Th
 Forecasting
 ~~~~~~~~~~~
 
-The regression networks can also be used to perform time series forecasting via sktimes reduction strategies.
+The regression networks can also be used to perform time series forecasting via sktime's `reduction strategies <https://alan-turing-institute.github.io/sktime/examples/forecasting.html#Reduction-strategies>`__. 
 
 We aim to incorporate bespoke forecasting networks in future updates, both specific architectures and general RNNs/LSTMs. 
 
