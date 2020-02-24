@@ -53,6 +53,7 @@ install:
     - cd keras-contrib
     - python convert_to_tf_keras.py
     - USE_TF_KERAS=1 python setup.py install
+    - cd ..
     
 script:
     - mkdir for_test
