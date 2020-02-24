@@ -1,7 +1,10 @@
 __author__ = "James Large, Withington"
 
+import tensorflow.keras as keras
 import tensorflow
-from tensorflow import keras
+
+if tensorflow.__version__ >= '1.15' and tensorflow.__version__ <= '2':
+    keras.__name__ = 'tensorflow.keras'
 
 if tensorflow.__version__ < '2.1.0':
     import keras_contrib as ADDONS
