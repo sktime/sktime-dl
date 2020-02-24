@@ -17,7 +17,7 @@ matrix:
     include:
         # add more combinations here as per requirement
         - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.16" TF_VERSION="1.9"
-        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.18" TF_VERSION="1.15"
+        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.18" TF_VERSION="1.14"
         - env: PYTHON_VERSION="3.7" NUMPY_VERSION="1.18" TF_VERSION="2.1"
 
 install:
@@ -53,7 +53,8 @@ install:
     - cd keras-contrib
     - python convert_to_tf_keras.py
     - USE_TF_KERAS=1 python setup.py install
-		
+    - cd ..
+    
 script:
     - mkdir for_test
     - cd for_test
