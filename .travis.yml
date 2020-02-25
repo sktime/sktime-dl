@@ -4,7 +4,7 @@ branches:
         - master
         - dev
 
-dist: trusty
+dist: xenial
 sudo: false
 
 language: python
@@ -42,10 +42,10 @@ install:
     # - pip install --index-url --no-deps https://test.pypi.org/simple sktime_dl==0.2.dev1
     - pip install .
     - python setup.py build_ext -i
-
+    
     - pip uninstall scikit-learn
     - pip install scikit-learn==0.20
-
+    
     # install keras contrib manually as currently not available on pypi
     # pip install git+https://github.com/keras-team/keras-contrib.git@master
     
