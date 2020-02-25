@@ -12,14 +12,14 @@ language: python
 cache:
     directories:
         - $HOME/.cache/pip
-
+        
 matrix:
     include:
         # add more combinations here as per requirement
         - env: PYTHON_VERSION="3.6" TF_VERSION="1.9"
         - env: PYTHON_VERSION="3.6" TF_VERSION="1.15"
         - env: PYTHON_VERSION="3.7" TF_VERSION="2.1"
-
+        
 install:
     # install miniconda
     - deactivate
@@ -28,7 +28,7 @@ install:
     - chmod +x miniconda.sh && ./miniconda.sh -b -p $MINICONDA_PATH
     - export PATH=$MINICONDA_PATH/bin:$PATH
     - conda update --yes conda
-
+    
     # create the testing environment
     - conda create -n testenv --yes python=$PYTHON_VERSION pip
     - source activate testenv
@@ -37,12 +37,12 @@ install:
     - pip install sphinx_rtd_theme
     - pip install nbsphinx
     - pip install coveralls
-
+    
     # for test pypi add dependency installs manually
     # - pip install --index-url --no-deps https://test.pypi.org/simple sktime_dl==0.2.dev1
     - pip install .
     - python setup.py build_ext -i
-
+    
     # now need to install keras-contrib for tf.keras instead of standalone keras
     # not needed for the tf_version 2.1 env, but does not hurt either. investigate 
     # conditional installation 
@@ -58,7 +58,7 @@ script:
     - cd for_test
     # long running tests are marked as "slow" and are excluded with -m="not slow"
     - pytest -v -m="not slow" --cov=sktime_dl --pyargs ../sktime_dl 
-
+    
 after_success:
     - coveralls
 
