@@ -32,7 +32,7 @@ install:
     # create the testing environment
     - conda create -n testenv --yes python=$PYTHON_VERSION pip
     - source activate testenv
-    - conda install -n testenv --yes pip libgcc numpy cython nose pytest pytest-cov flaky sphinx jupyter  
+    - conda install -n testenv --yes pip numpy cython nose pytest pytest-cov flaky sphinx jupyter  
     - pip install tensorflow==$TF_VERSION
     - pip install sphinx_rtd_theme
     - pip install nbsphinx
@@ -42,13 +42,7 @@ install:
     # - pip install --index-url --no-deps https://test.pypi.org/simple sktime_dl==0.2.dev1
     - pip install .
     - python setup.py build_ext -i
-    
-    #- pip uninstall scikit-learn
-    #- pip install scikit-learn==0.20
-    
-    # install keras contrib manually as currently not available on pypi
-    # pip install git+https://github.com/keras-team/keras-contrib.git@master
-    
+
     # now need to install keras-contrib for tf.keras instead of standalone keras
     # not needed for the tf_version 2.1 env, but does not hurt either. investigate 
     # conditional installation 

@@ -24,7 +24,7 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
       organization={IEEE}
     }
     """
- 
+
     def __init__(self,
                  nb_epochs=1500,
                  batch_size=16,
@@ -34,7 +34,7 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
                  model_name="resnet_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         ResNetNetwork.__init__(self, random_seed=random_seed)
         '''
@@ -123,4 +123,3 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
         self.is_fitted_ = True
 
         return self
-    

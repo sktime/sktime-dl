@@ -34,7 +34,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
                  model_name="tlenet_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         TLENETNetwork.__init__(self, random_seed=random_seed)
         '''
@@ -101,11 +101,11 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         self : object
         """
         X = self.check_and_clean_data(X, y, input_checks=input_checks)
-        
+
         self.adjust_parameters(X)
         X, y, __ = self.pre_processing(X, y)
 
-        input_shape = X.shape[1:] # pylint: disable=E1136  # pylint/issues/3139
+        input_shape = X.shape[1:]  # pylint: disable=E1136  # pylint/issues/3139
         self.model = self.build_model(input_shape)
 
         self.hist = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
@@ -141,9 +141,9 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         X, _, tot_increase_num = self.pre_processing(X)
 
         preds = self.model.predict(X, batch_size=self.batch_size)
-        
+
         y_predicted = []
-        test_num_batch = int(X.shape[0] / tot_increase_num) # pylint: disable=E1136  # pylint/issues/3139
+        test_num_batch = int(X.shape[0] / tot_increase_num)  # pylint: disable=E1136  # pylint/issues/3139
 
         ##TODO: could fix this to be an array literal.
         for i in range(test_num_batch):

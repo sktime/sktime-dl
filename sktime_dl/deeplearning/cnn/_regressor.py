@@ -39,7 +39,7 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
                  model_name="cnn_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         CNNNetwork.__init__(
             self,

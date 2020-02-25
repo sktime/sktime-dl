@@ -34,7 +34,7 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
                  model_name="encoder_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         EncoderNetwork.__init__(self, random_seed=random_seed)
         '''
@@ -107,4 +107,3 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
         self.is_fitted_ = True
 
         return self
-    

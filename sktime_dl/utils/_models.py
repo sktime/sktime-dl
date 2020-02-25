@@ -24,4 +24,4 @@ def save_trained_model(model, model_save_directory, model_name, save_format='h5'
         else:
             file_name = model_name + '.hdf5'
         path = Path(model_save_directory) / file_name
-        model.save(path) # Add save_format here upon migration from keras to tf.keras
+        model.save(path)  # Add save_format here upon migration from keras to tf.keras

@@ -34,7 +34,7 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
                  model_name="fcn_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         FCNNetwork.__init__(self, random_seed=random_seed)
         '''    

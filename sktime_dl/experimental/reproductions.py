@@ -25,10 +25,11 @@ if len(sys.argv) > 1:
 
         seed(rngseed)
 
-        #from tensorflow import set_random_seed
-        #set_random_seed(rngseed)
+        # from tensorflow import set_random_seed
+        # set_random_seed(rngseed)
 
         import tensorflow as tf
+
         tf.random.set_seed(rngseed)
 
 import gc

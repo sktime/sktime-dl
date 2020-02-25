@@ -5,13 +5,12 @@ from sktime_dl.meta import DeepLearnerEnsembleClassifier
 from sktime_dl.deeplearning import CNNClassifier
 
 
-
 def test_basic_inmem(network=DeepLearnerEnsembleClassifier(
-            base_model=CNNClassifier(nb_epochs=50),
-            nb_iterations=2,
-            keep_in_memory=True,
-            model_save_directory=None,
-            verbose=True)):
+    base_model=CNNClassifier(nb_epochs=50),
+    nb_iterations=2,
+    keep_in_memory=True,
+    model_save_directory=None,
+    verbose=True)):
     '''
     just a super basic test with gunpoint,
         load data,
@@ -32,11 +31,11 @@ def test_basic_inmem(network=DeepLearnerEnsembleClassifier(
 
 
 def test_basic_saving(network=DeepLearnerEnsembleClassifier(
-            base_model=CNNClassifier(nb_epochs=50),
-            nb_iterations=2,
-            keep_in_memory=False,
-            model_save_directory="testResultsDELETE",
-            verbose=True)):
+    base_model=CNNClassifier(nb_epochs=50),
+    nb_iterations=2,
+    keep_in_memory=False,
+    model_save_directory="testResultsDELETE",
+    verbose=True)):
     '''
     just a super basic test with gunpoint,
         load data,
@@ -57,9 +56,9 @@ def test_basic_saving(network=DeepLearnerEnsembleClassifier(
 
     print(network.score(X_test[:10], y_test[:10]))
 
-    (path / (network.base_model.model_name + "_0.hdf5")).unlink() # delete file
-    (path / (network.base_model.model_name + "_1.hdf5")).unlink() # delete file
-    path.rmdir() # directory should now be empty, fails if not
+    (path / (network.base_model.model_name + "_0.hdf5")).unlink()  # delete file
+    (path / (network.base_model.model_name + "_1.hdf5")).unlink()  # delete file
+    path.rmdir()  # directory should now be empty, fails if not
 
     print("End test_basic()")
 

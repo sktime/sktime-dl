@@ -12,15 +12,7 @@ import warnings
 from pkg_resources import Requirement
 from pkg_resources import working_set
 
-
-#try:
-#    import numpy as np
-#except ModuleNotFoundError:
-#    raise ModuleNotFoundError("No module named 'numpy'. Please install "
-#                              "numpy first using `pip install numpy`.")
-
-
-# raise warning for Python versions not equal to 3.6
+# raise early warning for incompatible Python versions
 if sys.version_info < (3, 6) or sys.version_info >= (3, 8):
     raise RuntimeError("sktime-dl requires Python 3.6 or 3.7 (only with tensorflow>=1.13.1). The current"
                        " Python version is %s installed in %s."
@@ -80,7 +72,7 @@ def find_install_requires():
         tf_gpu_version = tf_gpu._version
 
     if has_tf_gpu and not has_tf:   
-        # have -gpu only (1.x), make sure it's above 1.8.0
+        # have -gpu only (1.x), make sure it's above 1.9.0
         # Specify tensorflow-gpu version if it is already installed.
         tf_requires = 'tensorflow-gpu>='+MINIMUM_TF_VERSION
 
@@ -93,7 +85,7 @@ def find_install_requires():
     else:
         # fall back to keras-contrib, not on pypi so need to instal it separately
         # not printing. TODO
-        print('Existing version of tensorflow lder than version 2.1.0 detected.' \
+        print('Existing version of tensorflow older than version 2.1.0 detected.' \
            'You shall need to install keras-contrib (for tf.keras) in order to use all the features of sktime-dl.' \
            '\n See https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras')
 
@@ -107,7 +99,7 @@ with codecs.open('README.rst', encoding='utf-8-sig') as f:
     LONG_DESCRIPTION = f.read()
 MAINTAINER = 'F. Király'
 MAINTAINER_EMAIL = 'fkiraly@turing.ac.uk'
-URL = 'https://github.com/uea-machine-learning/sktime-dl'
+URL = 'https://github.com/sktime/sktime-dl'
 LICENSE = 'BSD-3-Clause'
 DOWNLOAD_URL = 'https://pypi.org/project/sktime-dl/#files'
 PROJECT_URLS = {
@@ -158,5 +150,4 @@ setup(name=DISTNAME,
       include_package_data=True,
       install_requires=INSTALL_REQUIRES,
       extras_require=EXTRAS_REQUIRE,
-      #include_dirs=[np.get_include()]
       )

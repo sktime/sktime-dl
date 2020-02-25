@@ -113,4 +113,3 @@ class ResNetNetwork(BaseDeepNetwork):
         gap_layer = keras.layers.GlobalAveragePooling1D()(output_block_3)
 
         return input_layer, gap_layer
-        

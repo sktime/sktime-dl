@@ -34,7 +34,7 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
                  model_name="encoder",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         EncoderNetwork.__init__(self, random_seed=random_seed)
         '''

@@ -36,7 +36,7 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
                  model_name="inception",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         InceptionTimeNetwork.__init__(
             self,

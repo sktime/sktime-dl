@@ -5,6 +5,7 @@ from tensorflow import keras
 from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
 from sktime_dl.deeplearning.resnet._base import ResNetNetwork
 
+
 class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
     """Residual Network (ResNet).
 
@@ -33,7 +34,7 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
                  model_name="resnet",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         ResNetNetwork.__init__(self, random_seed=random_seed)
         '''

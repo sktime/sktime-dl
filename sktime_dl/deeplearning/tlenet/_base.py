@@ -52,8 +52,8 @@ class TLENETNetwork(BaseDeepNetwork):
         increase_num = length - length_sliced + 1  # if increase_num =5, it means one ori becomes 5 new instances.
         if increase_num < 0:
             raise Exception('Number of augmented data samples cannot be \
-                negative. Length of time series:', length, 'Slice length:', 
-                length_sliced, '.')
+                negative. Length of time series:', length, 'Slice length:',
+                            length_sliced, '.')
         n_sliced = n * increase_num
 
         # print((n_sliced, length_sliced, n_dim))
@@ -67,14 +67,14 @@ class TLENETNetwork(BaseDeepNetwork):
         # transform y, if present.
         new_y = None
         if y is not None:
-            if len(y.shape)>1 :
+            if len(y.shape) > 1:
                 new_shape = (n_sliced, y.shape[1])
             else:
-                 new_shape = (n_sliced,)
+                new_shape = (n_sliced,)
             new_y = np.zeros(new_shape)
             for i in range(n):
                 for j in range(increase_num):
-                    new_y[i * increase_num + j] = y[i] 
+                    new_y[i * increase_num + j] = y[i]
 
         return new_x, new_y, increase_num
 
@@ -140,10 +140,10 @@ class TLENETNetwork(BaseDeepNetwork):
             self.warping_ratios = [1]
             self.slice_ratio = 0.9
         # Handle short series
-        ratios = [i for i in self.warping_ratios if m/i >= 8]
+        ratios = [i for i in self.warping_ratios if m / i >= 8]
         self.warping_ratios = ratios
         if m * self.slice_ratio < 8:
-            self.slice_ratio = 8 / m # increase the slice if series too short
+            self.slice_ratio = 8 / m  # increase the slice if series too short
 
     def pre_processing(self, X, y=None):
         length_ratio = int(self.slice_ratio * X.shape[1])
@@ -187,10 +187,10 @@ class TLENETNetwork(BaseDeepNetwork):
         # merge y if its not None.
         new_y = None
         if y is not None:
-            if len(y.shape)>1 :
+            if len(y.shape) > 1:
                 new_shape = (y.shape[0] * tot_increase_num, y.shape[1])
             else:
-                 new_shape = (y.shape[0] * tot_increase_num,)
+                new_shape = (y.shape[0] * tot_increase_num,)
             new_y = np.zeros(new_shape)
             idx = 0
             for i in range(X.shape[0]):

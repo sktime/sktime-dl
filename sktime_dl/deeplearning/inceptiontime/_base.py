@@ -24,13 +24,13 @@ class InceptionTimeNetwork(BaseDeepNetwork):
     """
 
     def __init__(self,
-                nb_filters=32,
-                use_residual=True,
-                use_bottleneck=True,
-                bottleneck_size=32,
-                depth=6,
-                kernel_size=41 - 1,
-                random_seed=0):
+                 nb_filters=32,
+                 use_residual=True,
+                 use_bottleneck=True,
+                 bottleneck_size=32,
+                 depth=6,
+                 kernel_size=41 - 1,
+                 random_seed=0):
         '''
         :param nb_filters: int,
         :param use_residual: boolean,
@@ -116,5 +116,3 @@ class InceptionTimeNetwork(BaseDeepNetwork):
         gap_layer = keras.layers.GlobalAveragePooling1D()(x)
 
         return input_layer, gap_layer
-
-        

@@ -40,7 +40,7 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
                  model_name="cnn",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         CNNNetwork.__init__(
             self,
