@@ -57,6 +57,7 @@ def find_install_requires():
 
     install_requires = [
         'sktime>=0.3.0',
+        'scikit-learn==0.21.3',
         'h5py>=2.8.0',
     ]
 
