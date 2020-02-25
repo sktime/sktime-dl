@@ -34,7 +34,6 @@ install:
     - source activate testenv
     - conda install -n testenv --yes pip libgcc numpy cython nose pytest pytest-cov flaky sphinx jupyter  
     - pip install tensorflow==$TF_VERSION
-    - pip install scikit-learn==0.20
     - pip install sphinx_rtd_theme
     - pip install nbsphinx
     - pip install coveralls
@@ -43,6 +42,9 @@ install:
     # - pip install --index-url --no-deps https://test.pypi.org/simple sktime_dl==0.2.dev1
     - pip install .
     - python setup.py build_ext -i
+
+    - pip uninstall scikit-learn
+    - pip install scikit-learn==0.20
 
     # install keras contrib manually as currently not available on pypi
     # pip install git+https://github.com/keras-team/keras-contrib.git@master
