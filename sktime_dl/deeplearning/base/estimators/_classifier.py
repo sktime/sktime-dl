@@ -22,6 +22,7 @@ import numpy as np
 import pandas as pd
 
 from sktime.classifiers.base import BaseClassifier
+from sklearn.utils.validation import check_is_fitted
 from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sklearn.preprocessing import LabelEncoder
@@ -72,6 +73,8 @@ class BaseDeepClassifier(BaseClassifier):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
+        check_is_fitted(self)
+
         X = self.check_and_clean_data(X, input_checks=input_checks)
 
         probs = self.model.predict(X, **kwargs)
