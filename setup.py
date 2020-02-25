@@ -87,7 +87,7 @@ def find_install_requires():
     install_requires.append(tf_requires)
 
     # tensorflow itself handled, now find out what add-on package to use
-    if (not has_tf and not has_tf_gpu) or (has_tf and tf_version > '2.1.0'): 
+    if (not has_tf and not has_tf_gpu) or (has_tf and tf_version >= '2.1.0'): 
         # tensorflow will be up-to-date enough to use most recent tensorflow-addons, the replacement for keras-contrib
         install_requires.append('tensorflow-addons')
     else:
