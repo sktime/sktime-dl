@@ -32,7 +32,7 @@ install:
     # create the testing environment
     - conda create -n testenv --yes python=$PYTHON_VERSION pip
     - source activate testenv
-    - conda install -n testenv --yes pip numpy=$NUMPY_VERSION cython nose pytest pytest-cov flaky sphinx jupyter
+    - conda install -n testenv --yes pip numpy=$NUMPY_VERSION cython nose pytest pytest-cov flaky sphinx jupyter libgcc 
     - pip install tensorflow==$TF_VERSION
     - pip install sphinx_rtd_theme
     - pip install nbsphinx
