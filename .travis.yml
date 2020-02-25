@@ -43,8 +43,8 @@ install:
     - pip install .
     - python setup.py build_ext -i
     
-    - pip uninstall scikit-learn
-    - pip install scikit-learn==0.20
+    #- pip uninstall scikit-learn
+    #- pip install scikit-learn==0.20
     
     # install keras contrib manually as currently not available on pypi
     # pip install git+https://github.com/keras-team/keras-contrib.git@master
