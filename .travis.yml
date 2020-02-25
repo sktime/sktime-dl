@@ -34,7 +34,7 @@ install:
     - source activate testenv
     - conda install -n testenv --yes pip libgcc numpy cython nose pytest pytest-cov flaky sphinx jupyter  
     - pip install tensorflow==$TF_VERSION
-    - pip install scikit-learn
+    - pip install scikit-learn==0.2.0
     - pip install sphinx_rtd_theme
     - pip install nbsphinx
     - pip install coveralls
