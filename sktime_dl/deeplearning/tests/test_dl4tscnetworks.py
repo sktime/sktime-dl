@@ -1,4 +1,4 @@
-# python sktime_dl/classifiers/deeplearning/tests/test_dl4tscnetworks.py
+import tensorflow # importing this before anything else, tests for tf2.1 travis env
 
 from sktime.datasets import load_italy_power_demand  # , load_basic_motions
 

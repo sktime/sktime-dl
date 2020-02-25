@@ -5,6 +5,8 @@ Test that accuracy is higher than the published accuracy minus two
 standard deviations (also published) on the ItalyPowerDemand dataset.
 '''
 
+import tensorflow # importing this before anything else, tests for tf2.1 travis env
+
 import pytest
 from flaky import flaky
 

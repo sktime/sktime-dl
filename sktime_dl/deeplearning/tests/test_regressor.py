@@ -1,3 +1,5 @@
+import tensorflow # importing this before anything else, tests for tf2.1 travis env
+
 import numpy as np
 import pandas as pd
 

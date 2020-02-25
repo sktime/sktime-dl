@@ -16,9 +16,9 @@ cache:
 matrix:
     include:
         # add more combinations here as per requirement
-        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.16" TF_VERSION="1.9"
-        - env: PYTHON_VERSION="3.6" NUMPY_VERSION="1.18" TF_VERSION="1.15"
-        - env: PYTHON_VERSION="3.7" NUMPY_VERSION="1.18" TF_VERSION="2.1"
+        - env: PYTHON_VERSION="3.6" TF_VERSION="1.9"
+        - env: PYTHON_VERSION="3.6" TF_VERSION="1.15"
+        - env: PYTHON_VERSION="3.7" TF_VERSION="2.1"
 
 install:
     # install miniconda
@@ -32,7 +32,7 @@ install:
     # create the testing environment
     - conda create -n testenv --yes python=$PYTHON_VERSION pip
     - source activate testenv
-    - conda install -n testenv --yes pip numpy=$NUMPY_VERSION cython nose pytest pytest-cov flaky sphinx jupyter libgcc 
+    - conda install -n testenv --yes pip libgcc numpy cython nose pytest pytest-cov flaky sphinx jupyter  
     - pip install tensorflow==$TF_VERSION
     - pip install scikit-learn
     - pip install sphinx_rtd_theme
@@ -56,9 +56,8 @@ install:
     - USE_TF_KERAS=1 python setup.py install
     - cd ..
     
-    - pip list
-    
 script:
+    - pip list
     - mkdir for_test
     - cd for_test
     # long running tests are marked as "slow" and are excluded with -m="not slow"
