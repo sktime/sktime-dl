@@ -57,6 +57,7 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
         :param batch_size: int, the number of samples per gradient update.
         :param bottleneck_size: int,
         :param nb_epochs: int, the number of epochs to train the model
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes

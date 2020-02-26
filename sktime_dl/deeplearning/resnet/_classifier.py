@@ -41,6 +41,7 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes

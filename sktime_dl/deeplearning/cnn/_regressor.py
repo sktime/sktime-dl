@@ -57,6 +57,7 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         :param avg_pool_size: int, size of the average pooling windows
         :param nb_conv_layers: int, the number of convolutional plus average pooling layers
         :param filter_sizes: int, array of shape = (nb_conv_layers)
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
