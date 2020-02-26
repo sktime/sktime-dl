@@ -3,7 +3,7 @@ __author__ = "Aaron Bostrom, James Large"
 from tensorflow import keras
 import numpy as np
 
-from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
 
 

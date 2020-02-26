@@ -2,7 +2,7 @@ __author__ = "James Large"
 
 from tensorflow import keras
 
-from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.encoder._base import EncoderNetwork
 
 

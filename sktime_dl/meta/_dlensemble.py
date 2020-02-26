@@ -82,7 +82,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
 
-    def construct_model(self, itr):
+    def _construct_model(self, itr):
         model = clone(self.base_model)
         model.random_seed = self.random_seed + itr
 
@@ -196,6 +196,9 @@ class EnsembleFromFileClassifier(BaseClassifier):
     '''
     A simple utility for post-hoc ensembling over the results of networks that have already been trained and had their results
     saved via sktime.contrib.experiments.py
+
+    Note that there will be faulty edge cases with this, e.g. if the build process using this is naively timed, only the
+    file read and prediction averaging will be taken in to consideration, not the actual network training
     '''
 
     def __init__(self,
@@ -220,7 +223,7 @@ class EnsembleFromFileClassifier(BaseClassifier):
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
 
-    def load_network_probs(self, network_name, itr, res_path, dataset_name, fold):
+    def _load_network_probs(self, network_name, itr, res_path, dataset_name, fold):
         path = os.path.join(res_path, network_name + str(itr), "Predictions", dataset_name,
                             "testFold" + str(fold) + ".csv")
         probs = pd.read_csv(path, engine='python', skiprows=3, header=None)
