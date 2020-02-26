@@ -29,6 +29,8 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
     def __init__(self,
                  nb_epochs=1000,
                  batch_size=256,
+
+                 callbacks=[],
                  verbose=False,
                  random_seed=0,
                  model_name="tlenet_regressor",
@@ -51,6 +53,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+        self.callbacks = callbacks
 
         # calced in fit
         self.input_shape = None
@@ -80,9 +83,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
             file_path = self.model_save_directory + 'best_model.hdf5'
             model_checkpoint = keras.callbacks.ModelCheckpoint(
                 filepath=file_path, monitor='loss', save_best_only=True)
-            self.callbacks = [model_checkpoint]
-        else:
-            self.callbacks = []
+            self.callbacks.append(model_checkpoint)
 
         return model
 

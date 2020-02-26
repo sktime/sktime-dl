@@ -29,6 +29,7 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
                  nb_epochs=5000,
                  batch_size=16,
 
+                 callbacks=[],
                  random_seed=0,
                  verbose=False,
                  model_name="mlp",
@@ -56,7 +57,7 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = None
+        self.callbacks = callbacks
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -78,9 +79,11 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
         model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adadelta(),
                       metrics=['accuracy'])
 
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=200, min_lr=0.1)
-
-        self.callbacks = [reduce_lr]
+        # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
+        if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
+            reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
+                                                          min_lr=0.0001)
+            self.callbacks.append(reduce_lr)
 
         return model
 

@@ -34,6 +34,8 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
                  avg_pool_size=3,
                  nb_conv_layers=2,
                  filter_sizes=[6, 12],
+
+                 callbacks=[],
                  random_seed=0,
                  verbose=False,
                  model_name="cnn_regressor",
@@ -63,7 +65,7 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         self.verbose = verbose
         self.is_fitted_ = False
 
-        self.callbacks = []
+        self.callbacks = callbacks
 
         self.input_shape = None
         self.history = None

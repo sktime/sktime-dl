@@ -29,6 +29,7 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
                  nb_epochs=2000,
                  batch_size=16,
 
+                 callbacks=[],
                  random_seed=0,
                  verbose=False,
                  model_name="fcn_regressor",
@@ -55,7 +56,7 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = None
+        self.callbacks = callbacks
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -76,10 +77,11 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
                       metrics=['accuracy'])
 
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
-                                                      min_lr=0.0001)
-
-        self.callbacks = [reduce_lr]
+        # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
+        if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
+            reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
+                                                          min_lr=0.0001)
+            self.callbacks.append(reduce_lr)
 
         return model
 

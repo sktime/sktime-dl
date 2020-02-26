@@ -29,6 +29,7 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
                  nb_epochs=1500,
                  batch_size=16,
 
+                 callbacks=[],
                  random_seed=0,
                  verbose=False,
                  model_name="resnet",
@@ -56,7 +57,7 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = None
+        self.callbacks = callbacks
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -79,13 +80,11 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
         model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(),
                       metrics=['accuracy'])
 
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50, min_lr=0.0001)
-
-        # file_path = self.output_directory + 'best_model.hdf5'
-        # model_checkpoint = keras.callbacks.ModelCheckpoint(filepath=file_path, monitor='loss',
-        #                                                   save_best_only=True)
-        # self.callbacks = [reduce_lr, model_checkpoint]
-        self.callbacks = [reduce_lr]
+        # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
+        if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
+            reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
+                                                          min_lr=0.0001)
+            self.callbacks.append(reduce_lr)
 
         return model
 

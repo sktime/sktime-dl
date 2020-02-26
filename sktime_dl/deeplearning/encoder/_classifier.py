@@ -29,6 +29,7 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
                  nb_epochs=100,
                  batch_size=12,
 
+                 callbacks=[],
                  random_seed=0,
                  verbose=False,
                  model_name="encoder",
@@ -56,7 +57,7 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = None
+        self.callbacks = callbacks
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -77,8 +78,6 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
 
         model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(0.00001),
                       metrics=['accuracy'])
-
-        self.callbacks = []
 
         return model
 

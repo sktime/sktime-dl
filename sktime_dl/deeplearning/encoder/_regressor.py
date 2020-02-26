@@ -29,6 +29,7 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
                  nb_epochs=2000,
                  batch_size=16,
 
+                 callbacks=[],
                  random_seed=0,
                  verbose=False,
                  model_name="encoder_regressor",
@@ -55,7 +56,7 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = None
+        self.callbacks = callbacks
 
     def build_model(self, input_shape, **kwargs):
         """

@@ -28,6 +28,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
                  nb_epochs=1000,
                  batch_size=256,
 
+                 callbacks=[],
                  verbose=False,
                  random_seed=0,
                  model_name="tlenet",
@@ -50,6 +51,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+        self.callbacks = callbacks
 
         # calced in fit
         self.input_shape = None
@@ -75,13 +77,6 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         model.compile(optimizer=keras.optimizers.Adam(lr=0.01, decay=0.005),
                       loss='categorical_crossentropy', metrics=['accuracy'])
 
-        # file_path = self.output_directory+'best_model.hdf5'
-
-        # model_checkpoint = keras.callbacks.ModelCheckpoint(filepath=file_path, monitor='loss',
-        # save_best_only=True)
-
-        self.callbacks = []
-
         return model
 
     def fit(self, X, y, input_checks=True, **kwargs):
@@ -106,9 +101,6 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         self.adjust_parameters(X)
         X, y, tot_increase_num = self.pre_processing(X, y)
-        # print(y.shape)
-
-        # print('Total increased number for each MTS: ', tot_increase_num)
 
         input_shape = X.shape[1:]  # pylint: disable=E1136  # pylint/issues/3139
         self.model = self.build_model(input_shape, self.nb_classes)
