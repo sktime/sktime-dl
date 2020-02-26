@@ -82,7 +82,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
 
-    def _construct_model(self, itr):
+    def construct_model(self, itr):
         model = clone(self.base_model)
         model.random_seed = self.random_seed + itr
 
@@ -223,7 +223,7 @@ class EnsembleFromFileClassifier(BaseClassifier):
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
 
-    def _load_network_probs(self, network_name, itr, res_path, dataset_name, fold):
+    def load_network_probs(self, network_name, itr, res_path, dataset_name, fold):
         path = os.path.join(res_path, network_name + str(itr), "Predictions", dataset_name,
                             "testFold" + str(fold) + ".csv")
         probs = pd.read_csv(path, engine='python', skiprows=3, header=None)
