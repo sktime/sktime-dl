@@ -1,5 +1,4 @@
-import keras
-import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
 from sktime_dl.deeplearning.inceptiontime._base import InceptionTimeNetwork
@@ -37,7 +36,7 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
                  model_name="inception",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         InceptionTimeNetwork.__init__(
             self,

@@ -24,12 +24,16 @@ if len(sys.argv) > 1:
         from numpy.random import seed
 
         seed(rngseed)
-        from tensorflow import set_random_seed
 
-        set_random_seed(rngseed)
+        # from tensorflow import set_random_seed
+        # set_random_seed(rngseed)
+
+        import tensorflow as tf
+
+        tf.random.set_seed(rngseed)
 
 import gc
-import keras
+from tensorflow import keras
 
 from sktime_dl.deeplearning import CNNClassifier
 from sktime_dl.deeplearning import EncoderClassifier

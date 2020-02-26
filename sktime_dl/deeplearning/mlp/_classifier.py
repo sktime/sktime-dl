@@ -1,7 +1,6 @@
 __author__ = "James Large"
 
-import keras
-import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
@@ -35,7 +34,7 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
                  model_name="mlp",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         MLPNetwork.__init__(self, random_seed=random_seed)
         '''

@@ -1,10 +1,6 @@
 __author__ = "James Large, Withington"
 
-import keras
-import numpy as np
-import pandas as pd
-
-from sktime.utils.validation.supervised import validate_X, validate_X_y
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
@@ -38,7 +34,7 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
                  model_name="mlp_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         MLPNetwork.__init__(self, random_seed=random_seed)
         '''

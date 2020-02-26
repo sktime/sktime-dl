@@ -1,7 +1,6 @@
 __author__ = "James Large"
 
-import keras
-import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.cnn._base import CNNNetwork
@@ -41,7 +40,7 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
                  model_name="cnn",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         CNNNetwork.__init__(
             self,

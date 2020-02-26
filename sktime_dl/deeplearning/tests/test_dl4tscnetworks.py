@@ -1,5 +1,3 @@
-# python sktime_dl/classifiers/deeplearning/tests/test_dl4tscnetworks.py
-
 from sktime.datasets import load_italy_power_demand  # , load_basic_motions
 
 from sktime_dl.deeplearning import CNNClassifier
@@ -132,6 +130,7 @@ def test_all_networks():
         # test_pipeline(network)
         # test_highLevelsktime(network)
         print('\t\t' + network.__class__.__name__ + ' testing finished')
+
 
 if __name__ == "__main__":
     test_all_networks()

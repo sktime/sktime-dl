@@ -15,7 +15,7 @@ from sktime_dl.utils import save_trained_model
 
 
 class BaseDeepRegressor(BaseRegressor, RegressorMixin):
-    
+
     def __init__(self,
                  model_name=None,
                  model_save_directory=None):
@@ -58,7 +58,7 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
         X = self.check_and_clean_data(X, input_checks=input_checks)
 
         y_pred = self.model.predict(X, **kwargs)
-        
+
         if y_pred.ndim == 1:
             y_pred.ravel()
         return y_pred

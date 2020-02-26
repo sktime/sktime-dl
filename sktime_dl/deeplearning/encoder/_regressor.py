@@ -1,10 +1,6 @@
 __author__ = "James Large, Withington"
 
-import keras
-import numpy as np
-import pandas as pd
-
-from sktime.utils.validation.supervised import validate_X, validate_X_y
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.encoder._base import EncoderNetwork
@@ -38,7 +34,7 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
                  model_name="encoder_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         EncoderNetwork.__init__(self, random_seed=random_seed)
         '''
@@ -111,4 +107,3 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
         self.is_fitted_ = True
 
         return self
-    

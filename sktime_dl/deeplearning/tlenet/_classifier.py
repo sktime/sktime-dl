@@ -1,6 +1,6 @@
 __author__ = "Aaron Bostrom, James Large"
 
-import keras
+from tensorflow import keras
 import numpy as np
 
 from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
@@ -33,7 +33,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
                  model_name="tlenet",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         TLENETNetwork.__init__(self, random_seed=random_seed)
         '''
@@ -110,7 +110,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         # print('Total increased number for each MTS: ', tot_increase_num)
 
-        input_shape = X.shape[1:] # pylint: disable=E1136  # pylint/issues/3139
+        input_shape = X.shape[1:]  # pylint: disable=E1136  # pylint/issues/3139
         self.model = self.build_model(input_shape, self.nb_classes)
 
         self.hist = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
@@ -145,7 +145,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         preds = self.model.predict(X, batch_size=self.batch_size)
 
         y_predicted = []
-        test_num_batch = int(X.shape[0] / tot_increase_num) # pylint: disable=E1136  # pylint/issues/3139
+        test_num_batch = int(X.shape[0] / tot_increase_num)  # pylint: disable=E1136  # pylint/issues/3139
 
         ##TODO: could fix this to be an array literal.
         for i in range(test_num_batch):

@@ -18,12 +18,11 @@
 
 __author__ = "James Large, Aaron Bostrom"
 
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 
 from sktime.classifiers.base import BaseClassifier
+from sklearn.utils.validation import check_is_fitted
 from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sklearn.preprocessing import LabelEncoder
@@ -41,7 +40,7 @@ class BaseDeepClassifier(BaseClassifier):
         self.nb_classes = None
         self.model_save_directory = model_save_directory
         self.model = None
-        self.model_name = model_name 
+        self.model_name = model_name
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -74,6 +73,8 @@ class BaseDeepClassifier(BaseClassifier):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
+        check_is_fitted(self)
+
         X = self.check_and_clean_data(X, input_checks=input_checks)
 
         probs = self.model.predict(X, **kwargs)

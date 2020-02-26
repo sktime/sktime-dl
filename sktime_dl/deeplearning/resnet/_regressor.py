@@ -1,10 +1,6 @@
 __author__ = "James Large, Withington"
 
-import keras
-import numpy as np
-import pandas as pd
-
-from sktime.utils.validation.supervised import validate_X, validate_X_y
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.resnet._base import ResNetNetwork
@@ -28,7 +24,7 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
       organization={IEEE}
     }
     """
- 
+
     def __init__(self,
                  nb_epochs=1500,
                  batch_size=16,
@@ -38,7 +34,7 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
                  model_name="resnet_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         ResNetNetwork.__init__(self, random_seed=random_seed)
         '''
@@ -127,4 +123,3 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
         self.is_fitted_ = True
 
         return self
-    

@@ -19,4 +19,3 @@ class BaseDeepNetwork():
         output_layer : a keras layer
         """
         raise NotImplementedError('this is an abstract method')
-    

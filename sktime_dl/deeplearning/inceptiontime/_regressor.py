@@ -1,10 +1,6 @@
 __author__ = "James Large, Withington"
 
-import keras
-import numpy as np
-import pandas as pd
-
-from sktime.utils.validation.supervised import validate_X, validate_X_y
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.inceptiontime._base import InceptionTimeNetwork
@@ -41,7 +37,7 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
                  model_name="inception_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         InceptionTimeNetwork.__init__(
             self,
@@ -65,7 +61,7 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
-        '''   
+        '''
 
         self.verbose = verbose
         self.is_fitted_ = False
@@ -96,7 +92,7 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
                       metrics=['accuracy'])
-                
+
         reduce_lr = keras.callbacks.ReduceLROnPlateau(
             monitor='loss', factor=0.5, patience=50, min_lr=0.0001)
         self.callbacks = [reduce_lr]

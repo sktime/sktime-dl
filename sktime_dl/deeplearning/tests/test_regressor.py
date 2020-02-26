@@ -42,8 +42,8 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=50)):
     print("End test_regressor()")
 
 
-def test_regressor_forecasting( estimator=MLPRegressor(nb_epochs=50),
-                                window_length=4):
+def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=50),
+                               window_length=4):
     '''
     test a regressor used for forecasting 
     '''
@@ -62,11 +62,11 @@ def test_regressor_forecasting( estimator=MLPRegressor(nb_epochs=50),
     estimator = Pipeline(steps)
 
     task = ForecastingTask(target='ShampooSales', fh=[1], metadata=train)
-    strategy = Forecasting2TSRReductionStrategy(estimator=estimator, 
-            window_length=window_length)
+    strategy = Forecasting2TSRReductionStrategy(estimator=estimator,
+                                                window_length=window_length)
     strategy.fit(task, train)
     y_pred = strategy.predict()
-    
+
     # Compare the prediction to the test data
     test = update.iloc[0, 0][y_pred.index]
     mse = np.sqrt(mean_squared_error(test, y_pred))
@@ -106,7 +106,7 @@ def test_all_forecasters():
 
     for network in networks:
         print('\n\t\t' + network[0].__class__.__name__ + ' forecast testing started')
-        win_len = window_length if len(network)==1 else network[1]
+        win_len = window_length if len(network) == 1 else network[1]
         test_regressor_forecasting(network[0], window_length=win_len)
         print('\t\t' + network[0].__class__.__name__ + ' forecast testing finished')
 

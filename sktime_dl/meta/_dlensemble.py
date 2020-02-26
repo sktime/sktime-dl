@@ -3,12 +3,10 @@ __author__ = "James Large"
 import numpy as np
 import pandas as pd
 import os
-import keras
 import gc
-
 from pathlib import Path
 
-from keras.models import load_model
+from tensorflow import keras
 
 from sklearn.utils.multiclass import class_distribution
 from sklearn.base import clone
@@ -174,7 +172,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
             if self.keep_in_memory:
                 keras_model = skdl_model.model
             else:
-                keras_model = load_model(
+                keras_model = keras.models.load_model(
                     Path(self.model_save_directory) / (skdl_model + '.hdf5'))
 
             # keras models' predict is same as what we/sklearn means by predict_proba, i.e. give prob distributions
