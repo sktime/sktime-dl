@@ -2,7 +2,7 @@ __author__ = "James Large"
 
 from tensorflow import keras
 
-from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.encoder._base import EncoderNetwork
 
 
@@ -29,6 +29,7 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
                  nb_epochs=100,
                  batch_size=12,
 
+                 callbacks=None,
                  random_seed=0,
                  verbose=False,
                  model_name="encoder",
@@ -40,6 +41,7 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -56,7 +58,7 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = None
+        self.callbacks = callbacks if callbacks is not None else []
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -77,8 +79,6 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
 
         model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(0.00001),
                       metrics=['accuracy'])
-
-        self.callbacks = []
 
         return model
 

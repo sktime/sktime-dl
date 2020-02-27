@@ -29,6 +29,8 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
     def __init__(self,
                  nb_epochs=1000,
                  batch_size=256,
+
+                 callbacks=None,
                  verbose=False,
                  random_seed=0,
                  model_name="tlenet_regressor",
@@ -40,6 +42,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -51,6 +54,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+        self.callbacks = callbacks if callbacks is not None else []
 
         # calced in fit
         self.input_shape = None
@@ -80,9 +84,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
             file_path = self.model_save_directory + 'best_model.hdf5'
             model_checkpoint = keras.callbacks.ModelCheckpoint(
                 filepath=file_path, monitor='loss', save_best_only=True)
-            self.callbacks = [model_checkpoint]
-        else:
-            self.callbacks = []
+            self.callbacks.append(model_checkpoint)
 
         return model
 

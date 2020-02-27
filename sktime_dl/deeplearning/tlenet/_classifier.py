@@ -3,7 +3,7 @@ __author__ = "Aaron Bostrom, James Large"
 from tensorflow import keras
 import numpy as np
 
-from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
 
 
@@ -28,6 +28,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
                  nb_epochs=1000,
                  batch_size=256,
 
+                 callbacks=None,
                  verbose=False,
                  random_seed=0,
                  model_name="tlenet",
@@ -39,6 +40,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -50,6 +52,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+        self.callbacks = callbacks if callbacks is not None else []
 
         # calced in fit
         self.input_shape = None
@@ -75,13 +78,6 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         model.compile(optimizer=keras.optimizers.Adam(lr=0.01, decay=0.005),
                       loss='categorical_crossentropy', metrics=['accuracy'])
 
-        # file_path = self.output_directory+'best_model.hdf5'
-
-        # model_checkpoint = keras.callbacks.ModelCheckpoint(filepath=file_path, monitor='loss',
-        # save_best_only=True)
-
-        self.callbacks = []
-
         return model
 
     def fit(self, X, y, input_checks=True, **kwargs):
@@ -106,9 +102,6 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         self.adjust_parameters(X)
         X, y, tot_increase_num = self.pre_processing(X, y)
-        # print(y.shape)
-
-        # print('Total increased number for each MTS: ', tot_increase_num)
 
         input_shape = X.shape[1:]  # pylint: disable=E1136  # pylint/issues/3139
         self.model = self.build_model(input_shape, self.nb_classes)
