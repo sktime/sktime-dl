@@ -29,7 +29,7 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
                  nb_epochs=2000,
                  batch_size=16,
 
-                 callbacks=[],
+                 callbacks=None,
                  random_seed=0,
                  verbose=False,
                  model_name="fcn_regressor",
@@ -57,7 +57,7 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = callbacks
+        self.callbacks = callbacks if callbacks is not None else []
 
     def build_model(self, input_shape, **kwargs):
         """

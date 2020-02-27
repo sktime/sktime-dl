@@ -31,7 +31,7 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
                  batch_size=64,
                  nb_epochs=1500,
 
-                 callbacks=[],
+                 callbacks=None,
                  random_seed=0,
                  verbose=False,
                  model_name="inception",
@@ -73,7 +73,7 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
         # calced in fit
         self.input_shape = None
         self.history = None
-        self.callbacks = callbacks
+        self.callbacks = callbacks if callbacks is not None else []
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """

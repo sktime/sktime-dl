@@ -28,7 +28,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
                  nb_epochs=1000,
                  batch_size=256,
 
-                 callbacks=[],
+                 callbacks=None,
                  verbose=False,
                  random_seed=0,
                  model_name="tlenet",
@@ -52,7 +52,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = callbacks
+        self.callbacks = callbacks if callbacks is not None else []
 
         # calced in fit
         self.input_shape = None

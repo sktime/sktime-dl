@@ -29,7 +29,7 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
                  nb_epochs=1500,
                  batch_size=16,
 
-                 callbacks=[],
+                 callbacks=None,
                  random_seed=0,
                  verbose=False,
                  model_name="resnet_regressor",
@@ -58,7 +58,7 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = callbacks
+        self.callbacks = callbacks if callbacks is not None else []
 
     def build_model(self, input_shape, **kwargs):
         """
