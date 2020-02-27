@@ -78,7 +78,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
         model.compile(optimizer=keras.optimizers.Adam(lr=0.01, decay=0.005),
-                      loss='mean_squared_error', metrics=['accuracy'])
+                      loss='mean_squared_error', metrics=['mean_squared_error'])
 
         if save_best_model:
             file_path = self.model_save_directory + 'best_model.hdf5'

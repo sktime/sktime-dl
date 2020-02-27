@@ -90,7 +90,7 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
-                      metrics=['accuracy'])
+                      metrics=['mean_squared_error'])
 
         return model
 

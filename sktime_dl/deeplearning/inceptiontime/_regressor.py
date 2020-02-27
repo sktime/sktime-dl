@@ -94,7 +94,7 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
-                      metrics=['accuracy'])
+                      metrics=['mean_squared_error'])
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
         if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
