@@ -111,8 +111,9 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
         self : object
         """
         X = self.check_and_clean_data(X, y, input_checks=input_checks)
-
         y_onehot = self.convert_y(y)
+
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]
 
         self.model = self.build_model(self.input_shape, self.nb_classes)

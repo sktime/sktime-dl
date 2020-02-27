@@ -150,15 +150,16 @@ class MCDCNNClassifier(BaseDeepClassifier):
         self : object
         """
         X = self.check_and_clean_data(X, y, input_checks=input_checks)
-
         y_onehot = self.convert_y(y)
+
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
+        self.input_shape = X.shape[1:]
+
         x_train, x_val, y_train_onehot, y_val_onehot = \
             train_test_split(X, y_onehot, test_size=0.33)
 
         x_train = self.prepare_input(x_train)
         x_val = self.prepare_input(x_val)
-
-        self.input_shape = X.shape[1:]
 
         self.model = self.build_model(self.input_shape, self.nb_classes)
 

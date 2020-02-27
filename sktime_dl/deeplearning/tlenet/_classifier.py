@@ -95,13 +95,15 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         self : object
         """
         X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        y_onehot = self.convert_y(y)
 
-        y = self.convert_y(y)
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
+        self.input_shape = X.shape[1:]
 
         self.nb_classes = y.shape[1]
 
         self.adjust_parameters(X)
-        X, y, tot_increase_num = self.pre_processing(X, y)
+        X, y_onehot, tot_increase_num = self.pre_processing(X, y_onehot)
 
         input_shape = X.shape[1:]  # pylint: disable=E1136  # pylint/issues/3139
         self.model = self.build_model(input_shape, self.nb_classes)

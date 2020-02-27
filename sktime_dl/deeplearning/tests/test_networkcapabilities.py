@@ -1,4 +1,7 @@
-from sktime.datasets import load_italy_power_demand  # , load_basic_motions
+import pandas as pd
+import numpy as np
+
+from sktime.datasets import load_italy_power_demand, load_basic_motions
 
 from sktime_dl.deeplearning import CNNClassifier
 from sktime_dl.deeplearning import EncoderClassifier
@@ -90,23 +93,22 @@ def test_highLevelsktime(network=CNNClassifier(nb_epochs=10)):
     print("End test_highLevelsktime()")
 
 
-# def test_basic_multivariate(network=cnn.CNNClassifier(nb_epochs=50)):
-#     '''
-#     just a super basic test with basicmotions,
-#         load data,
-#         construct classifier,
-#         fit,
-#         score
-#     '''
-#     print("Start test_multivariate()")
-#
-#     X_train, y_train = load_basic_motions(split='TRAIN', return_X_y=True)
-#     X_test, y_test = load_basic_motions(split='TRAIN', return_X_y=True)
-#
-#     hist = network.fit(X_train, y_train)
-#
-#     print(network.score(X_test, y_test))
-#     print("End test_multivariate()")
+def test_basic_multivariate(network=CNNClassifier()):
+    '''
+    just a super basic test with basicmotions,
+        load data,
+        construct classifier,
+        fit,
+        score
+    '''
+    print("Start test_multivariate()")
+    X_train, y_train = load_basic_motions(split='TRAIN', return_X_y=True)
+    X_test, y_test = load_basic_motions(split='TEST', return_X_y=True)
+
+    hist = network.fit(X_train, y_train)
+
+    print(network.score(X_test, y_test))
+    print("End test_multivariate()")
 
 
 def test_all_networks():
@@ -125,8 +127,8 @@ def test_all_networks():
 
     for network in networks:
         print('\n\t\t' + network.__class__.__name__ + ' testing started')
-        test_basic_univariate(network)
-        # test_basic_multivariate(network)
+        # test_basic_univariate(network)
+        test_basic_multivariate(network)
         # test_pipeline(network)
         test_highLevelsktime(network)
         print('\t\t' + network.__class__.__name__ + ' testing finished')

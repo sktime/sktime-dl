@@ -63,7 +63,7 @@ class CNNNetwork(BaseDeepNetwork):
         padding = 'valid'
         input_layer = keras.layers.Input(input_shape)
 
-        if input_shape[0] < 60:  # for italypowerondemand dataset
+        if input_shape[0] < 60:  # for ItalyPowerDemand dataset
             padding = 'same'
 
         if len(self.filter_sizes) > self.nb_conv_layers:
