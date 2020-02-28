@@ -99,7 +99,10 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
         -------
         self : object
         """
+
+        print(X.shape, X.iloc[0,0].shape)
         X = check_and_clean_data(X, y, input_checks=input_checks)
+        print(X.shape)
 
         # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]
