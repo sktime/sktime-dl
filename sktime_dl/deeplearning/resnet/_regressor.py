@@ -4,6 +4,7 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.resnet._base import ResNetNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
@@ -111,7 +112,7 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
 
         # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]

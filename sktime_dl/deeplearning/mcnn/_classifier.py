@@ -11,6 +11,7 @@ import gc
 from sklearn.model_selection import train_test_split
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
+from sktime_dl.utils import check_and_clean_data
 
 
 class MCNNClassifier(BaseDeepClassifier):
@@ -431,7 +432,7 @@ class MCNNClassifier(BaseDeepClassifier):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
         best_df_metrics = None

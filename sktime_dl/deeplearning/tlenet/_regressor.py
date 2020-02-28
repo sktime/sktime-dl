@@ -7,6 +7,7 @@ from sklearn.utils.validation import check_is_fitted
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
@@ -102,7 +103,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
 
         self.adjust_parameters(X)
         X, y, __ = self.pre_processing(X, y)

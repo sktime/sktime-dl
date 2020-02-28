@@ -4,6 +4,7 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.fcn._base import FCNNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class FCNClassifier(BaseDeepClassifier, FCNNetwork):
@@ -103,7 +104,7 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
         # ignore the number of instances, X.shape[0], just want the shape of each instance

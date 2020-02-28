@@ -10,6 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
+from sktime_dl.utils import check_and_clean_data
 
 
 class TWIESNClassifier(BaseDeepClassifier):
@@ -116,7 +117,7 @@ class TWIESNClassifier(BaseDeepClassifier):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
         # ignore the number of instances, X.shape[0], just want the shape of each instance
