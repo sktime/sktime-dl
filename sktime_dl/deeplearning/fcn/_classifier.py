@@ -1,9 +1,8 @@
 __author__ = "James Large"
 
-import keras
-import numpy as np
+from tensorflow import keras
 
-from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.fcn._base import FCNNetwork
 
 
@@ -30,17 +29,19 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
                  nb_epochs=2000,
                  batch_size=16,
 
+                 callbacks=None,
                  random_seed=0,
                  verbose=False,
                  model_name="fcn",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         FCNNetwork.__init__(self, random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -57,7 +58,7 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = None
+        self.callbacks = callbacks if callbacks is not None else []
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -80,10 +81,11 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
         model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(),
                       metrics=['accuracy'])
 
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
-                                                      min_lr=0.0001)
-
-        self.callbacks = [reduce_lr]
+        # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
+        if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
+            reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
+                                                          min_lr=0.0001)
+            self.callbacks.append(reduce_lr)
 
         return model
 

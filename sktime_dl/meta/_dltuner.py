@@ -2,7 +2,7 @@ __author__ = "James Large"
 
 import numpy as np
 
-from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning import CNNClassifier
 
 from sklearn.model_selection import GridSearchCV
@@ -35,7 +35,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
         :param base_model: an implementation of BaseDeepLearner, the model to tune
         :param param_grid: dict, parameter names corresponding to parameters of the base_model, mapped to values to
                             search over
-        :param search_method: string out of ['grid', 'random], how to search over the param_grid
+        :param search_method: string out of ['grid', 'random'], how to search over the param_grid
         :param cv_folds: int, number of cross validation folds to use in evaluation of each parameter set
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information

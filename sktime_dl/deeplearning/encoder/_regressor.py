@@ -1,10 +1,6 @@
 __author__ = "James Large, Withington"
 
-import keras
-import numpy as np
-import pandas as pd
-
-from sktime.utils.validation.supervised import validate_X, validate_X_y
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.encoder._base import EncoderNetwork
@@ -33,17 +29,19 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
                  nb_epochs=2000,
                  batch_size=16,
 
+                 callbacks=None,
                  random_seed=0,
                  verbose=False,
                  model_name="encoder_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         EncoderNetwork.__init__(self, random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -59,7 +57,7 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = None
+        self.callbacks = callbacks if callbacks is not None else []
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -111,4 +109,3 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
         self.is_fitted_ = True
 
         return self
-    

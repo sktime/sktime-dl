@@ -4,13 +4,13 @@
 
 __author__ = "Aaron Bostrom, James Large"
 
-import keras
+from tensorflow import keras
 import numpy as np
 import gc
 
 from sklearn.model_selection import train_test_split
 
-from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 
 
 class MCNNClassifier(BaseDeepClassifier):

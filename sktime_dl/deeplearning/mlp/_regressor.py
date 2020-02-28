@@ -1,10 +1,6 @@
 __author__ = "James Large, Withington"
 
-import keras
-import numpy as np
-import pandas as pd
-
-from sktime.utils.validation.supervised import validate_X, validate_X_y
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
@@ -33,17 +29,19 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
                  nb_epochs=2000,
                  batch_size=16,
 
+                 callbacks=None,
                  random_seed=0,
                  verbose=False,
                  model_name="mlp_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         MLPNetwork.__init__(self, random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -59,7 +57,7 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = None
+        self.callbacks = callbacks if callbacks is not None else []
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -78,9 +76,11 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adadelta(),
                       metrics=['accuracy'])
 
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=200, min_lr=0.1)
-
-        self.callbacks = [reduce_lr]
+        # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
+        if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
+            reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
+                                                          min_lr=0.0001)
+            self.callbacks.append(reduce_lr)
 
         return model
 

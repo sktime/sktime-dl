@@ -1,8 +1,7 @@
 __author__ = "James Large, Withington"
 
-import keras
+from tensorflow import keras
 import numpy as np
-import pandas as pd
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
 
@@ -25,13 +24,13 @@ class InceptionTimeNetwork(BaseDeepNetwork):
     """
 
     def __init__(self,
-                nb_filters=32,
-                use_residual=True,
-                use_bottleneck=True,
-                bottleneck_size=32,
-                depth=6,
-                kernel_size=41 - 1,
-                random_seed=0):
+                 nb_filters=32,
+                 use_residual=True,
+                 use_bottleneck=True,
+                 bottleneck_size=32,
+                 depth=6,
+                 kernel_size=41 - 1,
+                 random_seed=0):
         '''
         :param nb_filters: int,
         :param use_residual: boolean,
@@ -85,7 +84,7 @@ class InceptionTimeNetwork(BaseDeepNetwork):
     def _shortcut_layer(self, input_tensor, out_tensor):
         shortcut_y = keras.layers.Conv1D(filters=int(out_tensor.shape[-1]), kernel_size=1,
                                          padding='same', use_bias=False)(input_tensor)
-        shortcut_y = keras.layers.normalization.BatchNormalization()(shortcut_y)
+        shortcut_y = keras.layers.BatchNormalization()(shortcut_y)
 
         x = keras.layers.Add()([shortcut_y, out_tensor])
         x = keras.layers.Activation('relu')(x)
@@ -117,5 +116,3 @@ class InceptionTimeNetwork(BaseDeepNetwork):
         gap_layer = keras.layers.GlobalAveragePooling1D()(x)
 
         return input_layer, gap_layer
-
-        

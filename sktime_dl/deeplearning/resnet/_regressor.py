@@ -1,10 +1,6 @@
 __author__ = "James Large, Withington"
 
-import keras
-import numpy as np
-import pandas as pd
-
-from sktime.utils.validation.supervised import validate_X, validate_X_y
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.resnet._base import ResNetNetwork
@@ -28,22 +24,24 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
       organization={IEEE}
     }
     """
- 
+
     def __init__(self,
                  nb_epochs=1500,
                  batch_size=16,
 
+                 callbacks=None,
                  random_seed=0,
                  verbose=False,
                  model_name="resnet_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         ResNetNetwork.__init__(self, random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -60,7 +58,7 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = None
+        self.callbacks = callbacks if callbacks is not None else []
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -83,15 +81,19 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
                       metrics=['accuracy'])
 
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50, min_lr=0.0001)
+        # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
+        if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
+            reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
+                                                          min_lr=0.0001)
+            self.callbacks.append(reduce_lr)
 
+        # todo could be moved out no that things are passed via init? raises argument of defining common/generic callbacks
+        # in base classes
         if save_best_model:
             file_path = self.model_save_directory + 'best_model.hdf5'
             model_checkpoint = keras.callbacks.ModelCheckpoint(
                 filepath=file_path, monitor='loss', save_best_only=True)
-            self.callbacks = [reduce_lr, model_checkpoint]
-        else:
-            self.callbacks = [reduce_lr]
+            self.callbacks.append(model_checkpoint)
 
         return model
 
@@ -127,4 +129,3 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
         self.is_fitted_ = True
 
         return self
-    

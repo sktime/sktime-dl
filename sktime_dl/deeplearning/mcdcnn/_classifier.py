@@ -1,11 +1,11 @@
 __author__ = "James Large"
 
-import keras
+from tensorflow import keras
 import numpy as np
 
 from sklearn.model_selection import train_test_split
 
-from sktime_dl.deeplearning.base.estimators._classifier import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 
 
 class MCDCNNClassifier(BaseDeepClassifier):
@@ -31,6 +31,7 @@ class MCDCNNClassifier(BaseDeepClassifier):
                  nb_epochs=120,
                  batch_size=16,
 
+                 callbacks=[],
                  random_seed=0,
                  verbose=False,
                  model_name="mcdcnn",
@@ -59,6 +60,7 @@ class MCDCNNClassifier(BaseDeepClassifier):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+        self.callbacks = callbacks
 
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)

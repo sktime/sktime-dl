@@ -1,7 +1,6 @@
 __author__ = "James Large"
 
-import keras
-import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.cnn._base import CNNNetwork
@@ -36,12 +35,13 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
                  nb_conv_layers=2,
                  filter_sizes=[6, 12],
 
+                 callbacks=None,
                  random_seed=0,
                  verbose=False,
                  model_name="cnn",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         CNNNetwork.__init__(
             self,
@@ -57,6 +57,7 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
         :param avg_pool_size: int, size of the average pooling windows
         :param nb_conv_layers: int, the number of convolutional plus average pooling layers
         :param filter_sizes: int, array of shape = (nb_conv_layers)
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -65,7 +66,7 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
         self.verbose = verbose
         self.is_fitted_ = False
 
-        self.callbacks = []
+        self.callbacks = callbacks if callbacks is not None else []
 
         self.input_shape = None
         self.history = None

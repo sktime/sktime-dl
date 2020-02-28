@@ -1,11 +1,9 @@
 __author__ = "James Large, Withington"
 
-import keras
+from tensorflow import keras
 import numpy as np
 
 from sklearn.utils.validation import check_is_fitted
-
-from sktime.utils.validation.supervised import validate_X, validate_X_y
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
@@ -31,17 +29,20 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
     def __init__(self,
                  nb_epochs=1000,
                  batch_size=256,
+
+                 callbacks=None,
                  verbose=False,
                  random_seed=0,
                  model_name="tlenet_regressor",
                  model_save_directory=None):
         super().__init__(
-            model_name=model_name, 
+            model_name=model_name,
             model_save_directory=model_save_directory)
         TLENETNetwork.__init__(self, random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution window
+        :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file writing purposes
@@ -53,6 +54,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+        self.callbacks = callbacks if callbacks is not None else []
 
         # calced in fit
         self.input_shape = None
@@ -82,9 +84,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
             file_path = self.model_save_directory + 'best_model.hdf5'
             model_checkpoint = keras.callbacks.ModelCheckpoint(
                 filepath=file_path, monitor='loss', save_best_only=True)
-            self.callbacks = [model_checkpoint]
-        else:
-            self.callbacks = []
+            self.callbacks.append(model_checkpoint)
 
         return model
 
@@ -103,11 +103,11 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         self : object
         """
         X = self.check_and_clean_data(X, y, input_checks=input_checks)
-        
+
         self.adjust_parameters(X)
         X, y, __ = self.pre_processing(X, y)
 
-        input_shape = X.shape[1:] # pylint: disable=E1136  # pylint/issues/3139
+        input_shape = X.shape[1:]  # pylint: disable=E1136  # pylint/issues/3139
         self.model = self.build_model(input_shape)
 
         self.hist = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
@@ -143,9 +143,9 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         X, _, tot_increase_num = self.pre_processing(X)
 
         preds = self.model.predict(X, batch_size=self.batch_size)
-        
+
         y_predicted = []
-        test_num_batch = int(X.shape[0] / tot_increase_num) # pylint: disable=E1136  # pylint/issues/3139
+        test_num_batch = int(X.shape[0] / tot_increase_num)  # pylint: disable=E1136  # pylint/issues/3139
 
         ##TODO: could fix this to be an array literal.
         for i in range(test_num_batch):
