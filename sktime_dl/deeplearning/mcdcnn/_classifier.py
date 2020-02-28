@@ -193,7 +193,7 @@ class MCDCNNClassifier(BaseDeepClassifier):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
-        X = self.check_and_clean_data(X, input_checks=input_checks)
+        X = check_and_clean_data(X, input_checks=input_checks)
 
         x_test = self.prepare_input(X)
 

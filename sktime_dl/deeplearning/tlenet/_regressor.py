@@ -139,7 +139,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         """
         check_is_fitted(self)
 
-        X = self.check_and_clean_data(X, input_checks=input_checks)
+        X = check_and_clean_data(X, input_checks=input_checks)
 
         X, _, tot_increase_num = self.pre_processing(X)
 

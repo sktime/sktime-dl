@@ -197,7 +197,7 @@ class TWIESNClassifier(BaseDeepClassifier):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
-        X = self.check_and_clean_data(X, input_checks=input_checks)
+        X = check_and_clean_data(X, input_checks=input_checks)
 
         # transform and predict prodba on the ridge classifier.
         X_transformed = self.transform_to_feature_space(X)
