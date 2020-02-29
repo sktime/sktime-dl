@@ -66,33 +66,22 @@ for a list of definite versioning compatabilities.
 Docker
 ~~~~~~
 
-Follow `Tensorflow's instuctions<https://www.tensorflow.org/install/gpu>`)
+Follow `Tensorflow's instuctions <https://www.tensorflow.org/install/gpu>`__
  to install Docker and nvidia-docker.
 
-Build the sktime-dl Docker image:
+Build the sktime-dl Docker image::
+   cd sktime-dl
+   docker build -t sktime_gpu .
 
-``
-cd sktime-dl
-docker build -t sktime_gpu .
-``
+Run the Docker container::
+   docker run --gpus all --rm -it sktime_gpu:latest
 
-Run the Docker container:
 
-``
-docker run --gpus all --rm -it sktime_gpu:latest
-``
+Run all tests with::
+   pytest -v --cov=sktime_dl
 
-Run all tests with:
-
-``
-pytest -v --cov=sktime_dl
-``
-
-or exclude the long-running tests with:
-
-``
-pytest -v -m="not slow" --cov=sktime_dl --pyargs ../sktime_dl
-``
+or exclude the long-running tests with::
+   pytest -v -m="not slow" --cov=sktime_dl --pyargs ../sktime_dl
 
 
 Overview
