@@ -11,4 +11,4 @@ COPY .coverage .
 COPY setup.py .
 COPY README.rst .
 COPY sktime_dl sktime_dl
-COPY examples/time_series_classification.ipynb .
+COPY examples/univariate_time_series_classification.ipynb .
