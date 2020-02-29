@@ -68,11 +68,11 @@ Build the sktime-dl Docker image:
 	cd sktime-dl
 	docker build -t sktime_gpu .
 
-Run the Docker container:
+Run a container using the image:
 ::
-	docker run --gpus all --rm -it sktime_gpu:latest
+	docker run --gpus all --rm -it sktime_gpu:latest bash
 
-Run all tests with:
+Run all the tests with:
 ::
 	pytest -v --cov=sktime_dl
 
@@ -85,16 +85,18 @@ Jupyter Notebook
 ~~~~~~~~~~~~~~~~
 Your local download of sktime_dl can be run in a Jupyter notebook, with GPU support.
 
-Run the Docker container:
+Run a container using the sktime_gpu Docker image that was built above:
 ::
 	docker run --gpus all --rm -it -p 8888:8888 sktime_gpu:latest bash
 
 
-Launch Jupyter from within the Docker container:
+Inside the Docker container, run:
 ::
-	jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --no-browser .
+	pip install .
+	jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --no-browser . 
 
-This returns a URL where you can open Jupyter in your browser.
+This returns a URL where you can open Jupyter in your browser. In Jupyter, open 
+time_series_classification.ipynb.
 
 
 Overview

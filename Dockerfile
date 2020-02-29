@@ -11,5 +11,4 @@ COPY .coverage .
 COPY setup.py .
 COPY README.rst .
 COPY sktime_dl sktime_dl
-RUN pip install .
 COPY examples/time_series_classification.ipynb .
