@@ -56,9 +56,10 @@ you wish to run the networks on an NVIDIA® GPU, you can:
 
 or
 
-- install extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library). See `this page <https://www.tensorflow.org/install/gpu#software_requirements>`__ 
-for links and instructions, and also `this page <https://www.tensorflow.org/install/source#tested_build_configurations>`__ 
-for a list of definite versioning compatabilities.       
+- install extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN 
+library). See `this page <https://www.tensorflow.org/install/gpu#software_requirements>`__ for 
+links and instructions, and also `this page <https://www.tensorflow.org/install/source#tested_build_configurations>`__ for 
+a list of definite versioning compatabilities.       
 
 Docker
 ~~~~~~
