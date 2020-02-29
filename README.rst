@@ -72,7 +72,6 @@ Run the Docker container:
 ::
 	docker run --gpus all --rm -it sktime_gpu:latest
 
-
 Run all tests with:
 ::
 	pytest -v --cov=sktime_dl
@@ -80,6 +79,22 @@ Run all tests with:
 or exclude the long-running tests with:
 ::
 	pytest -v -m="not slow" --cov=sktime_dl --pyargs sktime_dl
+
+
+Jupyter Notebook
+~~~~~~~~~~~~~~~~
+Your local download of sktime_dl can be run in a Jupyter notebook, with GPU support.
+
+Run the Docker container:
+::
+	docker run --gpus all --rm -it -p 8888:8888 sktime_gpu:latest bash
+
+
+Launch Jupyter from within the Docker container:
+::
+	jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --no-browser .
+
+This returns a URL where you can open Jupyter in your browser.
 
 
 Overview
