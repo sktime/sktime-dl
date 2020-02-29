@@ -56,8 +56,7 @@ you wish to run the networks on an NVIDIA® GPU, you can:
 
 or
 
-- install extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN 
-library). See `this page 
+- install extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library). See `this page 
 <https://www.tensorflow.org/install/gpu#software_requirements>`__ 
 for links and instructions, and also `this page 
 <https://www.tensorflow.org/install/source#tested_build_configurations>`__ 
@@ -66,22 +65,21 @@ for a list of definite versioning compatabilities.
 Docker
 ~~~~~~
 
-Follow `Tensorflow's instuctions <https://www.tensorflow.org/install/gpu>`__
- to install Docker and nvidia-docker.
+Follow `Tensorflow's instuctions <https://www.tensorflow.org/install/gpu>`__ to install Docker and nvidia-docker.
 
 Build the sktime-dl Docker image::
-   cd sktime-dl
-   docker build -t sktime_gpu .
+	cd sktime-dl
+	docker build -t sktime_gpu .
 
 Run the Docker container::
-   docker run --gpus all --rm -it sktime_gpu:latest
+	docker run --gpus all --rm -it sktime_gpu:latest
 
 
 Run all tests with::
-   pytest -v --cov=sktime_dl
+	pytest -v --cov=sktime_dl
 
 or exclude the long-running tests with::
-   pytest -v -m="not slow" --cov=sktime_dl --pyargs ../sktime_dl
+	pytest -v -m="not slow" --cov=sktime_dl --pyargs ../sktime_dl
 
 
 Overview
