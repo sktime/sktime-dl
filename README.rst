@@ -79,7 +79,7 @@ Run all tests with:
 
 or exclude the long-running tests with:
 ::
-	pytest -v -m="not slow" --cov=sktime_dl --pyargs ../sktime_dl
+	pytest -v -m="not slow" --cov=sktime_dl --pyargs sktime_dl
 
 
 Overview
