@@ -51,9 +51,12 @@ Using GPUS
 	
 With the above instructions, the networks can be run out the box on your CPU. If 
 you wish to run the networks on an NVIDIA® GPU, you can:
-+ use Docker (see below) 
+
+- use Docker (see below) 
+
 or
-+ install extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN 
+
+- install extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN 
 library). See `this page 
 <https://www.tensorflow.org/install/gpu#software_requirements>`__ 
 for links and instructions, and also `this page 
