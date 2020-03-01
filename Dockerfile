@@ -12,3 +12,4 @@ COPY setup.py .
 COPY README.rst .
 COPY sktime_dl sktime_dl
 COPY examples/univariate_time_series_classification.ipynb .
+COPY examples/univariate_time_series_regression_and_forecasting.ipynb .

@@ -95,8 +95,10 @@ Inside the Docker container, run:
 	pip install .
 	jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --no-browser . 
 
-This returns a URL where you can open Jupyter in your browser. In Jupyter, open 
-univariate_time_series_classification.ipynb.
+This returns a URL where you can open Jupyter in your browser. In Jupyter, open: 
+
+- univariate_time_series_classification.ipynb or
+- univariate_time_series_regression_and_forecasting.ipynb
 
 
 Overview
