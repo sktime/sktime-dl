@@ -4,6 +4,7 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.encoder._base import EncoderNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
@@ -74,7 +75,7 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(0.00001),
-                      metrics=['accuracy'])
+                      metrics=['mean_squared_error'])
 
         self.callbacks = []
 
@@ -94,7 +95,9 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
+
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]
 
         self.model = self.build_model(self.input_shape)

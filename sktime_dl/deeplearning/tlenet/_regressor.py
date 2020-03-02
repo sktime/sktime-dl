@@ -7,6 +7,7 @@ from sklearn.utils.validation import check_is_fitted
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
@@ -78,7 +79,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
         model.compile(optimizer=keras.optimizers.Adam(lr=0.01, decay=0.005),
-                      loss='mean_squared_error', metrics=['accuracy'])
+                      loss='mean_squared_error', metrics=['mean_squared_error'])
 
         if save_best_model:
             file_path = self.model_save_directory + 'best_model.hdf5'
@@ -102,7 +103,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
 
         self.adjust_parameters(X)
         X, y, __ = self.pre_processing(X, y)
@@ -138,7 +139,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         """
         check_is_fitted(self)
 
-        X = self.check_and_clean_data(X, input_checks=input_checks)
+        X = check_and_clean_data(X, input_checks=input_checks)
 
         X, _, tot_increase_num = self.pre_processing(X)
 

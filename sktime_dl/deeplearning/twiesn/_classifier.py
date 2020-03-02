@@ -10,6 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
+from sktime_dl.utils import check_and_clean_data
 
 
 class TWIESNClassifier(BaseDeepClassifier):
@@ -116,16 +117,18 @@ class TWIESNClassifier(BaseDeepClassifier):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
+        y_onehot = self.convert_y(y)
 
-        onehot_y = self.convert_y(y)
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
+        self.input_shape = X.shape[1:]
 
         self.num_dim = X.shape[2]
         self.T = X.shape[1]
 
         # FINE TUNE MODEL PARAMS
         # split train to validation set to choose best hyper parameters
-        x_train, x_val, y_train, y_val = train_test_split(X, onehot_y, test_size=0.2)
+        x_train, x_val, y_train, y_val = train_test_split(X, y_onehot, test_size=0.2)
         self.N = x_train.shape[0]
 
         # limit the hyperparameter search if dataset is too big
@@ -166,7 +169,7 @@ class TWIESNClassifier(BaseDeepClassifier):
         X_transformed = self.transform_to_feature_space(X)
 
         # transform the corresponding labels
-        y_new = np.repeat(onehot_y, self.T, axis=0)
+        y_new = np.repeat(y_onehot, self.T, axis=0)
 
         # create and fit the tuned ridge classifier.
         self.model = Ridge(alpha=self.lamda)
@@ -194,7 +197,7 @@ class TWIESNClassifier(BaseDeepClassifier):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
-        X = self.check_and_clean_data(X, input_checks=input_checks)
+        X = check_and_clean_data(X, input_checks=input_checks)
 
         # transform and predict prodba on the ridge classifier.
         X_transformed = self.transform_to_feature_space(X)

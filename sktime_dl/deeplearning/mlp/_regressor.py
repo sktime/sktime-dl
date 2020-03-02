@@ -4,6 +4,7 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class MLPRegressor(BaseDeepRegressor, MLPNetwork):
@@ -74,7 +75,7 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adadelta(),
-                      metrics=['accuracy'])
+                      metrics=['mean_squared_error'])
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
         if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
@@ -98,7 +99,9 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
+
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]
 
         self.batch_size = int(max(1, min(X.shape[0] / 10, self.batch_size)))

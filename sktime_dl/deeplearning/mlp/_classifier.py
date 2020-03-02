@@ -4,6 +4,7 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class MLPClassifier(BaseDeepClassifier, MLPNetwork):
@@ -102,9 +103,10 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
-
+        X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
+
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]
 
         self.batch_size = int(min(X.shape[0] / 10, self.batch_size))

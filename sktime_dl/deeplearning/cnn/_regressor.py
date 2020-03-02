@@ -4,6 +4,7 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.cnn._base import CNNNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class CNNRegressor(BaseDeepRegressor, CNNNetwork):
@@ -90,7 +91,7 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
-                      metrics=['accuracy'])
+                      metrics=['mean_squared_error'])
 
         return model
 
@@ -108,7 +109,9 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
+
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]
 
         self.model = self.build_model(self.input_shape)
