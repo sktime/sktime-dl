@@ -5,10 +5,10 @@ __author__ = ["Markus Löning"]
 __all__ = ["SimpleRNNRegressor"]
 
 import numpy as np
-from keras.callbacks import ReduceLROnPlateau
-from keras.layers import Dense, SimpleRNN
-from keras.models import Sequential
-from keras.optimizers import rmsprop
+from tensorflow.keras.callbacks import ReduceLROnPlateau
+from tensorflow.keras.layers import Dense, SimpleRNN
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.optimizers import RMSprop
 from sklearn.utils.validation import check_is_fitted
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor, BaseDeepNetwork
 from sktime_dl.utils import check_and_clean_data
@@ -44,7 +44,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
                       dropout=0.0, recurrent_dropout=0.0),
             Dense(1, use_bias=True, activation='linear')
         ])
-        model.compile(loss='mean_squared_error', optimizer=rmsprop(lr=0.001))
+        model.compile(loss='mean_squared_error', optimizer=RMSprop(lr=0.001))
         if not any(isinstance(callback, ReduceLROnPlateau) for callback in self.callbacks):
             reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
                                           min_lr=0.0001)
