@@ -1,27 +1,38 @@
 import numpy as np
 import pandas as pd
-
+import pytest
 from sklearn.metrics import mean_squared_error
-
-from sktime.highlevel.tasks import ForecastingTask
-from sktime.highlevel.strategies import Forecasting2TSRReductionStrategy
 from sktime.datasets import load_shampoo_sales, load_italy_power_demand
-from sktime.transformers.compose import Tabulariser
+from sktime.highlevel.strategies import Forecasting2TSRReductionStrategy
+from sktime.highlevel.tasks import ForecastingTask
 from sktime.pipeline import Pipeline
+from sktime.transformers.compose import Tabulariser
 
 from sktime_dl.deeplearning import CNNRegressor
 from sktime_dl.deeplearning import EncoderRegressor
 from sktime_dl.deeplearning import FCNRegressor
+from sktime_dl.deeplearning import InceptionTimeRegressor
 from sktime_dl.deeplearning import MLPRegressor
 from sktime_dl.deeplearning import ResNetRegressor
+from sktime_dl.deeplearning import SimpleRNNRegressor
 from sktime_dl.deeplearning import TLENETRegressor
-from sktime_dl.deeplearning import InceptionTimeRegressor
+
+REGRESSORS = [
+    CNNRegressor(nb_epochs=3, kernel_size=3, avg_pool_size=1),
+    EncoderRegressor(nb_epochs=3),
+    FCNRegressor(nb_epochs=3),
+    MLPRegressor(nb_epochs=3),
+    ResNetRegressor(nb_epochs=3),
+    TLENETRegressor(nb_epochs=3),
+    InceptionTimeRegressor(nb_epochs=3),
+    SimpleRNNRegressor(nb_epochs=3)
+]
 
 
 def test_regressor(estimator=MLPRegressor(nb_epochs=10)):
-    '''
+    """
     test a regressor
-    '''
+    """
     print("Start test_regressor()")
     X_train, y_train = load_italy_power_demand(split='TRAIN', return_X_y=True)
     X_test, y_test = load_italy_power_demand(split='TEST', return_X_y=True)
@@ -44,9 +55,9 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=10)):
 
 def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=10),
                                window_length=4):
-    '''
+    """
     test a regressor used for forecasting 
-    '''
+    """
     print("Start test_regressor_forecasting()")
 
     # get data into expected nested format
@@ -74,42 +85,16 @@ def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=10),
     print("End test_regressor_forecasting()")
 
 
-def test_all_regressors():
-    networks = [
-        CNNRegressor(nb_epochs=10),
-        EncoderRegressor(nb_epochs=10),
-        FCNRegressor(nb_epochs=10),
-        MLPRegressor(nb_epochs=10),
-        ResNetRegressor(nb_epochs=10),
-        TLENETRegressor(nb_epochs=10),
-        InceptionTimeRegressor(nb_epochs=10)
-    ]
-
-    for network in networks:
-        print('\n\t\t' + network.__class__.__name__ + ' testing started')
-        test_regressor(network)
-        print('\t\t' + network.__class__.__name__ + ' testing finished')
+@pytest.mark.parametrize("regressor", REGRESSORS)
+def test_all_regressors(regressor):
+    print('\n\t\t' + regressor.__class__.__name__ + ' testing started')
+    test_regressor(regressor)
+    print('\t\t' + regressor.__class__.__name__ + ' testing finished')
 
 
-def test_all_forecasters():
+@pytest.mark.parametrize("regressor", REGRESSORS)
+def test_all_forecasters(regressor):
     window_length = 4
-    # [[network, window length]]
-    networks = [
-        [CNNRegressor(nb_epochs=10, kernel_size=3, avg_pool_size=1)],
-        [EncoderRegressor(nb_epochs=10)],
-        [FCNRegressor(nb_epochs=10)],
-        [MLPRegressor(nb_epochs=10)],
-        [ResNetRegressor(nb_epochs=10)],
-        [TLENETRegressor(nb_epochs=10), 8],
-        [InceptionTimeRegressor(nb_epochs=10)]
-    ]
-
-    for network in networks:
-        print('\n\t\t' + network[0].__class__.__name__ + ' forecast testing started')
-        win_len = window_length if len(network) == 1 else network[1]
-        test_regressor_forecasting(network[0], window_length=win_len)
-        print('\t\t' + network[0].__class__.__name__ + ' forecast testing finished')
-
-
-if __name__ == "__main__":
-    test_all_regressors()
+    print('\n\t\t' + regressor.__class__.__name__ + ' forecast testing started')
+    test_regressor_forecasting(regressor, window_length=window_length)
+    print('\t\t' + regressor.__class__.__name__ + ' forecast testing finished')
