@@ -11,7 +11,7 @@ import gc
 from sklearn.model_selection import train_test_split
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, check_is_fitted
 
 
 class MCNNClassifier(BaseDeepClassifier):
@@ -507,6 +507,8 @@ class MCNNClassifier(BaseDeepClassifier):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
+        check_is_fitted(self)
+
         X = check_and_clean_data(X, input_checks=input_checks)
 
         ori_len = X.shape[1]  # original_length of time series

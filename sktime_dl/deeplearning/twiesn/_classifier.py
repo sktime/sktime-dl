@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, check_is_fitted
 
 
 class TWIESNClassifier(BaseDeepClassifier):
@@ -197,6 +197,8 @@ class TWIESNClassifier(BaseDeepClassifier):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
+        check_is_fitted(self)
+
         X = check_and_clean_data(X, input_checks=input_checks)
 
         # transform and predict prodba on the ridge classifier.

@@ -1,6 +1,3 @@
-import pandas as pd
-import numpy as np
-
 from sktime.datasets import load_italy_power_demand, load_basic_motions
 
 from sktime_dl.deeplearning import CNNClassifier
@@ -15,7 +12,7 @@ from sktime_dl.deeplearning import TWIESNClassifier
 from sktime_dl.deeplearning import InceptionTimeClassifier
 
 
-def test_basic_univariate(network=CNNClassifier(nb_epochs=10)):
+def test_basic_univariate(network=CNNClassifier(nb_epochs=5)):
     '''
     just a super basic test with gunpoint,
         load data,
@@ -35,7 +32,7 @@ def test_basic_univariate(network=CNNClassifier(nb_epochs=10)):
     print("End test_basic()")
 
 
-def test_pipeline(network=CNNClassifier(nb_epochs=10)):
+def test_pipeline(network=CNNClassifier(nb_epochs=5)):
     '''
     slightly more generalised test with sktime pipelines
         load data,
@@ -64,7 +61,7 @@ def test_pipeline(network=CNNClassifier(nb_epochs=10)):
     print("End test_pipeline()")
 
 
-def test_highLevelsktime(network=CNNClassifier(nb_epochs=10)):
+def test_highLevelsktime(network=CNNClassifier(nb_epochs=5)):
     '''
     truly generalised test with sktime tasks/strategies
         load data, build task
@@ -93,7 +90,7 @@ def test_highLevelsktime(network=CNNClassifier(nb_epochs=10)):
     print("End test_highLevelsktime()")
 
 
-def test_basic_multivariate(network=CNNClassifier()):
+def test_basic_multivariate(network=CNNClassifier(nb_epochs=5)):
     '''
     just a super basic test with basicmotions,
         load data,
@@ -113,16 +110,16 @@ def test_basic_multivariate(network=CNNClassifier()):
 
 def test_all_networks():
     networks = [
-        CNNClassifier(nb_epochs=10),
-        EncoderClassifier(nb_epochs=10),
-        FCNClassifier(nb_epochs=10),
-        MCDCNNClassifier(nb_epochs=10),
-        MCNNClassifier(nb_epochs=10),
-        MLPClassifier(nb_epochs=10),
-        ResNetClassifier(nb_epochs=10),
-        TLENETClassifier(nb_epochs=10),
+        CNNClassifier(nb_epochs=5),
+        EncoderClassifier(nb_epochs=5),
+        FCNClassifier(nb_epochs=5),
+        MCDCNNClassifier(nb_epochs=5),
+        MCNNClassifier(nb_epochs=5),
+        MLPClassifier(nb_epochs=5),
+        ResNetClassifier(nb_epochs=5),
+        TLENETClassifier(nb_epochs=5),
         TWIESNClassifier(),
-        InceptionTimeClassifier(nb_epochs=10),
+        InceptionTimeClassifier(nb_epochs=5),
     ]
 
     for network in networks:
