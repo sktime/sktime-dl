@@ -15,3 +15,4 @@ from .tlenet._regressor import TLENETRegressor
 from .twiesn._classifier import TWIESNClassifier
 from .inceptiontime._classifier import InceptionTimeClassifier
 from .inceptiontime._regressor import InceptionTimeRegressor
+from .rnn._regressor import SimpleRNNRegressor
