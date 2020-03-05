@@ -15,12 +15,19 @@ from sktime_dl.utils import check_and_clean_data
 
 
 class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
+    """Simple recurrent neural network
 
-    def __init__(self, nb_epochs=100, batch_size=1, callback=None, random_seed=0, verbose=0,
+    References
+    ----------
+    ..[1] benchmark forecaster in M4 forecasting competition: https://github.com/Mcompetitions/M4-methods
+    """
+
+    def __init__(self, nb_epochs=100, batch_size=1, units=6, callback=None, random_seed=0, verbose=0,
                  model_name="simple_rnn_regressor", model_save_directory=None):
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
         self.verbose = verbose
+        self.units = units
 
         self.is_fitted_ = False
         self.callbacks = callback if callback is not None else []
@@ -38,7 +45,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
 
     def build_model(self, input_shape, **kwargs):
         model = Sequential([
-            SimpleRNN(6, input_shape=(input_shape, 1), activation='linear',
+            SimpleRNN(self.units, input_shape=(input_shape, 1), activation='linear',
                       use_bias=False, kernel_initializer='glorot_uniform',
                       recurrent_initializer='orthogonal', bias_initializer='zeros',
                       dropout=0.0, recurrent_dropout=0.0),
