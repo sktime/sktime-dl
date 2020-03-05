@@ -34,7 +34,7 @@ def check_is_fitted(estimator, msg=None):
 
     Adapted from sklearn.utils.validation.check_is_fitted
 
-    Checks if the estimator is fitted by verifying the presence of positivity of
+    Checks if the estimator is fitted by verifying the presence and positivity of
     self.is_fitted_
 
     Parameters
