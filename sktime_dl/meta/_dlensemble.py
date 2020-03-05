@@ -66,7 +66,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         self.model_save_directory = model_save_directory
         self.is_fitted_ = False
 
-        if base_model.is_fitted_:
+        if base_model.is_fitted:
             raise ValueError("base_model to ensemble over cannot have already been fit(...) to data")
 
         self.base_model = base_model

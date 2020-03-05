@@ -67,5 +67,5 @@ def check_is_fitted(estimator, msg=None):
     if not hasattr(estimator, 'fit'):
         raise TypeError("%s is not an estimator instance." % (estimator))
 
-    if not hasattr(estimator, 'is_fitted_') or not estimator.is_fitted_:
+    if not hasattr(estimator, 'is_fitted') or not estimator.is_fitted:
         raise NotFittedError(msg % {'name': type(estimator).__name__})

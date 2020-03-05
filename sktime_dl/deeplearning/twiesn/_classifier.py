@@ -52,7 +52,7 @@ class TWIESNClassifier(BaseDeepClassifier):
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         # calced in fit
         self.classes_ = None
@@ -176,7 +176,7 @@ class TWIESNClassifier(BaseDeepClassifier):
         self.model.fit(X_transformed, y_new)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self
 

@@ -11,8 +11,35 @@ from sktime_dl.deeplearning import TLENETClassifier
 from sktime_dl.deeplearning import TWIESNClassifier
 from sktime_dl.deeplearning import InceptionTimeClassifier
 
+small_epochs = 3
 
-def test_basic_univariate(network=CNNClassifier(nb_epochs=5)):
+classification_networks_quick = [
+        CNNClassifier(nb_epochs=small_epochs),
+        EncoderClassifier(nb_epochs=small_epochs),
+        FCNClassifier(nb_epochs=small_epochs),
+        MCDCNNClassifier(nb_epochs=small_epochs),
+        MCNNClassifier(nb_epochs=small_epochs),
+        MLPClassifier(nb_epochs=small_epochs),
+        ResNetClassifier(nb_epochs=small_epochs),
+        TLENETClassifier(nb_epochs=small_epochs),
+        TWIESNClassifier(),
+        InceptionTimeClassifier(nb_epochs=small_epochs),
+    ]
+
+classification_networks_literature = [
+        CNNClassifier(),
+        EncoderClassifier(),
+        FCNClassifier(),
+        MCDCNNClassifier(),
+        MCNNClassifier(),
+        MLPClassifier(),
+        ResNetClassifier(),
+        TLENETClassifier(),
+        TWIESNClassifier(),
+        InceptionTimeClassifier(),
+    ]
+
+def test_basic_univariate(network=CNNClassifier(nb_epochs=small_epochs)):
     '''
     just a super basic test with gunpoint,
         load data,
@@ -32,7 +59,7 @@ def test_basic_univariate(network=CNNClassifier(nb_epochs=5)):
     print("End test_basic()")
 
 
-def test_pipeline(network=CNNClassifier(nb_epochs=5)):
+def test_pipeline(network=CNNClassifier(nb_epochs=small_epochs)):
     '''
     slightly more generalised test with sktime pipelines
         load data,
@@ -61,7 +88,7 @@ def test_pipeline(network=CNNClassifier(nb_epochs=5)):
     print("End test_pipeline()")
 
 
-def test_highLevelsktime(network=CNNClassifier(nb_epochs=5)):
+def test_highLevelsktime(network=CNNClassifier(nb_epochs=small_epochs)):
     '''
     truly generalised test with sktime tasks/strategies
         load data, build task
@@ -90,7 +117,7 @@ def test_highLevelsktime(network=CNNClassifier(nb_epochs=5)):
     print("End test_highLevelsktime()")
 
 
-def test_basic_multivariate(network=CNNClassifier(nb_epochs=5)):
+def test_basic_multivariate(network=CNNClassifier(nb_epochs=small_epochs)):
     '''
     just a super basic test with basicmotions,
         load data,
@@ -109,20 +136,8 @@ def test_basic_multivariate(network=CNNClassifier(nb_epochs=5)):
 
 
 def test_all_networks():
-    networks = [
-        CNNClassifier(nb_epochs=5),
-        EncoderClassifier(nb_epochs=5),
-        FCNClassifier(nb_epochs=5),
-        MCDCNNClassifier(nb_epochs=5),
-        MCNNClassifier(nb_epochs=5),
-        MLPClassifier(nb_epochs=5),
-        ResNetClassifier(nb_epochs=5),
-        TLENETClassifier(nb_epochs=5),
-        TWIESNClassifier(),
-        InceptionTimeClassifier(nb_epochs=5),
-    ]
 
-    for network in networks:
+    for network in classification_networks_quick:
         print('\n\t\t' + network.__class__.__name__ + ' testing started')
         # test_basic_univariate(network)
         test_basic_multivariate(network)

@@ -17,8 +17,30 @@ from sktime_dl.deeplearning import ResNetRegressor
 from sktime_dl.deeplearning import TLENETRegressor
 from sktime_dl.deeplearning import InceptionTimeRegressor
 
+small_epochs = 3
 
-def test_regressor(estimator=MLPRegressor(nb_epochs=5)):
+regression_networks_quick = [
+    CNNRegressor(nb_epochs=small_epochs, kernel_size=3, avg_pool_size=1),
+    EncoderRegressor(nb_epochs=small_epochs),
+    FCNRegressor(nb_epochs=small_epochs),
+    MLPRegressor(nb_epochs=small_epochs),
+    ResNetRegressor(nb_epochs=small_epochs),
+    TLENETRegressor(nb_epochs=small_epochs),
+    InceptionTimeRegressor(nb_epochs=small_epochs)
+]
+
+regression_networks_literature = [
+    CNNRegressor(),
+    EncoderRegressor(),
+    FCNRegressor(),
+    MLPRegressor(),
+    ResNetRegressor(),
+    TLENETRegressor(),
+    InceptionTimeRegressor()
+]
+
+
+def test_regressor(estimator=MLPRegressor(nb_epochs=small_epochs)):
     '''
     test a regressor
     '''
@@ -42,7 +64,7 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=5)):
     print("End test_regressor()")
 
 
-def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=5),
+def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=small_epochs),
                                window_length=4):
     '''
     test a regressor used for forecasting 
@@ -75,39 +97,18 @@ def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=5),
 
 
 def test_all_regressors():
-    networks = [
-        CNNRegressor(nb_epochs=5),
-        EncoderRegressor(nb_epochs=5),
-        FCNRegressor(nb_epochs=5),
-        MLPRegressor(nb_epochs=5),
-        ResNetRegressor(nb_epochs=5),
-        TLENETRegressor(nb_epochs=5),
-        InceptionTimeRegressor(nb_epochs=5)
-    ]
-
-    for network in networks:
+    for network in regression_networks_quick:
         print('\n\t\t' + network.__class__.__name__ + ' testing started')
         test_regressor(network)
         print('\t\t' + network.__class__.__name__ + ' testing finished')
 
 
 def test_all_forecasters():
-    window_length = 4
-    # [[network, window length]]
-    networks = [
-        [CNNRegressor(nb_epochs=5, kernel_size=3, avg_pool_size=1)],
-        [EncoderRegressor(nb_epochs=5)],
-        [FCNRegressor(nb_epochs=5)],
-        [MLPRegressor(nb_epochs=5)],
-        [ResNetRegressor(nb_epochs=5)],
-        [TLENETRegressor(nb_epochs=5), 8],
-        [InceptionTimeRegressor(nb_epochs=5)]
-    ]
+    window_length = 8
 
-    for network in networks:
+    for network in regression_networks_quick:
         print('\n\t\t' + network[0].__class__.__name__ + ' forecast testing started')
-        win_len = window_length if len(network) == 1 else network[1]
-        test_regressor_forecasting(network[0], window_length=win_len)
+        test_regressor_forecasting(network[0], window_length=window_length)
         print('\t\t' + network[0].__class__.__name__ + ' forecast testing finished')
 
 

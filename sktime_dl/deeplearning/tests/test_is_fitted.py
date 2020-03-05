@@ -1,10 +1,13 @@
 import numpy as np
+import pytest
 
 from sklearn.exceptions import NotFittedError
 
 from sktime.datasets import load_italy_power_demand
 
-from sktime_dl.deeplearning import *
+from sktime_dl.deeplearning import CNNClassifier
+from sktime_dl.deeplearning.tests.test_classifiers import  classification_networks_literature
+from sktime_dl.deeplearning.tests.test_regressors import  regression_networks_quick
 
 
 def test_is_fitted(network=CNNClassifier(nb_epochs=5)):
@@ -21,11 +24,8 @@ def test_is_fitted(network=CNNClassifier(nb_epochs=5)):
             y_train[i] = X_train.iloc[i].iloc[0].iloc[0]
 
     # first try to predict without fitting: SHOULD fail
-    try:
+    with pytest.raises(NotFittedError):
         network.predict(X_train[:10])
-        raise RuntimeError("% computed predict without being fitted first." % (network))
-    except NotFittedError:
-        pass  # correct behaviour
 
     # now try predicting after fitting, should NOT fail
     network.fit(X_train[:10], y_train[:10])
@@ -33,29 +33,7 @@ def test_is_fitted(network=CNNClassifier(nb_epochs=5)):
 
 
 def test_all_networks():
-    networks = [
-        CNNClassifier(nb_epochs=1),
-        EncoderClassifier(nb_epochs=1),
-        FCNClassifier(nb_epochs=1),
-        MCDCNNClassifier(nb_epochs=1),
-        MCNNClassifier(nb_epochs=1),
-        MLPClassifier(nb_epochs=1),
-        ResNetClassifier(nb_epochs=1),
-        TLENETClassifier(nb_epochs=1),
-        TWIESNClassifier(),
-        InceptionTimeClassifier(nb_epochs=1),
-
-        CNNRegressor(nb_epochs=1),
-        EncoderRegressor(nb_epochs=1),
-        FCNRegressor(nb_epochs=1),
-        # MCDCNNRegressor(nb_epochs=5), # not implemented
-        # MCNNRegressor(nb_epochs=5), # not implemented
-        MLPRegressor(nb_epochs=1),
-        ResNetRegressor(nb_epochs=1),
-        TLENETRegressor(nb_epochs=1),
-        # TWIESNRegressor(), # not implemented
-        InceptionTimeRegressor(nb_epochs=1),
-    ]
+    networks = classification_networks_literature + regression_networks_quick
 
     for network in networks:
         print('\n\t\t' + network.__class__.__name__ + ' is_fitted testing started')

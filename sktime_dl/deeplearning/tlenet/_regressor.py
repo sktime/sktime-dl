@@ -51,7 +51,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         '''
 
         self.verbose = verbose
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
@@ -115,7 +115,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
                                    verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self
 
