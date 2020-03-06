@@ -6,7 +6,7 @@ from sktime.datasets import load_italy_power_demand
 from sktime.regressors.base import BaseRegressor
 
 from sktime_dl.deeplearning import CNNClassifier
-from sktime_dl.utils import construct_all_classifiers, construct_all_regressors, SMALL_NB_EPOCHS
+from sktime_dl.utils.model_lists import construct_all_classifiers, construct_all_regressors, SMALL_NB_EPOCHS
 
 
 def test_is_fitted(network=CNNClassifier()):

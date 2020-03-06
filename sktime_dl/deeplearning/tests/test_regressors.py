@@ -10,7 +10,7 @@ from sktime.transformers.compose import Tabulariser
 from sktime.pipeline import Pipeline
 
 from sktime_dl.deeplearning import MLPRegressor
-from sktime_dl.utils import construct_all_regressors, SMALL_NB_EPOCHS
+from sktime_dl.utils.model_lists import construct_all_regressors, SMALL_NB_EPOCHS
 
 
 def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
