@@ -17,19 +17,19 @@ from sktime_dl.deeplearning import ResNetRegressor
 from sktime_dl.deeplearning import TLENETRegressor
 from sktime_dl.deeplearning import InceptionTimeRegressor
 
-small_epochs = 3
+NB_EPOCHS = 3
 
-regression_networks_quick = [
-    CNNRegressor(nb_epochs=small_epochs, kernel_size=3, avg_pool_size=1),
-    EncoderRegressor(nb_epochs=small_epochs),
-    FCNRegressor(nb_epochs=small_epochs),
-    MLPRegressor(nb_epochs=small_epochs),
-    ResNetRegressor(nb_epochs=small_epochs),
-    TLENETRegressor(nb_epochs=small_epochs),
-    InceptionTimeRegressor(nb_epochs=small_epochs)
+REGRESSION_NETWORKS_QUICK = [
+    CNNRegressor(nb_epochs=NB_EPOCHS, kernel_size=3, avg_pool_size=1),
+    EncoderRegressor(nb_epochs=NB_EPOCHS),
+    FCNRegressor(nb_epochs=NB_EPOCHS),
+    MLPRegressor(nb_epochs=NB_EPOCHS),
+    ResNetRegressor(nb_epochs=NB_EPOCHS),
+    TLENETRegressor(nb_epochs=NB_EPOCHS),
+    InceptionTimeRegressor(nb_epochs=NB_EPOCHS)
 ]
 
-regression_networks_literature = [
+REGRESSION_NETWORKS_LITERATURE = [
     CNNRegressor(),
     EncoderRegressor(),
     FCNRegressor(),
@@ -40,7 +40,7 @@ regression_networks_literature = [
 ]
 
 
-def test_regressor(estimator=MLPRegressor(nb_epochs=small_epochs)):
+def test_regressor(estimator=MLPRegressor(nb_epochs=NB_EPOCHS)):
     '''
     test a regressor
     '''
@@ -64,10 +64,10 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=small_epochs)):
     print("End test_regressor()")
 
 
-def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=small_epochs),
+def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=NB_EPOCHS),
                                window_length=4):
     '''
-    test a regressor used for forecasting 
+    test a regressor used for forecasting
     '''
     print("Start test_regressor_forecasting()")
 
@@ -97,7 +97,7 @@ def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=small_epochs),
 
 
 def test_all_regressors():
-    for network in regression_networks_quick:
+    for network in REGRESSION_NETWORKS_QUICK:
         print('\n\t\t' + network.__class__.__name__ + ' testing started')
         test_regressor(network)
         print('\t\t' + network.__class__.__name__ + ' testing finished')
@@ -106,10 +106,21 @@ def test_all_regressors():
 def test_all_forecasters():
     window_length = 8
 
-    for network in regression_networks_quick:
-        print('\n\t\t' + network[0].__class__.__name__ + ' forecast testing started')
-        test_regressor_forecasting(network[0], window_length=window_length)
-        print('\t\t' + network[0].__class__.__name__ + ' forecast testing finished')
+    # redfine list here, otherwise we run into unexplained TypeError: can't pickle _thread.lock objects
+    REGRESSION_NETWORKS_QUICK = [
+        CNNRegressor(nb_epochs=NB_EPOCHS, kernel_size=3, avg_pool_size=1),
+        EncoderRegressor(nb_epochs=NB_EPOCHS),
+        FCNRegressor(nb_epochs=NB_EPOCHS),
+        MLPRegressor(nb_epochs=NB_EPOCHS),
+        ResNetRegressor(nb_epochs=NB_EPOCHS),
+        TLENETRegressor(nb_epochs=NB_EPOCHS),
+        InceptionTimeRegressor(nb_epochs=NB_EPOCHS)
+    ]
+
+    for network in REGRESSION_NETWORKS_QUICK:
+        print('\n\t\t' + network.__class__.__name__ + ' forecast testing started')
+        test_regressor_forecasting(network, window_length=window_length)
+        print('\t\t' + network.__class__.__name__ + ' forecast testing finished')
 
 
 if __name__ == "__main__":

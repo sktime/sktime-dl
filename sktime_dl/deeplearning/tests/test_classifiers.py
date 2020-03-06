@@ -26,7 +26,7 @@ classification_networks_quick = [
         InceptionTimeClassifier(nb_epochs=small_epochs),
     ]
 
-classification_networks_literature = [
+CLASSIFICATION_NETWORKS_LITERATURE = [
         CNNClassifier(),
         EncoderClassifier(),
         FCNClassifier(),
