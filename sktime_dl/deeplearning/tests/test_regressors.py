@@ -16,6 +16,7 @@ from sktime_dl.deeplearning import MLPRegressor
 from sktime_dl.deeplearning import ResNetRegressor
 from sktime_dl.deeplearning import TLENETRegressor
 from sktime_dl.deeplearning import InceptionTimeRegressor
+from sktime_dl.deeplearning import SimpleRNNRegressor
 
 NB_EPOCHS = 3
 
@@ -26,7 +27,8 @@ REGRESSION_NETWORKS_QUICK = [
     MLPRegressor(nb_epochs=NB_EPOCHS),
     ResNetRegressor(nb_epochs=NB_EPOCHS),
     TLENETRegressor(nb_epochs=NB_EPOCHS),
-    InceptionTimeRegressor(nb_epochs=NB_EPOCHS)
+    InceptionTimeRegressor(nb_epochs=NB_EPOCHS),
+    SimpleRNNRegressor(nb_epochs=NB_EPOCHS)
 ]
 
 REGRESSION_NETWORKS_LITERATURE = [
@@ -114,7 +116,8 @@ def test_all_forecasters():
         MLPRegressor(nb_epochs=NB_EPOCHS),
         ResNetRegressor(nb_epochs=NB_EPOCHS),
         TLENETRegressor(nb_epochs=NB_EPOCHS),
-        InceptionTimeRegressor(nb_epochs=NB_EPOCHS)
+        InceptionTimeRegressor(nb_epochs=NB_EPOCHS),
+        SimpleRNNRegressor(nb_epochs=NB_EPOCHS)
     ]
 
     for network in REGRESSION_NETWORKS_QUICK:
