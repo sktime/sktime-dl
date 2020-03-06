@@ -6,7 +6,25 @@ from pathlib import Path
 from sklearn.exceptions import NotFittedError
 from inspect import isclass
 
-from sktime_dl.deeplearning import *
+from sktime_dl.deeplearning import CNNClassifier
+from sktime_dl.deeplearning import EncoderClassifier
+from sktime_dl.deeplearning import FCNClassifier
+from sktime_dl.deeplearning import MCDCNNClassifier
+from sktime_dl.deeplearning import MCNNClassifier
+from sktime_dl.deeplearning import MLPClassifier
+from sktime_dl.deeplearning import ResNetClassifier
+from sktime_dl.deeplearning import TLENETClassifier
+from sktime_dl.deeplearning import TWIESNClassifier
+from sktime_dl.deeplearning import InceptionTimeClassifier
+
+from sktime_dl.deeplearning import CNNRegressor
+from sktime_dl.deeplearning import EncoderRegressor
+from sktime_dl.deeplearning import FCNRegressor
+from sktime_dl.deeplearning import MLPRegressor
+from sktime_dl.deeplearning import ResNetRegressor
+from sktime_dl.deeplearning import TLENETRegressor
+from sktime_dl.deeplearning import InceptionTimeRegressor
+from sktime_dl.deeplearning import SimpleRNNRegressor
 
 def save_trained_model(model, model_save_directory, model_name, save_format='h5'):
     """
