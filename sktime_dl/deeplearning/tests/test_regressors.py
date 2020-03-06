@@ -18,17 +18,17 @@ from sktime_dl.deeplearning import TLENETRegressor
 from sktime_dl.deeplearning import InceptionTimeRegressor
 from sktime_dl.deeplearning import SimpleRNNRegressor
 
-NB_EPOCHS = 3
+SMALL_NB_EPOCHS = 3
 
 REGRESSION_NETWORKS_QUICK = [
-    CNNRegressor(nb_epochs=NB_EPOCHS, kernel_size=3, avg_pool_size=1),
-    EncoderRegressor(nb_epochs=NB_EPOCHS),
-    FCNRegressor(nb_epochs=NB_EPOCHS),
-    MLPRegressor(nb_epochs=NB_EPOCHS),
-    ResNetRegressor(nb_epochs=NB_EPOCHS),
-    TLENETRegressor(nb_epochs=NB_EPOCHS),
-    InceptionTimeRegressor(nb_epochs=NB_EPOCHS),
-    SimpleRNNRegressor(nb_epochs=NB_EPOCHS)
+    CNNRegressor(nb_epochs=SMALL_NB_EPOCHS, kernel_size=3, avg_pool_size=1),
+    EncoderRegressor(nb_epochs=SMALL_NB_EPOCHS),
+    FCNRegressor(nb_epochs=SMALL_NB_EPOCHS),
+    MLPRegressor(nb_epochs=SMALL_NB_EPOCHS),
+    ResNetRegressor(nb_epochs=SMALL_NB_EPOCHS),
+    TLENETRegressor(nb_epochs=SMALL_NB_EPOCHS),
+    InceptionTimeRegressor(nb_epochs=SMALL_NB_EPOCHS),
+    SimpleRNNRegressor(nb_epochs=SMALL_NB_EPOCHS)
 ]
 
 REGRESSION_NETWORKS_LITERATURE = [
@@ -42,7 +42,7 @@ REGRESSION_NETWORKS_LITERATURE = [
 ]
 
 
-def test_regressor(estimator=MLPRegressor(nb_epochs=NB_EPOCHS)):
+def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
     '''
     test a regressor
     '''
@@ -66,7 +66,7 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=NB_EPOCHS)):
     print("End test_regressor()")
 
 
-def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=NB_EPOCHS),
+def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS),
                                window_length=4):
     '''
     test a regressor used for forecasting
@@ -110,14 +110,14 @@ def test_all_forecasters():
 
     # redfine list here, otherwise we run into unexplained TypeError: can't pickle _thread.lock objects
     REGRESSION_NETWORKS_QUICK = [
-        CNNRegressor(nb_epochs=NB_EPOCHS, kernel_size=3, avg_pool_size=1),
-        EncoderRegressor(nb_epochs=NB_EPOCHS),
-        FCNRegressor(nb_epochs=NB_EPOCHS),
-        MLPRegressor(nb_epochs=NB_EPOCHS),
-        ResNetRegressor(nb_epochs=NB_EPOCHS),
-        TLENETRegressor(nb_epochs=NB_EPOCHS),
-        InceptionTimeRegressor(nb_epochs=NB_EPOCHS),
-        SimpleRNNRegressor(nb_epochs=NB_EPOCHS)
+        CNNRegressor(nb_epochs=SMALL_NB_EPOCHS, kernel_size=3, avg_pool_size=1),
+        EncoderRegressor(nb_epochs=SMALL_NB_EPOCHS),
+        FCNRegressor(nb_epochs=SMALL_NB_EPOCHS),
+        MLPRegressor(nb_epochs=SMALL_NB_EPOCHS),
+        ResNetRegressor(nb_epochs=SMALL_NB_EPOCHS),
+        TLENETRegressor(nb_epochs=SMALL_NB_EPOCHS),
+        InceptionTimeRegressor(nb_epochs=SMALL_NB_EPOCHS),
+        SimpleRNNRegressor(nb_epochs=SMALL_NB_EPOCHS)
     ]
 
     for network in REGRESSION_NETWORKS_QUICK:

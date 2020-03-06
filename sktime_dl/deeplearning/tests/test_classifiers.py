@@ -11,19 +11,19 @@ from sktime_dl.deeplearning import TLENETClassifier
 from sktime_dl.deeplearning import TWIESNClassifier
 from sktime_dl.deeplearning import InceptionTimeClassifier
 
-small_epochs = 3
+SMALL_NB_EPOCHS = 3
 
-classification_networks_quick = [
-        CNNClassifier(nb_epochs=small_epochs),
-        EncoderClassifier(nb_epochs=small_epochs),
-        FCNClassifier(nb_epochs=small_epochs),
-        MCDCNNClassifier(nb_epochs=small_epochs),
-        MCNNClassifier(nb_epochs=small_epochs),
-        MLPClassifier(nb_epochs=small_epochs),
-        ResNetClassifier(nb_epochs=small_epochs),
-        TLENETClassifier(nb_epochs=small_epochs),
+CLASSIFICATION_NETWORKS_QUICK = [
+        CNNClassifier(nb_epochs=SMALL_NB_EPOCHS),
+        EncoderClassifier(nb_epochs=SMALL_NB_EPOCHS),
+        FCNClassifier(nb_epochs=SMALL_NB_EPOCHS),
+        MCDCNNClassifier(nb_epochs=SMALL_NB_EPOCHS),
+        MCNNClassifier(nb_epochs=SMALL_NB_EPOCHS),
+        MLPClassifier(nb_epochs=SMALL_NB_EPOCHS),
+        ResNetClassifier(nb_epochs=SMALL_NB_EPOCHS),
+        TLENETClassifier(nb_epochs=SMALL_NB_EPOCHS),
         TWIESNClassifier(),
-        InceptionTimeClassifier(nb_epochs=small_epochs),
+        InceptionTimeClassifier(nb_epochs=SMALL_NB_EPOCHS),
     ]
 
 CLASSIFICATION_NETWORKS_LITERATURE = [
@@ -39,7 +39,7 @@ CLASSIFICATION_NETWORKS_LITERATURE = [
         InceptionTimeClassifier(),
     ]
 
-def test_basic_univariate(network=CNNClassifier(nb_epochs=small_epochs)):
+def test_basic_univariate(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     '''
     just a super basic test with gunpoint,
         load data,
@@ -59,7 +59,7 @@ def test_basic_univariate(network=CNNClassifier(nb_epochs=small_epochs)):
     print("End test_basic()")
 
 
-def test_pipeline(network=CNNClassifier(nb_epochs=small_epochs)):
+def test_pipeline(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     '''
     slightly more generalised test with sktime pipelines
         load data,
@@ -88,7 +88,7 @@ def test_pipeline(network=CNNClassifier(nb_epochs=small_epochs)):
     print("End test_pipeline()")
 
 
-def test_highLevelsktime(network=CNNClassifier(nb_epochs=small_epochs)):
+def test_highLevelsktime(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     '''
     truly generalised test with sktime tasks/strategies
         load data, build task
@@ -117,7 +117,7 @@ def test_highLevelsktime(network=CNNClassifier(nb_epochs=small_epochs)):
     print("End test_highLevelsktime()")
 
 
-def test_basic_multivariate(network=CNNClassifier(nb_epochs=small_epochs)):
+def test_basic_multivariate(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     '''
     just a super basic test with basicmotions,
         load data,

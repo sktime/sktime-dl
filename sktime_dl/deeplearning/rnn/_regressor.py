@@ -29,7 +29,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
         self.verbose = verbose
         self.units = units
 
-        self.is_fitted_ = False
+        self.is_fitted = False
         self.callbacks = callback if callback is not None else []
 
         self.model = None
@@ -71,7 +71,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
         self.history = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
                                       verbose=self.verbose, callbacks=self.callbacks)
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
         return self
 
     def predict(self, X, input_checks=True, **kwargs):
