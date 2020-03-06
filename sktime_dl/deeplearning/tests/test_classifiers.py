@@ -1,43 +1,8 @@
 from sktime.datasets import load_italy_power_demand, load_basic_motions
 
 from sktime_dl.deeplearning import CNNClassifier
-from sktime_dl.deeplearning import EncoderClassifier
-from sktime_dl.deeplearning import FCNClassifier
-from sktime_dl.deeplearning import MCDCNNClassifier
-from sktime_dl.deeplearning import MCNNClassifier
-from sktime_dl.deeplearning import MLPClassifier
-from sktime_dl.deeplearning import ResNetClassifier
-from sktime_dl.deeplearning import TLENETClassifier
-from sktime_dl.deeplearning import TWIESNClassifier
-from sktime_dl.deeplearning import InceptionTimeClassifier
+from sktime_dl.utils import construct_all_classifiers, SMALL_NB_EPOCHS
 
-SMALL_NB_EPOCHS = 3
-
-CLASSIFICATION_NETWORKS_QUICK = [
-        CNNClassifier(nb_epochs=SMALL_NB_EPOCHS),
-        EncoderClassifier(nb_epochs=SMALL_NB_EPOCHS),
-        FCNClassifier(nb_epochs=SMALL_NB_EPOCHS),
-        MCDCNNClassifier(nb_epochs=SMALL_NB_EPOCHS),
-        MCNNClassifier(nb_epochs=SMALL_NB_EPOCHS),
-        MLPClassifier(nb_epochs=SMALL_NB_EPOCHS),
-        ResNetClassifier(nb_epochs=SMALL_NB_EPOCHS),
-        TLENETClassifier(nb_epochs=SMALL_NB_EPOCHS),
-        TWIESNClassifier(),
-        InceptionTimeClassifier(nb_epochs=SMALL_NB_EPOCHS),
-    ]
-
-CLASSIFICATION_NETWORKS_LITERATURE = [
-        CNNClassifier(),
-        EncoderClassifier(),
-        FCNClassifier(),
-        MCDCNNClassifier(),
-        MCNNClassifier(),
-        MLPClassifier(),
-        ResNetClassifier(),
-        TLENETClassifier(),
-        TWIESNClassifier(),
-        InceptionTimeClassifier(),
-    ]
 
 def test_basic_univariate(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     '''
@@ -136,8 +101,7 @@ def test_basic_multivariate(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
 
 
 def test_all_networks():
-
-    for network in CLASSIFICATION_NETWORKS_QUICK:
+    for network in construct_all_classifiers(SMALL_NB_EPOCHS):
         print('\n\t\t' + network.__class__.__name__ + ' testing started')
         # test_basic_univariate(network)
         test_basic_multivariate(network)

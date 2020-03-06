@@ -6,6 +6,7 @@ from pathlib import Path
 from sklearn.exceptions import NotFittedError
 from inspect import isclass
 
+from sktime_dl.deeplearning import *
 
 def save_trained_model(model, model_save_directory, model_name, save_format='h5'):
     """
@@ -69,3 +70,74 @@ def check_is_fitted(estimator, msg=None):
 
     if not hasattr(estimator, 'is_fitted') or not estimator.is_fitted:
         raise NotFittedError(msg % {'name': type(estimator).__name__})
+
+
+
+def construct_all_classifiers(nb_epochs=None):
+    '''
+    Creates a list of all classification networks ready for testing
+
+    :param nb_epochs: int, if not None, value shall be set for all networks that accept it
+    :return: list of sktime_dl BaseDeepClassifier imeplementations
+    '''
+    if nb_epochs is not None:
+        # potentially quicker versions for tests
+        return [
+            CNNClassifier(nb_epochs=nb_epochs),
+            EncoderClassifier(nb_epochs=nb_epochs),
+            FCNClassifier(nb_epochs=nb_epochs),
+            MCDCNNClassifier(nb_epochs=nb_epochs),
+            MCNNClassifier(nb_epochs=nb_epochs),
+            MLPClassifier(nb_epochs=nb_epochs),
+            ResNetClassifier(nb_epochs=nb_epochs),
+            TLENETClassifier(nb_epochs=nb_epochs),
+            TWIESNClassifier(),
+            InceptionTimeClassifier(nb_epochs=nb_epochs),
+        ]
+    else:
+        # the 'literature-conforming' versions
+        return [
+            CNNClassifier(),
+            EncoderClassifier(),
+            FCNClassifier(),
+            MCDCNNClassifier(),
+            MCNNClassifier(),
+            MLPClassifier(),
+            ResNetClassifier(),
+            TLENETClassifier(),
+            TWIESNClassifier(),
+            InceptionTimeClassifier(),
+        ]
+
+
+def construct_all_regressors(nb_epochs=None):
+    '''
+    Creates a list of all regression networks ready for testing
+
+    :param nb_epochs: int, if not None, value shall be set for all networks that accept it
+    :return: list of sktime_dl BaseDeepRegressor imeplementations
+    '''
+    if nb_epochs is not None:
+        # potentially quicker versions for tests
+        return [
+            CNNRegressor(nb_epochs=nb_epochs, kernel_size=3, avg_pool_size=1),
+            EncoderRegressor(nb_epochs=nb_epochs),
+            FCNRegressor(nb_epochs=nb_epochs),
+            MLPRegressor(nb_epochs=nb_epochs),
+            ResNetRegressor(nb_epochs=nb_epochs),
+            TLENETRegressor(nb_epochs=nb_epochs),
+            InceptionTimeRegressor(nb_epochs=nb_epochs),
+            SimpleRNNRegressor(nb_epochs=nb_epochs)
+        ]
+    else:
+        # the 'literature-conforming' versions
+        return [
+            CNNRegressor(),
+            EncoderRegressor(),
+            FCNRegressor(),
+            MLPRegressor(),
+            ResNetRegressor(),
+            TLENETRegressor(),
+            InceptionTimeRegressor(),
+            SimpleRNNRegressor()
+        ]

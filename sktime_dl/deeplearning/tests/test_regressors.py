@@ -9,37 +9,8 @@ from sktime.datasets import load_shampoo_sales, load_italy_power_demand
 from sktime.transformers.compose import Tabulariser
 from sktime.pipeline import Pipeline
 
-from sktime_dl.deeplearning import CNNRegressor
-from sktime_dl.deeplearning import EncoderRegressor
-from sktime_dl.deeplearning import FCNRegressor
 from sktime_dl.deeplearning import MLPRegressor
-from sktime_dl.deeplearning import ResNetRegressor
-from sktime_dl.deeplearning import TLENETRegressor
-from sktime_dl.deeplearning import InceptionTimeRegressor
-from sktime_dl.deeplearning import SimpleRNNRegressor
-
-SMALL_NB_EPOCHS = 3
-
-REGRESSION_NETWORKS_QUICK = [
-    CNNRegressor(nb_epochs=SMALL_NB_EPOCHS, kernel_size=3, avg_pool_size=1),
-    EncoderRegressor(nb_epochs=SMALL_NB_EPOCHS),
-    FCNRegressor(nb_epochs=SMALL_NB_EPOCHS),
-    MLPRegressor(nb_epochs=SMALL_NB_EPOCHS),
-    ResNetRegressor(nb_epochs=SMALL_NB_EPOCHS),
-    TLENETRegressor(nb_epochs=SMALL_NB_EPOCHS),
-    InceptionTimeRegressor(nb_epochs=SMALL_NB_EPOCHS),
-    SimpleRNNRegressor(nb_epochs=SMALL_NB_EPOCHS)
-]
-
-REGRESSION_NETWORKS_LITERATURE = [
-    CNNRegressor(),
-    EncoderRegressor(),
-    FCNRegressor(),
-    MLPRegressor(),
-    ResNetRegressor(),
-    TLENETRegressor(),
-    InceptionTimeRegressor()
-]
+from sktime_dl.utils import construct_all_regressors, SMALL_NB_EPOCHS
 
 
 def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
@@ -99,7 +70,7 @@ def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)
 
 
 def test_all_regressors():
-    for network in REGRESSION_NETWORKS_QUICK:
+    for network in construct_all_regressors():
         print('\n\t\t' + network.__class__.__name__ + ' testing started')
         test_regressor(network)
         print('\t\t' + network.__class__.__name__ + ' testing finished')
@@ -108,19 +79,7 @@ def test_all_regressors():
 def test_all_forecasters():
     window_length = 8
 
-    # redfine list here, otherwise we run into unexplained TypeError: can't pickle _thread.lock objects
-    REGRESSION_NETWORKS_QUICK = [
-        CNNRegressor(nb_epochs=SMALL_NB_EPOCHS, kernel_size=3, avg_pool_size=1),
-        EncoderRegressor(nb_epochs=SMALL_NB_EPOCHS),
-        FCNRegressor(nb_epochs=SMALL_NB_EPOCHS),
-        MLPRegressor(nb_epochs=SMALL_NB_EPOCHS),
-        ResNetRegressor(nb_epochs=SMALL_NB_EPOCHS),
-        TLENETRegressor(nb_epochs=SMALL_NB_EPOCHS),
-        InceptionTimeRegressor(nb_epochs=SMALL_NB_EPOCHS),
-        SimpleRNNRegressor(nb_epochs=SMALL_NB_EPOCHS)
-    ]
-
-    for network in REGRESSION_NETWORKS_QUICK:
+    for network in construct_all_regressors(SMALL_NB_EPOCHS):
         print('\n\t\t' + network.__class__.__name__ + ' forecast testing started')
         test_regressor_forecasting(network, window_length=window_length)
         print('\t\t' + network.__class__.__name__ + ' forecast testing finished')
