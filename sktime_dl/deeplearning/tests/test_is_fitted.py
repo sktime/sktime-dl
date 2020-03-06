@@ -4,7 +4,7 @@ from sklearn.exceptions import NotFittedError
 from sktime.datasets import load_italy_power_demand
 from sktime.regressors.base import BaseRegressor
 from sktime_dl.deeplearning import CNNClassifier
-from sktime_dl.deeplearning.tests.test_classifiers import CLASSIFICATION_NETWORKS_LITERATURE
+from sktime_dl.deeplearning.tests.test_classifiers import CLASSIFICATION_NETWORKS_QUICK
 from sktime_dl.deeplearning.tests.test_regressors import REGRESSION_NETWORKS_QUICK
 
 
@@ -27,7 +27,7 @@ def test_is_fitted(network=CNNClassifier()):
 
 
 def test_all_networks():
-    networks = CLASSIFICATION_NETWORKS_LITERATURE + REGRESSION_NETWORKS_QUICK
+    networks = CLASSIFICATION_NETWORKS_QUICK + REGRESSION_NETWORKS_QUICK
 
     for network in networks:
         print('\n\t\t' + network.__class__.__name__ + ' is_fitted testing started')

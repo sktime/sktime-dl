@@ -137,7 +137,7 @@ def test_basic_multivariate(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
 
 def test_all_networks():
 
-    for network in classification_networks_quick:
+    for network in CLASSIFICATION_NETWORKS_QUICK:
         print('\n\t\t' + network.__class__.__name__ + ' testing started')
         # test_basic_univariate(network)
         test_basic_multivariate(network)
