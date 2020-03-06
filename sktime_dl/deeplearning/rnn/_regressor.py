@@ -5,13 +5,14 @@ __author__ = ["Markus Löning"]
 __all__ = ["SimpleRNNRegressor"]
 
 import numpy as np
+
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.layers import Dense, SimpleRNN
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import RMSprop
-from sklearn.utils.validation import check_is_fitted
+
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor, BaseDeepNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, check_is_fitted
 
 
 class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
