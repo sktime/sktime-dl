@@ -4,7 +4,8 @@
     :target: https://badge.fury.io/py/sktime-dl
 .. image:: https://badges.gitter.im/sktime/community.svg
     :target: https://gitter.im/sktime/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
-
+.. image:: https://mybinder.org/badge_logo.svg
+    :target: https://mybinder.org/v2/gh/Withington/sktime-dl/binder?filepath=examples
 
 sktime-dl
 =========
@@ -65,12 +66,12 @@ Follow `Tensorflow's instuctions <https://www.tensorflow.org/install/gpu>`__ to 
 
 Build the sktime-dl Docker image:
 ::
-	cd sktime-dl
+	cd sktime-dl/sktime_dl
 	docker build -t sktime_gpu .
 
 Run a container using the image:
 ::
-	docker run --gpus all --rm -it sktime_gpu:latest bash
+	docker run --gpus all --rm -it sktime_gpu:latest
 
 Run all the tests with:
 ::
@@ -79,27 +80,6 @@ Run all the tests with:
 or exclude the long-running tests with:
 ::
 	pytest -v -m="not slow" --cov=sktime_dl --pyargs sktime_dl
-
-
-Jupyter Notebook
-~~~~~~~~~~~~~~~~
-Your local download of sktime_dl can be run in a Jupyter notebook, with GPU support.
-
-Run a container using the sktime_gpu Docker image that was built above:
-::
-	docker run --gpus all --rm -it -p 8888:8888 sktime_gpu:latest bash
-
-
-Inside the Docker container, run:
-::
-	pip install .
-	jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --no-browser . 
-
-This returns a URL where you can open Jupyter in your browser. In Jupyter, open: 
-
-- univariate_time_series_classification.ipynb or
-- univariate_time_series_regression_and_forecasting.ipynb
-
 
 Overview
 --------
