@@ -11,6 +11,7 @@ import gc
 from sklearn.model_selection import train_test_split
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
+from sktime_dl.utils import check_and_clean_data
 
 
 class MCNNClassifier(BaseDeepClassifier):
@@ -431,9 +432,8 @@ class MCNNClassifier(BaseDeepClassifier):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
-
-        y = self.convert_y(y)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
+        y_onehot = self.convert_y(y)
 
         best_df_metrics = None
         best_valid_loss = np.inf
@@ -442,7 +442,7 @@ class MCNNClassifier(BaseDeepClassifier):
         for pool_factor in self.pool_factors:
             for filter_size in self.filter_sizes:
                 # print('pretrain')
-                valid_loss, model = self.train(X, y, pool_factor, filter_size)
+                valid_loss, model = self.train(X, y_onehot, pool_factor, filter_size)
                 # print('posttrain')
 
                 if (valid_loss < best_valid_loss):
@@ -483,7 +483,7 @@ class MCNNClassifier(BaseDeepClassifier):
         #
         # todo is jsut leaking slower - still fails. to be fixed when time for tedious deep-delving, else just do not expect
         #  to be able to run multiple of these in a single execution
-        _, self.model = self.train(X, y, pool_factor, filter_size)
+        _, self.model = self.train(X, y_onehot, pool_factor, filter_size)
 
         self.save_trained_model()
         self.is_fitted_ = True
@@ -507,7 +507,7 @@ class MCNNClassifier(BaseDeepClassifier):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
-        X = self.check_and_clean_data(X, input_checks=input_checks)
+        X = check_and_clean_data(X, input_checks=input_checks)
 
         ori_len = X.shape[1]  # original_length of time series
 

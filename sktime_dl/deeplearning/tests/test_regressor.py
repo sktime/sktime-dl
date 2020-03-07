@@ -16,9 +16,10 @@ from sktime_dl.deeplearning import MLPRegressor
 from sktime_dl.deeplearning import ResNetRegressor
 from sktime_dl.deeplearning import TLENETRegressor
 from sktime_dl.deeplearning import InceptionTimeRegressor
+from sktime_dl.deeplearning import SimpleRNNRegressor
 
 
-def test_regressor(estimator=MLPRegressor(nb_epochs=50)):
+def test_regressor(estimator=MLPRegressor(nb_epochs=10)):
     '''
     test a regressor
     '''
@@ -42,7 +43,7 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=50)):
     print("End test_regressor()")
 
 
-def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=50),
+def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=10),
                                window_length=4):
     '''
     test a regressor used for forecasting 
@@ -76,13 +77,14 @@ def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=50),
 
 def test_all_regressors():
     networks = [
-        CNNRegressor(nb_epochs=50),
-        EncoderRegressor(nb_epochs=50),
-        FCNRegressor(nb_epochs=50),
-        MLPRegressor(nb_epochs=50),
-        ResNetRegressor(nb_epochs=50),
-        TLENETRegressor(nb_epochs=50),
-        InceptionTimeRegressor(nb_epochs=50)
+        CNNRegressor(nb_epochs=10),
+        EncoderRegressor(nb_epochs=10),
+        FCNRegressor(nb_epochs=10),
+        MLPRegressor(nb_epochs=10),
+        ResNetRegressor(nb_epochs=10),
+        TLENETRegressor(nb_epochs=10),
+        InceptionTimeRegressor(nb_epochs=10),
+        SimpleRNNRegressor(nb_epochs=3)
     ]
 
     for network in networks:
@@ -95,13 +97,14 @@ def test_all_forecasters():
     window_length = 4
     # [[network, window length]]
     networks = [
-        [CNNRegressor(nb_epochs=50, kernel_size=3, avg_pool_size=1)],
-        [EncoderRegressor(nb_epochs=50)],
-        [FCNRegressor(nb_epochs=50)],
-        [MLPRegressor(nb_epochs=50)],
-        [ResNetRegressor(nb_epochs=50)],
-        [TLENETRegressor(nb_epochs=50), 8],
-        [InceptionTimeRegressor(nb_epochs=50)]
+        [CNNRegressor(nb_epochs=10, kernel_size=3, avg_pool_size=1)],
+        [EncoderRegressor(nb_epochs=10)],
+        [FCNRegressor(nb_epochs=10)],
+        [MLPRegressor(nb_epochs=10)],
+        [ResNetRegressor(nb_epochs=10)],
+        [TLENETRegressor(nb_epochs=10), 8],
+        [InceptionTimeRegressor(nb_epochs=10)],
+        [SimpleRNNRegressor(nb_epochs=3)]
     ]
 
     for network in networks:
