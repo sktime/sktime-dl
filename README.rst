@@ -5,7 +5,7 @@
 .. image:: https://badges.gitter.im/sktime/community.svg
     :target: https://gitter.im/sktime/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 .. image:: https://mybinder.org/badge_logo.svg
-    :target: https://mybinder.org/v2/gh/Withington/sktime-dl/binder?filepath=examples
+    :target: https://mybinder.org/v2/gh/Withington/sktime-dl/docker_examples?filepath=examples
 
 sktime-dl
 =========
