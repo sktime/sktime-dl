@@ -15,3 +15,4 @@ from sktime_dl.deeplearning.tlenet._regressor import TLENETRegressor
 from sktime_dl.deeplearning.twiesn._classifier import TWIESNClassifier
 from sktime_dl.deeplearning.inceptiontime._classifier import InceptionTimeClassifier
 from sktime_dl.deeplearning.inceptiontime._regressor import InceptionTimeRegressor
+from sktime_dl.deeplearning.rnn._regressor import SimpleRNNRegressor
