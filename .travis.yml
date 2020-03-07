@@ -3,6 +3,7 @@ branches:
     only:
         - master
         - dev
+        - docker_examples
 
 dist: xenial
 sudo: false
