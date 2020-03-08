@@ -12,6 +12,7 @@ from sktime.pipeline import Pipeline
 from sktime_dl.deeplearning import CNNRegressor
 from sktime_dl.deeplearning import EncoderRegressor
 from sktime_dl.deeplearning import FCNRegressor
+from sktime_dl.deeplearning import MCDCNNRegressor
 from sktime_dl.deeplearning import MLPRegressor
 from sktime_dl.deeplearning import ResNetRegressor
 from sktime_dl.deeplearning import TLENETRegressor
@@ -80,6 +81,7 @@ def test_all_regressors():
         CNNRegressor(nb_epochs=10),
         EncoderRegressor(nb_epochs=10),
         FCNRegressor(nb_epochs=10),
+        MCDCNNRegressor(nb_epochs=10),
         MLPRegressor(nb_epochs=10),
         ResNetRegressor(nb_epochs=10),
         TLENETRegressor(nb_epochs=10),
@@ -100,6 +102,7 @@ def test_all_forecasters():
         [CNNRegressor(nb_epochs=10, kernel_size=3, avg_pool_size=1)],
         [EncoderRegressor(nb_epochs=10)],
         [FCNRegressor(nb_epochs=10)],
+        [MCDCNNRegressor(nb_epochs=1, dense_units=64)],
         [MLPRegressor(nb_epochs=10)],
         [ResNetRegressor(nb_epochs=10)],
         [TLENETRegressor(nb_epochs=10), 8],
