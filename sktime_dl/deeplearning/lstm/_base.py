@@ -10,14 +10,14 @@ class LSTMNetwork(BaseDeepNetwork):
     ''' Long Short-Term Memory (LSTM)
 
     Adapted from the implementation of Brownlee, J. (2018)
-    
+
     https://machinelearningmastery.com/how-to-develop-lstm-models-for-time-series-forecasting/
     '''
     def __init__(self,
                  units=[50, 50],
                  random_seed=0):
         '''
-        :param units: int, array of size 2, the number of LSTM layers
+        :param units: int, array of size 2, the number units in each LSTM layer
         :param random_seed: int, seed to any needed random actions
         '''
 
