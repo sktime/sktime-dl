@@ -17,6 +17,7 @@ from sktime_dl.deeplearning import ResNetRegressor
 from sktime_dl.deeplearning import TLENETRegressor
 from sktime_dl.deeplearning import InceptionTimeRegressor
 from sktime_dl.deeplearning import SimpleRNNRegressor
+from sktime_dl.deeplearning import LSTMRegressor
 
 
 def test_regressor(estimator=MLPRegressor(nb_epochs=10)):
@@ -84,7 +85,8 @@ def test_all_regressors():
         ResNetRegressor(nb_epochs=10),
         TLENETRegressor(nb_epochs=10),
         InceptionTimeRegressor(nb_epochs=10),
-        SimpleRNNRegressor(nb_epochs=3)
+        SimpleRNNRegressor(nb_epochs=3),
+        LSTMRegressor(nb_epochs=10)
     ]
 
     for network in networks:
@@ -104,7 +106,8 @@ def test_all_forecasters():
         [ResNetRegressor(nb_epochs=10)],
         [TLENETRegressor(nb_epochs=10), 8],
         [InceptionTimeRegressor(nb_epochs=10)],
-        [SimpleRNNRegressor(nb_epochs=3)]
+        [SimpleRNNRegressor(nb_epochs=3)],
+        [LSTMRegressor(nb_epochs=10)]
     ]
 
     for network in networks:

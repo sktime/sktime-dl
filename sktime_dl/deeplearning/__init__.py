@@ -16,3 +16,4 @@ from .twiesn._classifier import TWIESNClassifier
 from .inceptiontime._classifier import InceptionTimeClassifier
 from .inceptiontime._regressor import InceptionTimeRegressor
 from .rnn._regressor import SimpleRNNRegressor
+from .lstm._regressor import LSTMRegressor
