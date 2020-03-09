@@ -5,13 +5,14 @@ __author__ = ["Markus Löning"]
 __all__ = ["SimpleRNNRegressor"]
 
 import numpy as np
+
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.layers import Dense, SimpleRNN
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import RMSprop
-from sklearn.utils.validation import check_is_fitted
+
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor, BaseDeepNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, check_is_fitted
 
 
 class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
@@ -29,7 +30,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
         self.verbose = verbose
         self.units = units
 
-        self.is_fitted_ = False
+        self.is_fitted = False
         self.callbacks = callback if callback is not None else []
 
         self.model = None
@@ -71,7 +72,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
         self.history = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
                                       verbose=self.verbose, callbacks=self.callbacks)
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
         return self
 
     def predict(self, X, input_checks=True, **kwargs):
