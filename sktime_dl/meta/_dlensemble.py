@@ -64,9 +64,9 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
             self.model_name = model_name
 
         self.model_save_directory = model_save_directory
-        self.is_fitted_ = False
+        self.is_fitted = False
 
-        if base_model.is_fitted_:
+        if base_model.is_fitted:
             raise ValueError("base_model to ensemble over cannot have already been fit(...) to data")
 
         self.base_model = base_model
@@ -133,7 +133,8 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
                 gc.collect()
                 keras.backend.clear_session()
 
-        self.is_fitted_ = True
+        self.is_fitted = True
+        return self
 
     def predict_proba(self, X, input_checks=True, **kwargs):
         """
@@ -211,6 +212,7 @@ class EnsembleFromFileClassifier(BaseClassifier):
         self.network_name = network_name
         self.nb_iterations = nb_iterations
         self.verbose = verbose
+        self.is_fitted = False
 
         self.res_path = res_path
         self.dataset_name = dataset_name
@@ -248,6 +250,8 @@ class EnsembleFromFileClassifier(BaseClassifier):
         if self.y_pred.shape[1] == 1:
             # first column is probability of class 0 and second is of class 1
             self.y_pred = np.hstack([1 - self.y_pred, self.y_pred])
+
+        self.is_fitted = True
 
         return self
 

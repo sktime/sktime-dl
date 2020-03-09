@@ -5,6 +5,7 @@ import numpy as np
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
+from sktime_dl.utils import check_and_clean_data, check_is_fitted
 
 
 class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
@@ -48,7 +49,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         '''
 
         self.verbose = verbose
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
@@ -94,23 +95,25 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
+        y_onehot = self.convert_y(y)
 
-        y = self.convert_y(y)
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
+        self.input_shape = X.shape[1:]
 
-        self.nb_classes = y.shape[1]
+        self.nb_classes = y_onehot.shape[1]
 
         self.adjust_parameters(X)
-        X, y, tot_increase_num = self.pre_processing(X, y)
+        X, y_onehot, tot_increase_num = self.pre_processing(X, y_onehot)
 
         input_shape = X.shape[1:]  # pylint: disable=E1136  # pylint/issues/3139
         self.model = self.build_model(input_shape, self.nb_classes)
 
-        self.hist = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
+        self.hist = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
                                    verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self
 
@@ -131,7 +134,9 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
-        X = self.check_and_clean_data(X, input_checks=input_checks)
+        check_is_fitted(self)
+
+        X = check_and_clean_data(X, input_checks=input_checks)
 
         X, _, tot_increase_num = self.pre_processing(X)
 

@@ -4,6 +4,7 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.inceptiontime._base import InceptionTimeNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
@@ -67,7 +68,7 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
         '''
 
         self.verbose = verbose
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         # predefined
         self.batch_size = batch_size
@@ -94,7 +95,7 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
-                      metrics=['accuracy'])
+                      metrics=['mean_squared_error'])
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
         if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
@@ -118,8 +119,9 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
 
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]
 
         if self.batch_size is None:
@@ -136,6 +138,6 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
                                       verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self

@@ -1,18 +1,10 @@
-from sktime.datasets import load_italy_power_demand  # , load_basic_motions
+from sktime.datasets import load_italy_power_demand, load_basic_motions
 
 from sktime_dl.deeplearning import CNNClassifier
-from sktime_dl.deeplearning import EncoderClassifier
-from sktime_dl.deeplearning import FCNClassifier
-from sktime_dl.deeplearning import MCDCNNClassifier
-from sktime_dl.deeplearning import MCNNClassifier
-from sktime_dl.deeplearning import MLPClassifier
-from sktime_dl.deeplearning import ResNetClassifier
-from sktime_dl.deeplearning import TLENETClassifier
-from sktime_dl.deeplearning import TWIESNClassifier
-from sktime_dl.deeplearning import InceptionTimeClassifier
+from sktime_dl.utils.model_lists import construct_all_classifiers, SMALL_NB_EPOCHS
 
 
-def test_basic_univariate(network=CNNClassifier(nb_epochs=10)):
+def test_basic_univariate(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     '''
     just a super basic test with gunpoint,
         load data,
@@ -32,7 +24,7 @@ def test_basic_univariate(network=CNNClassifier(nb_epochs=10)):
     print("End test_basic()")
 
 
-def test_pipeline(network=CNNClassifier(nb_epochs=10)):
+def test_pipeline(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     '''
     slightly more generalised test with sktime pipelines
         load data,
@@ -61,7 +53,7 @@ def test_pipeline(network=CNNClassifier(nb_epochs=10)):
     print("End test_pipeline()")
 
 
-def test_highLevelsktime(network=CNNClassifier(nb_epochs=10)):
+def test_highLevelsktime(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     '''
     truly generalised test with sktime tasks/strategies
         load data, build task
@@ -90,43 +82,29 @@ def test_highLevelsktime(network=CNNClassifier(nb_epochs=10)):
     print("End test_highLevelsktime()")
 
 
-# def test_basic_multivariate(network=cnn.CNNClassifier(nb_epochs=50)):
-#     '''
-#     just a super basic test with basicmotions,
-#         load data,
-#         construct classifier,
-#         fit,
-#         score
-#     '''
-#     print("Start test_multivariate()")
-#
-#     X_train, y_train = load_basic_motions(split='TRAIN', return_X_y=True)
-#     X_test, y_test = load_basic_motions(split='TRAIN', return_X_y=True)
-#
-#     hist = network.fit(X_train, y_train)
-#
-#     print(network.score(X_test, y_test))
-#     print("End test_multivariate()")
+def test_basic_multivariate(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
+    '''
+    just a super basic test with basicmotions,
+        load data,
+        construct classifier,
+        fit,
+        score
+    '''
+    print("Start test_multivariate()")
+    X_train, y_train = load_basic_motions(split='TRAIN', return_X_y=True)
+    X_test, y_test = load_basic_motions(split='TEST', return_X_y=True)
+
+    hist = network.fit(X_train, y_train)
+
+    print(network.score(X_test, y_test))
+    print("End test_multivariate()")
 
 
 def test_all_networks():
-    networks = [
-        CNNClassifier(nb_epochs=10),
-        EncoderClassifier(nb_epochs=10),
-        FCNClassifier(nb_epochs=10),
-        MCDCNNClassifier(nb_epochs=10),
-        MCNNClassifier(nb_epochs=10),
-        MLPClassifier(nb_epochs=10),
-        ResNetClassifier(nb_epochs=10),
-        TLENETClassifier(nb_epochs=10),
-        TWIESNClassifier(),
-        InceptionTimeClassifier(nb_epochs=10),
-    ]
-
-    for network in networks:
+    for network in construct_all_classifiers(SMALL_NB_EPOCHS):
         print('\n\t\t' + network.__class__.__name__ + ' testing started')
-        test_basic_univariate(network)
-        # test_basic_multivariate(network)
+        # test_basic_univariate(network)
+        test_basic_multivariate(network)
         # test_pipeline(network)
         test_highLevelsktime(network)
         print('\t\t' + network.__class__.__name__ + ' testing finished')

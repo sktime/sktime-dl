@@ -2,6 +2,7 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.inceptiontime._base import InceptionTimeNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
@@ -64,7 +65,7 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
         self.verbose = verbose
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         # predefined
         self.batch_size = batch_size
@@ -118,9 +119,10 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
-
+        X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
+
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]
 
         if self.batch_size is None:
@@ -137,6 +139,6 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
                                       verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self

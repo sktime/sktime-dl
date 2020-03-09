@@ -4,6 +4,7 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class MLPRegressor(BaseDeepRegressor, MLPNetwork):
@@ -48,7 +49,7 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
         self.verbose = verbose
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         # calced in fit
         self.input_shape = None
@@ -74,7 +75,7 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adadelta(),
-                      metrics=['accuracy'])
+                      metrics=['mean_squared_error'])
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
         if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
@@ -98,7 +99,9 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
+
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]
 
         self.batch_size = int(max(1, min(X.shape[0] / 10, self.batch_size)))
@@ -112,6 +115,6 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
                                       verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self

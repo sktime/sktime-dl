@@ -4,6 +4,7 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.resnet._base import ResNetNetwork
+from sktime_dl.utils import check_and_clean_data
 
 
 class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
@@ -49,7 +50,7 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
         '''
 
         self.verbose = verbose
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         # calced in fit
         self.input_shape = None
@@ -103,9 +104,10 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
-
+        X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
+
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]
 
         self.batch_size = int(min(X.shape[0] / 10, self.batch_size))
@@ -119,6 +121,6 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
                                       verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self

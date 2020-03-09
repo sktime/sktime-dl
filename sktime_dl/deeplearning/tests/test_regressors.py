@@ -9,16 +9,11 @@ from sktime.datasets import load_shampoo_sales, load_italy_power_demand
 from sktime.transformers.compose import Tabulariser
 from sktime.pipeline import Pipeline
 
-from sktime_dl.deeplearning import CNNRegressor
-from sktime_dl.deeplearning import EncoderRegressor
-from sktime_dl.deeplearning import FCNRegressor
 from sktime_dl.deeplearning import MLPRegressor
-from sktime_dl.deeplearning import ResNetRegressor
-from sktime_dl.deeplearning import TLENETRegressor
-from sktime_dl.deeplearning import InceptionTimeRegressor
+from sktime_dl.utils.model_lists import construct_all_regressors, SMALL_NB_EPOCHS
 
 
-def test_regressor(estimator=MLPRegressor(nb_epochs=50)):
+def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
     '''
     test a regressor
     '''
@@ -42,10 +37,10 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=50)):
     print("End test_regressor()")
 
 
-def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=50),
+def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS),
                                window_length=4):
     '''
-    test a regressor used for forecasting 
+    test a regressor used for forecasting
     '''
     print("Start test_regressor_forecasting()")
 
@@ -75,40 +70,19 @@ def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=50),
 
 
 def test_all_regressors():
-    networks = [
-        CNNRegressor(nb_epochs=50),
-        EncoderRegressor(nb_epochs=50),
-        FCNRegressor(nb_epochs=50),
-        MLPRegressor(nb_epochs=50),
-        ResNetRegressor(nb_epochs=50),
-        TLENETRegressor(nb_epochs=50),
-        InceptionTimeRegressor(nb_epochs=50)
-    ]
-
-    for network in networks:
+    for network in construct_all_regressors(SMALL_NB_EPOCHS):
         print('\n\t\t' + network.__class__.__name__ + ' testing started')
         test_regressor(network)
         print('\t\t' + network.__class__.__name__ + ' testing finished')
 
 
 def test_all_forecasters():
-    window_length = 4
-    # [[network, window length]]
-    networks = [
-        [CNNRegressor(nb_epochs=50, kernel_size=3, avg_pool_size=1)],
-        [EncoderRegressor(nb_epochs=50)],
-        [FCNRegressor(nb_epochs=50)],
-        [MLPRegressor(nb_epochs=50)],
-        [ResNetRegressor(nb_epochs=50)],
-        [TLENETRegressor(nb_epochs=50), 8],
-        [InceptionTimeRegressor(nb_epochs=50)]
-    ]
+    window_length = 8
 
-    for network in networks:
-        print('\n\t\t' + network[0].__class__.__name__ + ' forecast testing started')
-        win_len = window_length if len(network) == 1 else network[1]
-        test_regressor_forecasting(network[0], window_length=win_len)
-        print('\t\t' + network[0].__class__.__name__ + ' forecast testing finished')
+    for network in construct_all_regressors(SMALL_NB_EPOCHS):
+        print('\n\t\t' + network.__class__.__name__ + ' forecast testing started')
+        test_regressor_forecasting(network, window_length=window_length)
+        print('\t\t' + network.__class__.__name__ + ' forecast testing finished')
 
 
 if __name__ == "__main__":

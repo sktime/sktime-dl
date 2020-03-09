@@ -6,6 +6,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
+from sktime_dl.utils import check_and_clean_data, check_is_fitted
 
 
 class MCDCNNClassifier(BaseDeepClassifier):
@@ -48,7 +49,7 @@ class MCDCNNClassifier(BaseDeepClassifier):
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         # calced in fit
         self.classes_ = None
@@ -149,16 +150,17 @@ class MCDCNNClassifier(BaseDeepClassifier):
         -------
         self : object
         """
-        X = self.check_and_clean_data(X, y, input_checks=input_checks)
-
+        X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
+
+        # ignore the number of instances, X.shape[0], just want the shape of each instance
+        self.input_shape = X.shape[1:]
+
         x_train, x_val, y_train_onehot, y_val_onehot = \
             train_test_split(X, y_onehot, test_size=0.33)
 
         x_train = self.prepare_input(x_train)
         x_val = self.prepare_input(x_val)
-
-        self.input_shape = X.shape[1:]
 
         self.model = self.build_model(self.input_shape, self.nb_classes)
 
@@ -170,7 +172,7 @@ class MCDCNNClassifier(BaseDeepClassifier):
                                       callbacks=self.callbacks)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self
 
@@ -191,7 +193,9 @@ class MCDCNNClassifier(BaseDeepClassifier):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
-        X = self.check_and_clean_data(X, input_checks=input_checks)
+        check_is_fitted(self)
+
+        X = check_and_clean_data(X, input_checks=input_checks)
 
         x_test = self.prepare_input(X)
 

@@ -1,17 +1,12 @@
 # Base class for regressors
 
-__author__ = "Withington"
-
-import numpy as np
-import pandas as pd
+__author__ = "Withington, James Large"
 
 from sklearn.base import RegressorMixin
-from sklearn.utils.validation import check_is_fitted
 
 from sktime.regressors.base import BaseRegressor
-from sktime.utils.validation.supervised import validate_X, validate_X_y
 
-from sktime_dl.utils import save_trained_model
+from sktime_dl.utils import save_trained_model, check_and_clean_data, check_is_fitted
 
 
 class BaseDeepRegressor(BaseRegressor, RegressorMixin):
@@ -55,35 +50,13 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
         """
         check_is_fitted(self)
 
-        X = self.check_and_clean_data(X, input_checks=input_checks)
+        X = check_and_clean_data(X, input_checks=input_checks)
 
         y_pred = self.model.predict(X, **kwargs)
 
         if y_pred.ndim == 1:
             y_pred.ravel()
         return y_pred
-
-    def check_and_clean_data(self, X, y=None, input_checks=True):
-        if input_checks:
-            if y is None:
-                validate_X(X)
-            else:
-                validate_X_y(X, y)
-
-        if isinstance(X, pd.DataFrame):
-            if X.shape[1] == 1 and not isinstance(X.iloc[0, 0], pd.Series):
-                raise TypeError(
-                    "Input should either be a 2D array of values or a pandas dataframe with a single column of Series objects (networks cannot yet handle multivariate problems")
-            elif X.shape[1] > 1:
-                X = X.to_numpy()
-            else:
-                X = np.asarray([a.values for a in X.iloc[:, 0]])
-
-        if len(X.shape) == 2:
-            # add a dimension to make it multivariate with one dimension
-            X = X.reshape((X.shape[0], X.shape[1], 1))
-
-        return X
 
     def save_trained_model(self):
         save_trained_model(
