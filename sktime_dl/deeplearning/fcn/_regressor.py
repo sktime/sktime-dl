@@ -49,7 +49,7 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
         self.verbose = verbose
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         # calced in fit
         self.input_shape = None
@@ -117,6 +117,6 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
                                       verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self
