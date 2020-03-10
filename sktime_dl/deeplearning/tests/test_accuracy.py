@@ -99,6 +99,7 @@ def test_tlenet_accuracy():
     accuracy_test(network=TLENETClassifier(), lower=0.90)
 
 
+@pytest.mark.slow
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_twiesn_accuracy():
     accuracy_test(network=TWIESNClassifier(), lower=0.88 - ACCURACY_DEVIATION_THRESHOLD * 0.022)
