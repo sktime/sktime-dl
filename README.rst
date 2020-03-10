@@ -1,11 +1,16 @@
-.. image:: https://travis-ci.com/sktime/sktime-dl.svg?branch=master
-    :target: https://travis-ci.com/sktime/sktime-dl
-.. image:: https://badge.fury.io/py/sktime-dl.svg
-    :target: https://badge.fury.io/py/sktime-dl
-.. image:: https://img.shields.io/gitter/room/alan-turing-institute/sktime?logo=gitter
-    :target: https://gitter.im/sktime/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
-.. image:: https://mybinder.org/badge_logo.svg
-    :target: https://mybinder.org/v2/gh/sktime/sktime-dl/master?filepath=examples
+|travis|_ |pypi|_ |gitter|_ |Binder|_
+
+.. |travis| image:: https://img.shields.io/travis/com/sktime/sktime-dl/master?logo=travis
+.. _travis: https://travis-ci.com/sktime/sktime-dl
+
+.. |pypi| image:: https://img.shields.io/pypi/v/sktime-dl
+.. _pypi: https://pypi.org/project/sktime-dl/
+
+.. |gitter| image:: https://img.shields.io/gitter/room/alan-turing-institute/sktime?logo=gitter
+.. _gitter: https://gitter.im/sktime/community
+
+.. |binder| image:: https://mybinder.org/badge_logo.svg
+.. _Binder: https://mybinder.org/v2/gh/sktime/sktime-dl/master?filepath=examples
 
 sktime-dl
 =========
