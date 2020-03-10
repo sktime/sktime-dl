@@ -2,7 +2,7 @@
     :target: https://travis-ci.com/sktime/sktime-dl
 .. image:: https://badge.fury.io/py/sktime-dl.svg
     :target: https://badge.fury.io/py/sktime-dl
-.. image:: https://badges.gitter.im/sktime/community.svg
+.. image:: https://img.shields.io/gitter/room/alan-turing-institute/sktime?logo=gitter
     :target: https://gitter.im/sktime/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 .. image:: https://mybinder.org/badge_logo.svg
     :target: https://mybinder.org/v2/gh/Withington/sktime-dl/docker_examples?filepath=examples
