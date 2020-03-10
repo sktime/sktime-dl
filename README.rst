@@ -5,7 +5,7 @@
 .. image:: https://img.shields.io/gitter/room/alan-turing-institute/sktime?logo=gitter
     :target: https://gitter.im/sktime/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 .. image:: https://mybinder.org/badge_logo.svg
-    :target: https://mybinder.org/v2/gh/Withington/sktime-dl/docker_examples?filepath=examples
+    :target: https://mybinder.org/v2/gh/sktime/sktime-dl/master?filepath=examples
 
 sktime-dl
 =========
