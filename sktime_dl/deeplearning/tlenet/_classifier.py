@@ -5,7 +5,7 @@ import numpy as np
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, check_is_fitted
 
 
 class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
@@ -49,7 +49,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         '''
 
         self.verbose = verbose
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
@@ -113,7 +113,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
                                    verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self
 
@@ -134,6 +134,8 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
+        check_is_fitted(self)
+
         X = check_and_clean_data(X, input_checks=input_checks)
 
         X, _, tot_increase_num = self.pre_processing(X)

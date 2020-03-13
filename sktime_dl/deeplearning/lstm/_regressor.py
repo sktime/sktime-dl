@@ -37,7 +37,7 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
         :param random_seed: int, seed to any needed random actions
         '''
         self.verbose = verbose
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         self.input_shape = None
         self.history = None
@@ -90,6 +90,6 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
                                         verbose=self.verbose)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self

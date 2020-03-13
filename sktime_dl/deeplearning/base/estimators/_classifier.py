@@ -6,12 +6,11 @@ __author__ = "James Large, Aaron Bostrom"
 import numpy as np
 
 from sktime.classifiers.base import BaseClassifier
-from sklearn.utils.validation import check_is_fitted
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
-from sktime_dl.utils import save_trained_model, check_and_clean_data
+from sktime_dl.utils import save_trained_model, check_and_clean_data, check_is_fitted
 
 
 class BaseDeepClassifier(BaseClassifier):

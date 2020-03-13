@@ -50,7 +50,7 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
         '''
 
         self.verbose = verbose
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         # calced in fit
         self.input_shape = None
@@ -120,6 +120,6 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
                                       verbose=self.verbose, callbacks=self.callbacks)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self
