@@ -11,7 +11,7 @@ import gc
 from sklearn.model_selection import train_test_split
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, check_is_fitted
 
 
 class MCNNClassifier(BaseDeepClassifier):
@@ -62,7 +62,7 @@ class MCNNClassifier(BaseDeepClassifier):
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         self.pool_factors = pool_factors  # used for hyperparameters grid search
         self.filter_sizes = filter_sizes  # used for hyperparameters grid search
@@ -486,7 +486,7 @@ class MCNNClassifier(BaseDeepClassifier):
         _, self.model = self.train(X, y_onehot, pool_factor, filter_size)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self
 
@@ -507,6 +507,8 @@ class MCNNClassifier(BaseDeepClassifier):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
+        check_is_fitted(self)
+
         X = check_and_clean_data(X, input_checks=input_checks)
 
         ori_len = X.shape[1]  # original_length of time series

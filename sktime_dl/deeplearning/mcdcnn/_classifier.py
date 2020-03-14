@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.mcdcnn._base import MCDCNNNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, check_is_fitted
 
 
 class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
@@ -68,7 +68,7 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         '''
 
         self.verbose = verbose
-        self.is_fitted_ = False
+        self.is_fitted = False
 
         # calced in fit
         self.classes_ = None
@@ -148,7 +148,7 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
                                       callbacks=self.callbacks)
 
         self.save_trained_model()
-        self.is_fitted_ = True
+        self.is_fitted = True
 
         return self
 
@@ -169,6 +169,8 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         -------
         output : array of shape = [n_instances, n_classes] of probabilities
         """
+        check_is_fitted(self)
+
         X = check_and_clean_data(X, input_checks=input_checks)
 
         x_test = self.prepare_input(X)
