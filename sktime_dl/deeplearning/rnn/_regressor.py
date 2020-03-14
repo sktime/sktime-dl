@@ -74,14 +74,3 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
         self.save_trained_model()
         self.is_fitted = True
         return self
-
-    def predict(self, X, input_checks=True, **kwargs):
-        check_is_fitted(self)
-
-        X = check_and_clean_data(X, input_checks=input_checks)
-
-        y_pred = self.model.predict(X, **kwargs)
-
-        if y_pred.ndim == 1:
-            y_pred.ravel()
-        return y_pred

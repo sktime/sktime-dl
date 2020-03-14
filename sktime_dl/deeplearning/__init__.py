@@ -5,6 +5,7 @@ from .encoder._regressor import EncoderRegressor
 from .fcn._classifier import FCNClassifier
 from .fcn._regressor import FCNRegressor
 from .mcdcnn._classifier import MCDCNNClassifier
+from .mcdcnn._regressor import MCDCNNRegressor
 from .mcnn._classifier import MCNNClassifier
 from .mlp._classifier import MLPClassifier
 from .mlp._regressor import MLPRegressor

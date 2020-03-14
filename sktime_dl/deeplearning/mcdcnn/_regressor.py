@@ -1,16 +1,16 @@
-__author__ = "James Large"
+__author__ = "James Large, Withington"
 
 from tensorflow import keras
 import numpy as np
 
 from sklearn.model_selection import train_test_split
 
-from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mcdcnn._base import MCDCNNNetwork
-from sktime_dl.utils import check_and_clean_data, check_is_fitted
+from sktime_dl.utils import check_and_clean_data
 
 
-class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
+class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
     """Multi Channel Deep Convolutional Neural Network (MCDCNN).
 
     Adapted from the implementation from Fawaz et. al
@@ -40,7 +40,7 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
                  callbacks=[],
                  random_seed=0,
                  verbose=False,
-                 model_name="mcdcnn",
+                 model_name="mcdcnn_regressor",
                  model_save_directory=None):
         super().__init__(
             model_name=model_name,
@@ -51,11 +51,10 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
             pool_size=pool_size,
             filter_sizes=filter_sizes,
             dense_units=dense_units,
-            random_seed=random_seed
-        )
+            random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
-        :param batch_size: int, the number of samples per gradient update.
+        :param batch_size: int, the number of samples per gradient update
         :param kernel_size: int, specifying the length of the 1D convolution window
         :param pool_size: int, size of the max pooling windows
         :param filter_sizes: int, array of shape = 2, size of filter for each conv layer
@@ -66,13 +65,10 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         :param model_name: string, the name of this model for printing and file writing purposes
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
-
         self.verbose = verbose
         self.is_fitted = False
 
         # calced in fit
-        self.classes_ = None
-        self.nb_classes = -1
         self.input_shape = None
         self.model = None
         self.history = None
@@ -82,27 +78,25 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         self.batch_size = batch_size
         self.callbacks = callbacks
 
-    def build_model(self, input_shape, nb_classes, **kwargs):
+    def build_model(self, input_shape, **kwargs):
         """
         Construct a compiled, un-trained, keras model that is ready for training
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
-        nb_classes: int
-            The number of classes, which shall become the size of the output layer
         Returns
         -------
         output : a compiled Keras Model
         """
         input_layers, output_layer = self.build_network(input_shape, **kwargs)
 
-        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(output_layer)
+        output_layer = keras.layers.Dense(units=1)(output_layer)
 
         model = keras.models.Model(inputs=input_layers, outputs=output_layer)
 
-        model.compile(loss='categorical_crossentropy',
+        model.compile(loss='mean_squared_error',
                       optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.0005),
-                      metrics=['accuracy'])
+                      metrics=['mean_squared_error'])
 
         # file_path = self.output_directory + 'best_model.hdf5'
         # model_checkpoint = keras.callbacks.ModelCheckpoint(filepath=file_path, monitor='val_loss',
@@ -114,12 +108,12 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
 
     def fit(self, X, y, input_checks=True, **kwargs):
         """
-        Build the classifier on the training set (X, y)
+        Build the regressor on the training set (X, y)
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+            The training input samples.  If a Pandas data frame of Series objects is passed, column 0 is extracted.
         y : array-like, shape = [n_instances]
-            The class labels.
+            The regression values.
         input_checks: boolean
             whether to check the X and y parameters
         Returns
@@ -127,59 +121,26 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         self : object
         """
         X = check_and_clean_data(X, y, input_checks=input_checks)
-        y_onehot = self.convert_y(y)
 
         # ignore the number of instances, X.shape[0], just want the shape of each instance
         self.input_shape = X.shape[1:]
 
-        x_train, x_val, y_train_onehot, y_val_onehot = \
-            train_test_split(X, y_onehot, test_size=0.33)
+        x_train, x_val, y_train, y_val = \
+            train_test_split(X, y, test_size=0.33)
 
         x_train = self.prepare_input(x_train)
         x_val = self.prepare_input(x_val)
 
-        self.model = self.build_model(self.input_shape, self.nb_classes)
+        self.model = self.build_model(self.input_shape)
 
         if self.verbose:
             self.model.summary()
 
-        self.history = self.model.fit(x_train, y_train_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
-                                      verbose=self.verbose, validation_data=(x_val, y_val_onehot),
+        self.history = self.model.fit(x_train, y_train, batch_size=self.batch_size, epochs=self.nb_epochs,
+                                      verbose=self.verbose, validation_data=(x_val, y_val),
                                       callbacks=self.callbacks)
 
         self.save_trained_model()
         self.is_fitted = True
 
         return self
-
-    def predict_proba(self, X, input_checks=True, **kwargs):
-        """
-        Find probability estimates for each class for all cases in X.
-        Parameters
-        ----------
-        X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.
-            If a Pandas data frame is passed (sktime format)
-            If a Pandas data frame is passed, a check is performed that it only has one column.
-            If not, an exception is thrown, since this classifier does not yet have
-            multivariate capability.
-        input_checks: boolean
-            whether to check the X parameter
-        Returns
-        -------
-        output : array of shape = [n_instances, n_classes] of probabilities
-        """
-        check_is_fitted(self)
-
-        X = check_and_clean_data(X, input_checks=input_checks)
-
-        x_test = self.prepare_input(X)
-
-        probs = self.model.predict(x_test, **kwargs)
-
-        # check if binary classification
-        if probs.shape[1] == 1:
-            # first column is probability of class 0 and second is of class 1
-            probs = np.hstack([1 - probs, probs])
-
-        return probs
