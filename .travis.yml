@@ -3,7 +3,6 @@ branches:
     only:
         - master
         - dev
-        - mcdcnn_regressor_v2
 
 dist: xenial
 sudo: false
