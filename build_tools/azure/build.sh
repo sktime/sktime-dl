@@ -45,7 +45,6 @@ make_conda "$REQUIREMENTS"
 # invokes build_ext -i to compile files
 # builds universal wheel, as specified in setup.cfg
 python setup.py bdist_wheel
-ls dist -lh # list built wheels
 
 # Install from built wheels
 pip install --pre --no-index --no-deps --find-links dist/ sktime-dl

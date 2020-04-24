@@ -25,7 +25,7 @@ stages:
     jobs:
       - job: 'Linting'
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: 'ubuntu-16.04' # 'ubuntu-latest'
         steps:
           - task: UsePythonVersion@0
             displayName: 'Use Python version'
@@ -99,9 +99,9 @@ stages:
             py36_tf115:
               PYTHON_VERSION: 3.6
               TF_VERSION: 1.15
-            py37_tf21:
-              PYTHON_VERSION: 3.7
-              TF_VERSION: 2.1
+#            py37_tf21:
+#              PYTHON_VERSION: 3.7
+#              TF_VERSION: 2.1
 
   - stage: 'Deploy'
     dependsOn: 'Build'
