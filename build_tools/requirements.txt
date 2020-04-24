@@ -1,0 +1,5 @@
+sktime>=0.3.1
+tensorflow>=1.9
+pytest
+pytest-cov
+flaky

@@ -45,6 +45,7 @@ import sys; print("Python", sys.version)
 import numpy; print("NumPy", numpy.__version__)
 import scipy; print("SciPy", scipy.__version__)
 import sktime; print("sktime", sktime.__version__)
+import sktime_dl; print("sktime_dl", sktime_dl.__version__)
 -->
 
 </details>

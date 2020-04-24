@@ -1,16 +1,16 @@
 #! /usr/bin/env python
 """Install script for sktime-dl"""
 
-from setuptools import find_packages
-from setuptools import setup
 import codecs
 import os
+import platform
 import re
 import sys
-import platform
-import warnings
+
 from pkg_resources import Requirement
 from pkg_resources import working_set
+from setuptools import find_packages
+from setuptools import setup
 
 # raise early warning for incompatible Python versions
 if sys.version_info < (3, 6) or sys.version_info >= (3, 8):
@@ -38,14 +38,14 @@ def find_version(*file_paths):
 
 
 def find_install_requires():
-    '''Return a list of dependencies and non-pypi dependency links.
+    """Return a list of dependencies and non-pypi dependency links.
 
     A supported version of tensorflow and/or tensorflow-gpu is required. If not 
     found, then tensorflow is added to the install_requires list.
 
     Depending on the version of tensorflow found or installed, either keras-contrib or 
     tensorflow-addons needs to be installed as well.
-    '''
+    """
 
     install_requires = [
         'sktime>=0.3.0',
@@ -71,23 +71,23 @@ def find_install_requires():
         has_tf_gpu = True
         tf_gpu_version = tf_gpu._version
 
-    if has_tf_gpu and not has_tf:   
+    if has_tf_gpu and not has_tf:
         # have -gpu only (1.x), make sure it's above 1.9.0
         # Specify tensorflow-gpu version if it is already installed.
-        tf_requires = 'tensorflow-gpu>='+MINIMUM_TF_VERSION
+        tf_requires = 'tensorflow-gpu>=' + MINIMUM_TF_VERSION
 
     install_requires.append(tf_requires)
 
     # tensorflow itself handled, now find out what add-on package to use
-    if (not has_tf and not has_tf_gpu) or (has_tf and tf_version >= '2.1.0'): 
+    if (not has_tf and not has_tf_gpu) or (has_tf and tf_version >= '2.1.0'):
         # tensorflow will be up-to-date enough to use most recent tensorflow-addons, the replacement for keras-contrib
         install_requires.append('tensorflow-addons')
     else:
         # fall back to keras-contrib, not on pypi so need to instal it separately
         # not printing. TODO
         print('Existing version of tensorflow older than version 2.1.0 detected.' \
-           'You shall need to install keras-contrib (for tf.keras) in order to use all the features of sktime-dl.' \
-           '\n See https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras')
+              'You shall need to install keras-contrib (for tf.keras) in order to use all the features of sktime-dl.' \
+              '\n See https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras')
 
     return install_requires
 
@@ -98,14 +98,14 @@ DESCRIPTION = 'Deep learning extension package for sktime, a scikit-learn compat
 with codecs.open('README.rst', encoding='utf-8-sig') as f:
     LONG_DESCRIPTION = f.read()
 MAINTAINER = 'F. Király'
-MAINTAINER_EMAIL = 'fkiraly@turing.ac.uk'
+MAINTAINER_EMAIL = 'f.kiraly@ucl.ac.uk'
 URL = 'https://github.com/sktime/sktime-dl'
 LICENSE = 'BSD-3-Clause'
 DOWNLOAD_URL = 'https://pypi.org/project/sktime-dl/#files'
 PROJECT_URLS = {
-    'Issue Tracker': 'https://github.com/uea-machine-learning/sktime-dl/issues',
-    'Documentation': 'https://uea-machine-learning.github.io/sktime-dl/',
-    'Source Code': 'https://github.com/uea-machine-learning/sktime-dl'
+    'Issue Tracker': 'https://github.com/sktime/sktime-dl/issues',
+    'Documentation': 'https://sktime.github.io/sktime-dl/',
+    'Source Code': 'https://github.com/sktime/sktime-dl'
 }
 VERSION = find_version('sktime_dl', '__init__.py')
 INSTALL_REQUIRES = find_install_requires()
@@ -119,7 +119,9 @@ CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Operating System :: POSIX',
                'Operating System :: Unix',
                'Operating System :: MacOS',
-               'Programming Language :: Python :: 3.6']
+               'Programming Language :: Python :: 3.6',
+               'Programming Language :: Python :: 3.7']
+
 EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
