@@ -6,7 +6,7 @@
 set -e
 
 # activate conda environment
-conda activate testenv
+source activate testenv
 
 # print test environment
 conda list

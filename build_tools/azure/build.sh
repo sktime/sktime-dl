@@ -4,21 +4,16 @@
 
 set -e
 
-echo "$PYTHON_VERSION"
-echo "$TF_VERSION"
+echo "Setting up conda env ..."
+echo "Python version: " "$PYTHON_VERSION"
+echo "TF version: " "$TF_VERSION"
 
 make_conda() {
-    # Deactivate the travis-provided virtual environment and setup a
+    # Deactivate the any previously set virtual environment and setup a
     # conda-based environment instead
-    # If Travvis has language=generic (e.g. for macOS), deactivate does not exist. `|| :` will pass.
     deactivate || :
 
     # Install miniconda
-    echo "Setting up conda env ..."
-#    wget https://repo.continuum.io/miniconda/"$MINICONDA_VERSION" -O miniconda.sh
-#    MINICONDA=$HOME/miniconda
-#    chmod +x miniconda.sh && ./miniconda.sh -b -p "$MINICONDA"
-#    export PATH=$MINICONDA/bin:$PATH
     conda config --set always_yes true
     conda update --quiet conda
 
@@ -26,7 +21,7 @@ make_conda() {
     conda create --name testenv python="$PYTHON_VERSION" tensorflow="$TF_VERSION"
 
     # Activate environment
-    conda activate testenv
+    source activate testenv
 
     # Install requirements from inside conda environment
     pip install cython  # only needed until we provide sktime wheels
