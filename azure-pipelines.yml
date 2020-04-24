@@ -6,7 +6,7 @@
 
 variables:
   REQUIREMENTS: build_tools/requirements.txt
-  TEST_DIR: tmp/test/
+  TEST_DIR: tmp/
 
 trigger:
   branches:
