@@ -80,6 +80,28 @@ stages:
             py37_tf21:
               PYTHON_VERSION: 3.7
               TF_VERSION: 2.1
+      - job: 'macOS'
+        pool:
+          vmImage: 'macOS-latest'
+        steps:
+          - bash: echo "##vso[task.prependpath]$CONDA/bin"
+            displayName: 'Add conda to PATH'
+          - bash: sudo chown -R $USER $CONDA
+            displayName: 'Take ownership of conda installation'
+          - bash: build_tools/azure/build.sh
+          - bash: build_tools/azure/test.sh
+          - template: build_tools/azure/publish.yml
+        strategy:
+          matrix:
+            py36_tf19:
+              PYTHON_VERSION: 3.6
+              TF_VERSION: 1.9
+            py36_tf115:
+              PYTHON_VERSION: 3.6
+              TF_VERSION: 1.15
+            py37_tf21:
+              PYTHON_VERSION: 3.7
+              TF_VERSION: 2.1
 
   - stage: 'Deploy'
     dependsOn: 'Build'

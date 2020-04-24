@@ -21,6 +21,6 @@ cd "$TEST_DIR"
 
 set -x  # print executed commands to the terminal
 
-pytest -m="not slow" --verbose --showlocals --durations=20 --cov=sktime_dl --pyargs ../sktime_dl
+pytest -m="not slow" --verbose --showlocals --durations=20 --junitxml=junit/test-results.xml --cov=sktime_dl --pyargs ../sktime_dl
 
 set +e
