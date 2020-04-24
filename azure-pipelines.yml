@@ -62,6 +62,28 @@ stages:
             py37_tf21:
               PYTHON_VERSION: 3.7
               TF_VERSION: 2.1
+      - job: 'Windows'
+          pool:
+            vmImage: 'vs2017-win2016'
+          steps:
+            - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+              displayName: 'Add conda to PATH'
+            - bash: build_tools/azure/build.sh
+            - bash: build_tools/azure/test.sh
+            - template: build_tools/azure/publish.yml
+          variables:
+            MINICONDA_VERSION: Miniconda3-latest-Linux-x86_64.sh
+          strategy:
+            matrix:
+              py36_tf19:
+                PYTHON_VERSION: 3.6
+                TF_VERSION: 1.9
+              py36_tf115:
+                PYTHON_VERSION: 3.6
+                TF_VERSION: 1.15
+              py37_tf21:
+                PYTHON_VERSION: 3.7
+                TF_VERSION: 2.1
 
   - stage: 'Deploy'
     dependsOn: 'Build'

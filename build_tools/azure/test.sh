@@ -5,8 +5,11 @@
 # exit the script if any statement returns a non-true return value
 set -e
 
+# activate conda environment
+conda activate testenv
+
 # print test environment
-conda list -n testenv
+conda list
 
 # Get into a temp directory to run test from the installed scikit-learn and
 # check if we do not leave artifacts
