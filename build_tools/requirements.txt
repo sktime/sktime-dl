@@ -1,4 +1,4 @@
-sktime>=0.3.1
+sktime>=0.3.0
 tensorflow>=1.9
 pytest
 pytest-cov
