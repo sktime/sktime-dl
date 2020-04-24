@@ -44,6 +44,8 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         steps:
+          - bash: echo "##vso[task.prependpath]$CONDA/bin"
+            displayName: 'Add conda to PATH'
           - bash: build_tools/azure/build.sh
           - bash: build_tools/azure/test.sh
           - template: build_tools/azure/publish.yml

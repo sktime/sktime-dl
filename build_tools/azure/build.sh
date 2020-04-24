@@ -15,10 +15,10 @@ make_conda() {
 
     # Install miniconda
     echo "Setting up conda env ..."
-    wget https://repo.continuum.io/miniconda/"$MINICONDA_VERSION" -O miniconda.sh
-    MINICONDA=$HOME/miniconda
-    chmod +x miniconda.sh && ./miniconda.sh -b -p "$MINICONDA"
-    export PATH=$MINICONDA/bin:$PATH
+#    wget https://repo.continuum.io/miniconda/"$MINICONDA_VERSION" -O miniconda.sh
+#    MINICONDA=$HOME/miniconda
+#    chmod +x miniconda.sh && ./miniconda.sh -b -p "$MINICONDA"
+#    export PATH=$MINICONDA/bin:$PATH
     conda config --set always_yes true
     conda update --quiet conda
 

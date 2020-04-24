@@ -3,3 +3,6 @@ tensorflow>=1.9
 pytest
 pytest-cov
 flaky
+
+# only required as long as we don't provide sktime wheels for all platforms/python versions
+cython>=0.29.0
