@@ -88,12 +88,12 @@ stages:
           - script: |
               pip install --upgrade twine
             displayName: 'Install twine'
-          - task: TwineAuthenticate@1
-            displayName: 'Twine Authenticate'
-            inputs:
-              # configured in https://dev.azure.com/<user>/<project>/_settings/adminservices
-              pythonUploadServiceConnection: PyPI
-          - script: |
-              ls -lh dist/*.whl
-            # twine upload -r pypi --config-file $(PYPIRC_PATH) --skip-existing --verbose dist/*.whl
-            displayName: 'Upload wheels to PyPI'
+#          - task: TwineAuthenticate@1
+#            displayName: 'Twine Authenticate'
+#            inputs:
+#              # configured in https://dev.azure.com/<user>/<project>/_settings/adminservices
+#              pythonUploadServiceConnection: PyPI
+#          - script: |
+#              ls -lh dist/*.whl
+#            # twine upload -r pypi --config-file $(PYPIRC_PATH) --skip-existing --verbose dist/*.whl
+#            displayName: 'Upload wheels to PyPI'
