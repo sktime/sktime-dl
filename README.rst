@@ -67,16 +67,16 @@ or
 Docker
 ~~~~~~
 
-Follow `Tensorflow's instuctions <https://www.tensorflow.org/install/gpu>`__ to install Docker and nvidia-docker.
+Follow `Tensorflow's instuctions <https://www.tensorflow.org/install/gpu>`__ to install Docker and nvidia-docker (Linux only).
 
 Build the sktime-dl Docker image:
 ::
 	cd sktime-dl/sktime_dl
-	docker build -t sktime_gpu .
+	docker build -t sktime_dl .
 
-Run a container using the image:
+Run a container with GPU support using the image:
 ::
-	docker run --gpus all --rm -it sktime_gpu:latest
+	docker run --gpus all --rm -it sktime_dl:latest
 
 Run all the tests with:
 ::
@@ -85,6 +85,12 @@ Run all the tests with:
 or exclude the long-running tests with:
 ::
 	pytest -v -m="not slow" --cov=sktime_dl --pyargs sktime_dl
+
+**CPU**
+
+To run this Docker container on CPU, replace the above ``docker run`` command with:
+::
+	docker run --rm -it sktime_dl:latest
 
 Overview
 --------
