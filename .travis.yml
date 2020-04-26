@@ -25,21 +25,21 @@ matrix:
     - env: PYTHON_VERSION="3.7" TF_VERSION="2.1"
 
 install:
-  # install miniconda
+  # Install miniconda
   - deactivate
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - MINICONDA_PATH=/home/travis/miniconda
   - chmod +x miniconda.sh && ./miniconda.sh -b -p $MINICONDA_PATH
   - export PATH=$MINICONDA_PATH/bin:$PATH
-  - conda update --yes conda
+
+  # Configure conda
+  - conda config --set always_yes true
+  - conda update --quiet conda
 
   # create the testing environment
-  - conda create -n testenv --yes python=$PYTHON_VERSION pip
+  - conda create -n testenv python="$PYTHON_VERSION" tensorflow="$TF_VERSION"
   - source activate testenv
-  - conda install -n testenv --yes pip numpy cython nose pytest pytest-cov flaky sphinx jupyter
-  - pip install tensorflow==$TF_VERSION
-  - pip install sphinx_rtd_theme
-  - pip install nbsphinx
+  - conda install -n testenv numpy cython pytest pytest-cov flaky
   - pip install coveralls
 
   # for test pypi add dependency installs manually
