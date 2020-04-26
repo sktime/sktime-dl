@@ -17,10 +17,13 @@ conda config --set always_yes true
 conda update --quiet conda
 
 # Set up test environment
-conda create --name testenv python="$PYTHON_VERSION" tensorflow="$TF_VERSION"
+conda create --name testenv python="$PYTHON_VERSION"
 
 # Activate environment
 source activate testenv
+
+# Install tensorflow via pip, tests fail when installed via conda
+pip install tensorflow=="$TF_VERSION"
 
 # Install requirements from inside conda environment
 pip install cython  # only needed until we provide sktime wheels
@@ -39,7 +42,7 @@ pip install --pre --no-index --no-deps --find-links dist/ sktime-dl
 # conditional installation
 echo "Installing keras-contrib ..."
 git clone https://www.github.com/keras-team/keras-contrib.git
-cd keras-contrib
+cd keras-contrib/
 python convert_to_tf_keras.py
 USE_TF_KERAS=1 python setup.py install
 cd ..

@@ -38,8 +38,9 @@ install:
   - conda update --quiet conda
 
   # create the testing environment
-  - conda create --name testenv python="$PYTHON_VERSION" tensorflow="$TF_VERSION"
+  - conda create --name testenv python="$PYTHON_VERSION"
   - source activate testenv
+  - pip install tensorflow=="$TF_VERSION"
   - pip install cython
   - pip install -r "$REQUIREMENTS"
 
@@ -51,7 +52,7 @@ install:
   # not needed for the tf_version 2.1 env, but does not hurt either. investigate
   # conditional installation
   - git clone https://www.github.com/keras-team/keras-contrib.git
-  - cd keras-contrib
+  - cd keras-contrib/
   - python convert_to_tf_keras.py
   - USE_TF_KERAS=1 python setup.py install
   - cd ..
