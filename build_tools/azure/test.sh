@@ -8,6 +8,7 @@ set -e
 # activate conda environment
 deactivate || :
 source activate testenv
+echo "USE_TF_KERAS: " "$USE_TF_KERAS"
 
 # print test environment
 conda list
@@ -20,8 +21,10 @@ mkdir -p "$TEST_DIR"
 cp setup.cfg "$TEST_DIR"
 cd "$TEST_DIR"
 
-set -x  # print executed commands to the terminal
+set -x # print executed commands to the terminal
 
-pytest -m="not slow" --verbose --showlocals --durations=20 --junitxml=junit/test-results.xml --cov=sktime_dl --pyargs ../sktime_dl
+pytest -m="not slow" --verbose --showlocals --durations=20 \
+--cov-report html --cov-report xml --junitxml=junit/test-results.xml \
+--cov=sktime_dl --pyargs ../sktime_dl
 
 set +e
