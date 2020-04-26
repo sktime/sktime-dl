@@ -7,7 +7,7 @@
 variables:
   REQUIREMENTS: build_tools/requirements.txt
   TEST_DIR: tmp/
-#  USE_TF_KERAS: 1
+  USE_TF_KERAS: 1  # necessary to use keras-contrib
 
 trigger:
   branches:

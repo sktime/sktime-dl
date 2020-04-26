@@ -2,9 +2,9 @@
 # - https://github.com/scikit-hep/azure-wheel-helpers/blob/master/azure-publish-dist.yml
 
 steps:
-  - bash: build_tools/azure/build.sh
+  - bash: build_tools/build.sh
     displayName: 'Build'
-  - bash: build_tools/azure/test.sh
+  - bash: build_tools/test.sh
     displayName: 'Test'
   - template: publish.yml
 
