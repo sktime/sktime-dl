@@ -27,6 +27,7 @@ make_conda() {
     source activate testenv
 
     # Install requirements from inside conda environment
+    pip install cython  # only necessary until we have sktime wheels
     pip install -r "$REQUIREMENTS"
 
     # now need to install keras-contrib for tf.keras instead of standalone keras
