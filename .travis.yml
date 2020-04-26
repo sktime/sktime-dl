@@ -40,7 +40,7 @@ install:
   - conda create -n testenv python="$PYTHON_VERSION"
   - source activate testenv
   - conda install -n testenv numpy cython pytest pytest-cov flaky coveralls
-  - pip install tensorflow="$TF_VERSION"
+  - pip install tensorflow=="$TF_VERSION"
 
   # for test pypi add dependency installs manually
   # - pip install --index-url --no-deps https://test.pypi.org/simple sktime_dl==0.2.dev1
