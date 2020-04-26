@@ -4,18 +4,21 @@
 
 set -e
 
-echo "Setting up conda env ..."
-echo "Python version: " "$PYTHON_VERSION"
-echo "TF version: " "$TF_VERSION"
-
 make_conda() {
+    echo "Setting up conda env ..."
+    echo "Python version: " "$PYTHON_VERSION"
+    echo "TF version: " "$TF_VERSION"
+
     # Deactivate the any previously set virtual environment and setup a
     # conda-based environment instead
     deactivate || :
 
-    # Install miniconda
+    # Configure conda
     conda config --set always_yes true
     conda update --quiet conda
+
+    # Update conda
+    conda update conda
 
     # Set up test environment
     conda create --name testenv python="$PYTHON_VERSION" tensorflow="$TF_VERSION"

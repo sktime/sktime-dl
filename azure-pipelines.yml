@@ -25,7 +25,7 @@ stages:
     jobs:
       - job: 'Linting'
         pool:
-          vmImage: 'ubuntu-16.04' # 'ubuntu-latest'
+          vmImage: 'ubuntu-latest'
         steps:
           - task: UsePythonVersion@0
             displayName: 'Use Python version'
@@ -46,8 +46,10 @@ stages:
         steps:
           - bash: echo "##vso[task.prependpath]$CONDA/bin"
             displayName: 'Add conda to PATH'
-          - bash: build_tools/azure/build.sh
-          - bash: build_tools/azure/test.sh
+          - bash: build_tools/build.sh
+            displayName: 'Build'
+          - bash: build_tools/test.sh
+            displayName: 'Test'
           - template: build_tools/azure/publish.yml
         strategy:
           matrix:
@@ -66,8 +68,10 @@ stages:
         steps:
           - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
             displayName: 'Add conda to PATH'
-          - bash: build_tools/azure/build.sh
-          - bash: build_tools/azure/test.sh
+          - bash: build_tools/build.sh
+            displayName: 'Build'
+          - bash: build_tools/test.sh
+            displayName: 'Test'
           - template: build_tools/azure/publish.yml
         strategy:
           matrix:
@@ -88,8 +92,10 @@ stages:
             displayName: 'Add conda to PATH'
           - bash: sudo chown -R $USER $CONDA
             displayName: 'Take ownership of conda installation'
-          - bash: build_tools/azure/build.sh
-          - bash: build_tools/azure/test.sh
+          - bash: build_tools/build.sh
+            displayName: 'Build'
+          - bash: build_tools/test.sh
+            displayName: 'Test'
           - template: build_tools/azure/publish.yml
         strategy:
           matrix:
