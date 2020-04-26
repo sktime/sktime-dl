@@ -50,7 +50,7 @@ install:
   - python setup.py bdist_wheel
 
   # Install from built wheels
-  - pip install --pre --no-index --no-deps --find-links dist/ sktime-dl
+  - pip install --pre --no-index --find-links dist/ sktime-dl
 
   # now need to install keras-contrib for tf.keras instead of standalone keras
   # not needed for the tf_version 2.1 env, but does not hurt either. investigate

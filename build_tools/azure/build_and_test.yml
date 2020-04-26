@@ -6,6 +6,6 @@ steps:
     displayName: 'Build'
   - bash: build_tools/azure/test.sh
     displayName: 'Test'
-  - template: build_tools/azure/publish.yml
+  - template: publish.yml
 
 
