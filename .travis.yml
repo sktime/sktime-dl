@@ -38,18 +38,12 @@ install:
   - conda update --quiet conda
 
   # create the testing environment
-  - conda create --name testenv python="$PYTHON_VERSION"
+  - conda create --name testenv python="$PYTHON_VERSION" tensorflow="$TF_VERSION"
   - source activate testenv
-#  - conda install -n testenv numpy cython pytest pytest-cov flaky coveralls
-  - pip install tensorflow=="$TF_VERSION"
   - pip install cython
   - pip install -r "$REQUIREMENTS"
 
   # for test pypi add dependency installs manually
-  # - pip install --index-url --no-deps https://test.pypi.org/simple sktime_dl==0.2.dev1
-#  - pip install .
-#  - python setup.py build_ext -i
-
   - python setup.py bdist_wheel
   - pip install --pre --no-index --no-deps --find-links dist/ sktime-dl
 
