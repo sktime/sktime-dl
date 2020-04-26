@@ -38,7 +38,7 @@ install:
   - conda update --quiet conda
 
   # create the testing environment
-  - conda create -n testenv python="$PYTHON_VERSION"
+  - conda create --name testenv python="$PYTHON_VERSION"
   - source activate testenv
 #  - conda install -n testenv numpy cython pytest pytest-cov flaky coveralls
   - pip install tensorflow=="$TF_VERSION"
@@ -52,7 +52,6 @@ install:
 
   - python setup.py bdist_wheel
   - pip install --pre --no-index --no-deps --find-links dist/ sktime-dl
-  - ls -lh dist/
 
   # now need to install keras-contrib for tf.keras instead of standalone keras
   # not needed for the tf_version 2.1 env, but does not hurt either. investigate
