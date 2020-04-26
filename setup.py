@@ -85,9 +85,9 @@ def find_install_requires():
     else:
         # fall back to keras-contrib, not on pypi so need to instal it separately
         # not printing. TODO
-        print('Existing version of tensorflow older than version 2.1.0 detected.' \
-              'You shall need to install keras-contrib (for tf.keras) in order to use all the features of sktime-dl.' \
-              '\n See https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras')
+        print('Existing version of tensorflow older than version 2.1.0 detected. '
+              'You shall need to install keras-contrib (for tf.keras) in order to use all the features of sktime-dl. '
+              '\nSee https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras')
 
     return install_requires
 

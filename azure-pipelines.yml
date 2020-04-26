@@ -46,9 +46,7 @@ stages:
         steps:
           - bash: echo "##vso[task.prependpath]$CONDA/bin"
             displayName: 'Add conda to PATH'
-          - bash: build_tools/azure/build.sh
-          - bash: build_tools/azure/test.sh
-          - template: build_tools/azure/publish.yml
+          - template: build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf19:
@@ -66,9 +64,7 @@ stages:
         steps:
           - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
             displayName: 'Add conda to PATH'
-          - bash: build_tools/azure/build.sh
-          - bash: build_tools/azure/test.sh
-          - template: build_tools/azure/publish.yml
+          - template: build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf19:
@@ -88,9 +84,7 @@ stages:
             displayName: 'Add conda to PATH'
           - bash: sudo chown -R $USER $CONDA
             displayName: 'Take ownership of conda installation'
-          - bash: build_tools/azure/build.sh
-          - bash: build_tools/azure/test.sh
-          - template: build_tools/azure/publish.yml
+          - template: build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf19:

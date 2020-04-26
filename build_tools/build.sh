@@ -4,11 +4,11 @@
 
 set -e
 
-echo "Setting up conda env ..."
-echo "Python version: " "$PYTHON_VERSION"
-echo "TF version: " "$TF_VERSION"
-
 make_conda() {
+    echo "Setting up conda env ..."
+    echo "Python version: " "$PYTHON_VERSION"
+    echo "TF version: " "$TF_VERSION"
+
     # Deactivate the any previously set virtual environment and setup a
     # conda-based environment instead
     deactivate || :
@@ -18,10 +18,13 @@ make_conda() {
     conda update --quiet conda
 
     # Set up test environment
-    conda create --name testenv python="$PYTHON_VERSION" tensorflow="$TF_VERSION"
+    conda create --name testenv python="$PYTHON_VERSION"
 
     # Activate environment
     source activate testenv
+
+    # Install tensorflow
+    pip install tensorflow=="$TF_VERSION"
 
     # Install requirements from inside conda environment
     pip install cython  # only needed until we provide sktime wheels
