@@ -10,7 +10,6 @@ deactivate || :
 source activate testenv
 
 # print test environment
-echo "USE_TF_KERAS: " "$USE_TF_KERAS"
 conda list
 
 # Get into a temp directory to run test from the installed scikit-learn and
