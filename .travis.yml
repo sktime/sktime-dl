@@ -7,6 +7,7 @@ branches:
 env:
   global:
     - TEST_DIR=tmp/
+    - REQUIREMENTS=build_tools/requirements.txt
 
 dist: xenial
 sudo: false
@@ -41,16 +42,12 @@ install:
   - source activate testenv
   - conda install -n testenv numpy cython pytest pytest-cov flaky coveralls
   - pip install tensorflow=="$TF_VERSION"
+  - pip install -r "$REQUIREMENTS"
 
   # for test pypi add dependency installs manually
   # - pip install --index-url --no-deps https://test.pypi.org/simple sktime_dl==0.2.dev1
-#  - pip install .
-#  - python setup.py build_ext -i
-
-  - python setup.py bdist_wheel
-
-  # Install from built wheels
-  - pip install --pre --no-index --find-links dist/ sktime-dl
+  - pip install .
+  - python setup.py build_ext -i
 
   # now need to install keras-contrib for tf.keras instead of standalone keras
   # not needed for the tf_version 2.1 env, but does not hurt either. investigate
