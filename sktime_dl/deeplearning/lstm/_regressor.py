@@ -19,31 +19,26 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
                  nb_epochs=200,
                  batch_size=16,
                  units=[50, 50],
+                 
                  random_seed=0,
                  verbose=False,
                  model_name="lstm_regressor",
                  model_save_directory=None):
-        super().__init__(
-            model_name=model_name,
-            model_save_directory=model_save_directory)
-        LSTMNetwork.__init__(
-            self,
-            units=units,
-            random_seed=random_seed)
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
         :param units: int, array of size 2, the number units in each LSTM layer
         :param random_seed: int, seed to any needed random actions
         '''
-        self.verbose = verbose
-        self.is_fitted = False
-
-        self.input_shape = None
-        self.history = None
-
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+        self.units = units
+        self.random_seed = random_seed
+        self.verbose = verbose
+        self.model_name = model_name
+        self.model_save_directory = model_save_directory
+
+        self.is_fitted = False
 
     def build_model(self, input_shape, **kwargs):
         '''

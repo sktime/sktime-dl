@@ -27,27 +27,12 @@ class CNNNetwork(BaseDeepNetwork):
     }
     """
 
-    def __init__(self,
-                 kernel_size=7,
-                 avg_pool_size=3,
-                 nb_conv_layers=2,
-                 filter_sizes=[6, 12],
-                 random_seed=0):
-        '''
-        :param kernel_size: int, specifying the length of the 1D convolution window
-        :param avg_pool_size: int, size of the average pooling windows
-        :param nb_conv_layers: int, the number of convolutional plus average pooling layers
-        :param filter_sizes: int, array of shape = (nb_conv_layers)
-        :param random_seed: int, seed to any needed random actions
-        '''
-
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
-
-        self.kernel_size = kernel_size
-        self.avg_pool_size = avg_pool_size
-        self.nb_conv_layers = nb_conv_layers
-        self.filter_sizes = filter_sizes
+    def __init__(self):
+        self.random_seed = None
+        self.kernel_size = None
+        self.avg_pool_size = None
+        self.nb_conv_layers = None
+        self.filter_sizes = None
 
     def build_network(self, input_shape, **kwargs):
         """
