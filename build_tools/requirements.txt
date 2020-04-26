@@ -6,3 +6,4 @@ pytest
 pytest-cov
 flaky
 coveralls
+cython  # only necessary until we have sktime wheels

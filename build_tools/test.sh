@@ -6,6 +6,7 @@
 set -e
 
 # activate conda environment
+deactivate || :
 source activate testenv
 
 # print test environment
@@ -17,8 +18,9 @@ mkdir -p "$TEST_DIR"
 
 # We need to copy the setup.cfg for the pytest settings
 cp setup.cfg "$TEST_DIR"
-cd "$TEST_DIR"
 
+# Run tests
+cd "$TEST_DIR"
 set -x # print executed commands to the terminal
 
 pytest -m="not slow" --verbose --showlocals --durations=20 \

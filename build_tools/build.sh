@@ -27,18 +27,17 @@ make_conda() {
     source activate testenv
 
     # Install requirements from inside conda environment
-    pip install cython  # only needed until we provide sktime wheels
     pip install -r "$REQUIREMENTS"
 
     # now need to install keras-contrib for tf.keras instead of standalone keras
     # not needed for the tf_version 2.1 env, but does not hurt either. investigate
     # conditional installation
-    echo "Installing keras-contrib ..."
-    git clone https://www.github.com/keras-team/keras-contrib.git
-    cd keras-contrib
-    python convert_to_tf_keras.py
-    USE_TF_KERAS=1 python setup.py install
-    cd ..
+#    echo "Installing keras-contrib ..."
+#    git clone https://www.github.com/keras-team/keras-contrib.git
+#    cd keras-contrib/
+#    python convert_to_tf_keras.py
+#    USE_TF_KERAS=1 python setup.py install
+#    cd ..
 }
 
 # requirements file
@@ -47,9 +46,18 @@ make_conda "$REQUIREMENTS"
 # Build sktime-dl
 # invokes build_ext -i to compile files
 # builds universal wheel, as specified in setup.cfg
-python setup.py bdist_wheel
+#python setup.py bdist_wheel
+pip install .
+python setup.py build_ext -i
 
 # Install from built wheels
-pip install --pre --no-index --no-deps --find-links dist/ sktime-dl
+#pip install --pre --no-index --no-deps --find-links dist/ sktime-dl
+
+echo "Installing keras-contrib ..."
+git clone https://www.github.com/keras-team/keras-contrib.git
+cd keras-contrib/
+python convert_to_tf_keras.py
+USE_TF_KERAS=1 python setup.py install
+cd ..
 
 set +e
