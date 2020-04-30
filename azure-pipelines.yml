@@ -40,7 +40,7 @@ stages:
     dependsOn: 'Linting'
     condition: succeeded('Linting')
     jobs:
-      - job: 'Linux-latest'
+      - job: 'Linux_latest'
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -58,7 +58,7 @@ stages:
             py37_tf21:
               PYTHON_VERSION: 3.7
               TF_VERSION: 2.1
-      - job: 'Linux-xenial'
+      - job: 'Linux_xenial'
         pool:
           vmImage: 'ubuntu-16.04'
         steps:
@@ -88,7 +88,7 @@ stages:
             py37_tf21:
               PYTHON_VERSION: 3.7
               TF_VERSION: 2.1
-      - job: 'macOS-latest'
+      - job: 'macOS_latest'
         pool:
           vmImage: 'macOS-latest'
         steps:
@@ -102,7 +102,7 @@ stages:
             py36_tf115:
               PYTHON_VERSION: 3.6
               TF_VERSION: 1.15
-      - job: 'macOS-mojave'
+      - job: 'macOS_mojave'
         pool:
           vmImage: 'macOS-10.14'
         steps:
