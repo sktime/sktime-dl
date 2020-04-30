@@ -22,7 +22,7 @@ import colorama
 ROOTDIR = os.path.abspath(os.path.dirname(__file__)).strip("maint_tools")
 PACKAGE_NAME = "sktime-dl"
 URLS = {
-    "pypi": f"https://pypi.org/simple-dl/{PACKAGE_NAME}/"
+    "pypi": f"https://pypi.org/simple/{PACKAGE_NAME}/"
 }
 
 
