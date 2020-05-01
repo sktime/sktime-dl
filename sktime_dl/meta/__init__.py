@@ -1,3 +1,3 @@
-from ._dlensemble import EnsembleFromFileClassifier
-from ._dlensemble import DeepLearnerEnsembleClassifier
-from ._dltuner import TunedDeepLearningClassifier
+from sktime_dl.meta._dlensemble import EnsembleFromFileClassifier
+from sktime_dl.meta._dlensemble import DeepLearnerEnsembleClassifier
+from sktime_dl.meta._dltuner import TunedDeepLearningClassifier
