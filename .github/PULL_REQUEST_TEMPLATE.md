@@ -1,6 +1,6 @@
 <!--
 Thanks for contributing a pull request! Please ensure you have taken a look at
-the extension guidelines: https://github.com/uea-machine-learning/sktime-dl/blob/master/CONTRIBUTING.md
+the extension guidelines: https://github.com/sktime/sktime-dl/blob/master/CONTRIBUTING.md
 -->
 
 #### Reference Issues/PRs
@@ -15,8 +15,16 @@ is merged. See https://github.com/blog/1506-closing-issues-via-pull-requests
 
 #### What does this implement/fix? Explain your changes.
 <!--
-A clear and concise description of what you have implemented.
+A clear and concise description of what you have implemented. 
 -->
+
+#### Does your contribution introduce a new dependency? If yes, which one? 
+
+<!--
+If your contribution does add a new dependency, we may suggest to initially develop your contribution in a separate
+ companion package in https://github.com/sktime/ to keep external dependencies of the core sktime package to a minimum. 
+-->
+
 
 #### Any other comments?
 <!--
