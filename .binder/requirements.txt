@@ -1,2 +1,7 @@
 sktime>=0.3.0
+h5py>=2.8.0
+tensorflow>=1.9.0
+tensorflow-addons
 matplotlib
+seaborn
+
