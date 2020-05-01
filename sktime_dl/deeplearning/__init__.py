@@ -5,6 +5,7 @@ from sktime_dl.deeplearning.encoder._regressor import EncoderRegressor
 from sktime_dl.deeplearning.fcn._classifier import FCNClassifier
 from sktime_dl.deeplearning.fcn._regressor import FCNRegressor
 from sktime_dl.deeplearning.mcdcnn._classifier import MCDCNNClassifier
+from sktime_dl.deeplearning.mcdcnn._regressor import MCDCNNRegressor
 from sktime_dl.deeplearning.mcnn._classifier import MCNNClassifier
 from sktime_dl.deeplearning.mlp._classifier import MLPClassifier
 from sktime_dl.deeplearning.mlp._regressor import MLPRegressor
