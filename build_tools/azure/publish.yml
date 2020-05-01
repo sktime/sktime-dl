@@ -1,0 +1,31 @@
+# adapted from:
+# - https://github.com/scikit-hep/azure-wheel-helpers/blob/master/azure-publish-dist.yml
+
+steps:
+  - script: |
+      ls -lh dist/
+    displayName: 'List wheels'
+
+  # publish wheels on azure: https://dev.azure.com/mloning/sktime-dl/_build
+  - task: PublishPipelineArtifact@0
+    condition: succeeded()
+    displayName: 'Publish wheels'
+    inputs:
+      artifactName: 'wheels_$(Agent.OS)_$(Agent.JobName)_$(PYTHON_VERSION)'
+      targetPath: 'dist'
+
+  # publish test results on azure: https://dev.azure.com/mloning/sktime-dl/_build
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    displayName: 'Publish test results'
+    inputs:
+      testResultsFiles: '**/test-*.xml'
+      testRunTitle: 'pytest_$(Agent.OS)_$(Agent.JobName)_$(PYTHON_VERSION)'
+
+  - task: PublishCodeCoverageResults@1
+    condition: succeededOrFailed()
+    displayName: 'Publish coverage results'
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+      reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
