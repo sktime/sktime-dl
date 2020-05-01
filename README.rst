@@ -71,8 +71,8 @@ Follow `Tensorflow's instuctions <https://www.tensorflow.org/install/gpu>`__ to 
 
 Build the sktime-dl Docker image:
 ::
-	cd sktime-dl/sktime_dl
-	docker build -t sktime_dl .
+	cd sktime-dl
+	docker build -t sktime_dl -f sktime_dl/Dockerfile .
 
 Run a container with GPU support using the image:
 ::
