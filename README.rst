@@ -1,10 +1,16 @@
-.. image:: https://travis-ci.com/sktime/sktime-dl.svg?branch=master
-    :target: https://travis-ci.com/sktime/sktime-dl
-.. image:: https://badge.fury.io/py/sktime-dl.svg
-    :target: https://badge.fury.io/py/sktime-dl
-.. image:: https://badges.gitter.im/sktime/community.svg
-    :target: https://gitter.im/sktime/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
+|travis|_ |pypi|_ |gitter|_ |Binder|_
 
+.. |travis| image:: https://img.shields.io/travis/com/sktime/sktime-dl/master?logo=travis
+.. _travis: https://travis-ci.com/sktime/sktime-dl
+
+.. |pypi| image:: https://img.shields.io/pypi/v/sktime-dl
+.. _pypi: https://pypi.org/project/sktime-dl/
+
+.. |gitter| image:: https://img.shields.io/gitter/room/alan-turing-institute/sktime?logo=gitter
+.. _gitter: https://gitter.im/sktime/community
+
+.. |binder| image:: https://mybinder.org/badge_logo.svg
+.. _Binder: https://mybinder.org/v2/gh/sktime/sktime-dl/master?filepath=examples
 
 sktime-dl
 =========
@@ -36,15 +42,56 @@ sktime-dl is under development. To ensure that you're using the most up to date 
 	git pull origin dev
 	pip install . 
 	
-When installing sktime-dl from scratch, the latest stable version of `Tensorflow <https://www.tensorflow.org/install/>`__ 2.x will be installed. Tensorflow 1.x is also supported beyond 1.9, if you have an existing installation in your environment that you wish to maintain. 
+When installing sktime-dl from scratch, the latest stable version of 
+`Tensorflow <https://www.tensorflow.org/install/>`__ 2.x will be installed. 
+Tensorflow 1.x is also supported beyond 1.9, if you have an existing 
+installation in your environment that you wish to maintain. 
 	
-Users with Tensorflow versions older than 2.1.0 shall also need to install `keras-contrib <https://github.com/keras-team/keras-contrib>`__ after installing sktime-dl, using the `installation instructions for tf.keras <https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras>`__. 
+Users with Tensorflow versions older than 2.1.0 shall also need to install 
+`keras-contrib <https://github.com/keras-team/keras-contrib>`__ after installing 
+sktime-dl, using the `installation instructions for 
+tf.keras <https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras>`__. 
 	
 Using GPUS
 ~~~~~~~~~~
 	
-With the above instructions, the networks can be run out the box on your CPU. If you wish to run the networks on an NVIDIA® GPU, extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library) need to be installed separately to sktime-dl. See `this page <https://www.tensorflow.org/install/gpu#software_requirements>`__ for links and instructions, and also `this page <https://www.tensorflow.org/install/source#tested_build_configurations>`__ for a list of definite versioning compatabilities.       
-	
+With the above instructions, the networks can be run out the box on your CPU. If 
+you wish to run the networks on an NVIDIA® GPU, you can:
+
+- use Docker (see below) 
+
+or
+
+- install extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library). See `this page <https://www.tensorflow.org/install/gpu#software_requirements>`__ for links and instructions, and also `this page <https://www.tensorflow.org/install/source#tested_build_configurations>`__ for a list of definite versioning compatabilities.       
+
+Docker
+~~~~~~
+
+Follow `Tensorflow's instuctions <https://www.tensorflow.org/install/gpu>`__ to install Docker and nvidia-docker (Linux only).
+
+Build the sktime-dl Docker image:
+::
+	cd sktime-dl
+	docker build -t sktime_dl .
+
+Run a container with GPU support using the image:
+::
+	docker run --gpus all --rm -it sktime_dl:latest
+
+Run all the tests with:
+::
+	pytest -v --cov=sktime_dl
+
+or exclude the long-running tests with:
+::
+	pytest -v -m="not slow" --cov=sktime_dl --pyargs sktime_dl
+
+**CPU**
+
+To run this Docker container on CPU, replace the above ``docker run`` command with:
+::
+	docker run --rm -it sktime_dl:latest
+
 Overview
 --------
 
