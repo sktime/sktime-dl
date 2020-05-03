@@ -42,17 +42,6 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
                  verbose=False,
                  model_name="mcdcnn",
                  model_save_directory=None):
-        super().__init__(
-            model_name=model_name,
-            model_save_directory=model_save_directory)
-        MCDCNNNetwork.__init__(
-            self, 
-            kernel_size=kernel_size,
-            pool_size=pool_size,
-            filter_sizes=filter_sizes,
-            dense_units=dense_units,
-            random_seed=random_seed
-        )
         '''
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
@@ -66,22 +55,21 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         :param model_name: string, the name of this model for printing and file writing purposes
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
-
-        self.verbose = verbose
-        self.is_fitted = False
-
-        # calced in fit
-        self.classes_ = None
-        self.nb_classes = -1
-        self.input_shape = None
-        self.model = None
-        self.history = None
-
-        # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = callbacks
+        self.kernel_size = kernel_size
+        self.pool_size = pool_size
+        self.filter_sizes = filter_sizes
+        self.dense_units = dense_units
 
+        self.callbacks = callbacks
+        self.random_seed = random_seed
+        self.verbose = verbose
+        self.model_name = model_name
+        self.model_save_directory = model_save_directory
+
+        self.is_fitted = False 
+        
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
         Construct a compiled, un-trained, keras model that is ready for training
@@ -126,6 +114,9 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         -------
         self : object
         """
+        if self.random_state is None:
+            self.random_state = np.random.RandomState(self.random_seed)
+            
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 

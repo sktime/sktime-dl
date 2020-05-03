@@ -40,7 +40,6 @@ class MCDCNNNetwork(BaseDeepNetwork):
         '''
 
         self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
 
         self.kernel_size = kernel_size
         self.pool_size = pool_size
