@@ -49,7 +49,6 @@ class InceptionTimeNetwork(BaseDeepNetwork):
         self.bottleneck_size = bottleneck_size
 
         self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
 
     def _inception_module(self, input_tensor, stride=1, activation='linear'):
 

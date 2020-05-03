@@ -1,3 +1,4 @@
+import numpy as np
 from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
@@ -37,18 +38,6 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
                  verbose=False,
                  model_name="inception",
                  model_save_directory=None):
-        super().__init__(
-            model_name=model_name,
-            model_save_directory=model_save_directory)
-        InceptionTimeNetwork.__init__(
-            self,
-            nb_filters=nb_filters,
-            use_residual=use_residual,
-            use_bottleneck=use_bottleneck,
-            bottleneck_size=bottleneck_size,
-            depth=depth,
-            kernel_size=kernel_size,
-            random_seed=random_seed)
         '''
         :param nb_filters: int,
         :param use_residual: boolean,
@@ -64,17 +53,22 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
         :param model_name: string, the name of this model for printing and file writing purposes
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
-        self.verbose = verbose
-        self.is_fitted = False
-
-        # predefined
+        self.nb_filters = nb_filters
+        self.use_residual = use_residual
+        self.use_bottleneck = use_bottleneck
+        self.bottleneck_size = bottleneck_size
+        self.depth = depth
+        self.kernel_size = kernel_size
         self.batch_size = batch_size
         self.nb_epochs = nb_epochs
 
-        # calced in fit
-        self.input_shape = None
-        self.history = None
-        self.callbacks = callbacks if callbacks is not None else []
+        self.callbacks = callbacks
+        self.random_seed = random_seed
+        self.verbose = verbose
+        self.model_name = model_name
+        self.model_save_directory = model_save_directory
+
+        self.is_fitted = False
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -98,6 +92,9 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
                       metrics=['accuracy'])
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
+        if self.callbacks is None:
+            self.callbacks = []
+
         if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
             reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
                                                           min_lr=0.0001)
@@ -119,6 +116,9 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
         -------
         self : object
         """
+        if self.random_state is None:
+            self.random_state = np.random.RandomState(self.random_seed)
+
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
