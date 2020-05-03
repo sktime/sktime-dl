@@ -1,7 +1,7 @@
 __author__ = "James Large, Withington"
 
-from tensorflow import keras
 import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
 
@@ -73,11 +73,19 @@ class MCDCNNNetwork(BaseDeepNetwork):
             input_layer = keras.layers.Input((n_t, 1))
             input_layers.append(input_layer)
 
-            conv1_layer = keras.layers.Conv1D(self.filter_sizes[0], kernel_size=self.kernel_size, activation='relu', padding=padding)(input_layer)
-            conv1_layer = keras.layers.MaxPooling1D(pool_size=self.pool_size)(conv1_layer)
+            conv1_layer = keras.layers.Conv1D(self.filter_sizes[0],
+                                              kernel_size=self.kernel_size,
+                                              activation='relu',
+                                              padding=padding)(input_layer)
+            conv1_layer = keras.layers.MaxPooling1D(pool_size=self.pool_size)(
+                conv1_layer)
 
-            conv2_layer = keras.layers.Conv1D(self.filter_sizes[1], kernel_size=self.kernel_size, activation='relu', padding=padding)(conv1_layer)
-            conv2_layer = keras.layers.MaxPooling1D(pool_size=self.pool_size)(conv2_layer)
+            conv2_layer = keras.layers.Conv1D(self.filter_sizes[1],
+                                              kernel_size=self.kernel_size,
+                                              activation='relu',
+                                              padding=padding)(conv1_layer)
+            conv2_layer = keras.layers.MaxPooling1D(pool_size=self.pool_size)(
+                conv2_layer)
             conv2_layer = keras.layers.Flatten()(conv2_layer)
 
             conv2_layers.append(conv2_layer)
@@ -88,7 +96,9 @@ class MCDCNNNetwork(BaseDeepNetwork):
         else:
             concat_layer = keras.layers.Concatenate(axis=-1)(conv2_layers)
 
-        fully_connected = keras.layers.Dense(units=self.dense_units, activation='relu')(concat_layer)
+        fully_connected = keras.layers.Dense(units=self.dense_units,
+                                             activation='relu')(
+            concat_layer)
 
         return input_layers, fully_connected
 

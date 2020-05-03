@@ -79,12 +79,17 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
-        model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
+        model.compile(loss='mean_squared_error',
+                      optimizer=keras.optimizers.Adam(),
                       metrics=['mean_squared_error'])
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
-        if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
-            reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
+        if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for
+                   callback in
+                   self.callbacks):
+            reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss',
+                                                          factor=0.5,
+                                                          patience=50,
                                                           min_lr=0.0001)
             self.callbacks.append(reduce_lr)
 
@@ -124,8 +129,10 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
         if self.verbose:
             self.model.summary()
 
-        self.history = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
-                                      verbose=self.verbose, callbacks=self.callbacks)
+        self.history = self.model.fit(X, y, batch_size=self.batch_size,
+                                      epochs=self.nb_epochs,
+                                      verbose=self.verbose,
+                                      callbacks=self.callbacks)
 
         self.save_trained_model()
         self.is_fitted = True

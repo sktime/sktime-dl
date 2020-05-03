@@ -1,11 +1,12 @@
 __author__ = "Aaron Bostrom, James Large"
 
-from tensorflow import keras
 import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
-from sktime_dl.utils import check_and_clean_data, check_is_fitted
+from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_is_fitted
 
 
 class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
@@ -72,7 +73,8 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         output : a compiled Keras Model
         """
         input_layer, output_layer = self.build_network(input_shape, **kwargs)
-        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(output_layer)
+        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(
+            output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
@@ -106,11 +108,14 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         self.adjust_parameters(X)
         X, y_onehot, tot_increase_num = self.pre_processing(X, y_onehot)
 
-        input_shape = X.shape[1:]  # pylint: disable=E1136  # pylint/issues/3139
+        input_shape = X.shape[
+                      1:]  # pylint: disable=E1136  # pylint/issues/3139
         self.model = self.build_model(input_shape, self.nb_classes)
 
-        self.hist = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
-                                   verbose=self.verbose, callbacks=self.callbacks)
+        self.hist = self.model.fit(X, y_onehot, batch_size=self.batch_size,
+                                   epochs=self.nb_epochs,
+                                   verbose=self.verbose,
+                                   callbacks=self.callbacks)
 
         self.save_trained_model()
         self.is_fitted = True
@@ -143,11 +148,16 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         preds = self.model.predict(X, batch_size=self.batch_size)
 
         y_predicted = []
-        test_num_batch = int(X.shape[0] / tot_increase_num)  # pylint: disable=E1136  # pylint/issues/3139
+        test_num_batch = int(
+            X.shape[
+                0] / tot_increase_num)  # pylint: disable=E1136  # pylint/issues/3139
 
         ##TODO: could fix this to be an array literal.
         for i in range(test_num_batch):
-            y_predicted.append(np.average(preds[i * tot_increase_num: ((i + 1) * tot_increase_num) - 1], axis=0))
+            y_predicted.append(
+                np.average(preds[i * tot_increase_num: ((
+                                                                i + 1) * tot_increase_num) - 1],
+                           axis=0))
 
         y_pred = np.array(y_predicted)
 

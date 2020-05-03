@@ -204,16 +204,22 @@ def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     elif cls.lower() == "inception4":
         return InceptionTimeClassifier(random_seed=fold)
     elif cls.lower() == "inceptiontime":
-        return EnsembleFromFileClassifier(res_dir, dset, random_seed=fold, network_name='inception', nb_iterations=5)
+        return EnsembleFromFileClassifier(res_dir, dset, random_seed=fold,
+                                          network_name='inception',
+                                          nb_iterations=5)
     else:
         raise Exception('UNKNOWN CLASSIFIER: ' + cls)
 
 
-def dlExperiment(data_dir, res_dir, classifier_name, dset, fold, classifier=None):
+def dlExperiment(data_dir, res_dir, classifier_name, dset, fold,
+                 classifier=None):
     if classifier is None:
-        classifier = setNetwork(data_dir, res_dir, classifier_name, dset, fold, classifier=None)
+        classifier = setNetwork(data_dir, res_dir, classifier_name, dset, fold,
+                                classifier=None)
 
-    exp.run_experiment(data_dir, res_dir, classifier_name, dset, classifier=classifier, resampleID=fold)
+    exp.run_experiment(data_dir, res_dir, classifier_name, dset,
+                       classifier=classifier,
+                       resampleID=fold)
 
 
 def allComparisonExperiments():
@@ -271,8 +277,11 @@ def ensembleInception(data_dir, res_dir, classifier_name, fold):
 
     for dset in ucr112dsets:
         try:
-            classifier = setNetwork(data_dir, res_dir, classifier_name, dset, fold, classifier=None)
-            exp.run_experiment(data_dir, res_dir, classifier_name, dset, classifier=classifier, resampleID=fold)
+            classifier = setNetwork(data_dir, res_dir, classifier_name, dset,
+                                    fold,
+                                    classifier=None)
+            exp.run_experiment(data_dir, res_dir, classifier_name, dset,
+                               classifier=classifier, resampleID=fold)
         except:
             missingdsets.append(dset)
             print(dset, " missing")
@@ -287,6 +296,7 @@ if __name__ == "__main__":
     if classifier == "inception":  # seeding inception ensemble exps for bakeoff redux
         classifier = classifier + sys.argv[7]
 
-    dlExperiment(sys.argv[1], sys.argv[2], classifier, sys.argv[4], int(sys.argv[5]))
+    dlExperiment(sys.argv[1], sys.argv[2], classifier, sys.argv[4],
+                 int(sys.argv[5]))
 
     # ensembleInception("Z:/ArchiveData/Univariate_ts/", "C:/JamesLPHD/sktimeStuff/InceptionRedo/", "inceptiontime", 0)

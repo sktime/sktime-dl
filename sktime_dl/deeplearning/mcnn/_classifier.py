@@ -4,14 +4,15 @@
 
 __author__ = "Aaron Bostrom, James Large"
 
-from tensorflow import keras
-import numpy as np
 import gc
 
+import numpy as np
 from sklearn.model_selection import train_test_split
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
-from sktime_dl.utils import check_and_clean_data, check_is_fitted
+from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_is_fitted
 
 
 class MCNNClassifier(BaseDeepClassifier):
@@ -108,10 +109,12 @@ class MCNNClassifier(BaseDeepClassifier):
             new_y = np.zeros((n_sliced, nb_classes))
         for i in range(n):
             for j in range(increase_num):
-                new_x[i * increase_num + j, :, :] = data_x[i, j: j + length_sliced, :]
+                new_x[i * increase_num + j, :, :] = data_x[i,
+                                                    j: j + length_sliced, :]
 
                 if data_y is not None:
-                    new_y[i * increase_num + j] = np.int_(data_y[i].astype(np.float32))
+                    new_y[i * increase_num + j] = np.int_(
+                        data_y[i].astype(np.float32))
 
         return new_x, new_y
 
@@ -177,7 +180,8 @@ class MCNNClassifier(BaseDeepClassifier):
 
     def train(self, x_train, y_train, pool_factor, filter_size):
         # split train into validation set with validation_size = 0.2 train_size
-        x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.2)
+        x_train, x_val, y_train, y_val = train_test_split(x_train, y_train,
+                                                          test_size=0.2)
 
         ori_len = x_train.shape[1]  # original_length of time series
 
@@ -188,17 +192,21 @@ class MCNNClassifier(BaseDeepClassifier):
         if ori_len > 500:
             current_slice_ratio = self.slice_ratio if self.slice_ratio > 0.98 else 0.98
 
-        increase_num = ori_len - int(ori_len * current_slice_ratio) + 1  # this can be used as the bath size
+        increase_num = ori_len - int(
+            ori_len * current_slice_ratio) + 1  # this can be used as the bath size
         # print(increase_num)
 
-        train_batch_size = int(x_train.shape[0] * increase_num / self.n_train_batch)
+        train_batch_size = int(
+            x_train.shape[0] * increase_num / self.n_train_batch)
         current_n_train_batch = self.n_train_batch
         if train_batch_size > self.max_train_batch_size:
             # limit the train_batch_size 
-            n_train_batch = int(x_train.shape[0] * increase_num / self.max_train_batch_size)
+            n_train_batch = int(
+                x_train.shape[0] * increase_num / self.max_train_batch_size)
 
         # data augmentation by slicing the length of the series 
-        x_train, y_train = self.slice_data(x_train, y_train, current_slice_ratio)
+        x_train, y_train = self.slice_data(x_train, y_train,
+                                           current_slice_ratio)
         x_val, y_val = self.slice_data(x_val, y_val, current_slice_ratio)
 
         train_set_x, train_set_y = x_train, y_train
@@ -211,16 +219,26 @@ class MCNNClassifier(BaseDeepClassifier):
 
         length_train = train_set_x.shape[1]  # length after slicing.
 
-        current_window_size = int(length_train * self.window_size) if self.window_size < 1 else int(self.window_size)
+        current_window_size = int(
+            length_train * self.window_size) if self.window_size < 1 else int(
+            self.window_size)
 
         ds_num_max = length_train / (pool_factor * current_window_size)
         current_ds_num = int(min(self.ds_num, ds_num_max))
 
-        ma_train, ma_lengths = self.movingavrg(train_set_x, self.ma_base, self.ma_step, self.ma_num)
-        ma_valid, ma_lengths = self.movingavrg(valid_set_x, self.ma_base, self.ma_step, self.ma_num)
+        ma_train, ma_lengths = self.movingavrg(train_set_x, self.ma_base,
+                                               self.ma_step,
+                                               self.ma_num)
+        ma_valid, ma_lengths = self.movingavrg(valid_set_x, self.ma_base,
+                                               self.ma_step,
+                                               self.ma_num)
 
-        ds_train, ds_lengths = self.downsample(train_set_x, self.ds_base, self.ds_step, current_ds_num)
-        ds_valid, ds_lengths = self.downsample(valid_set_x, self.ds_base, self.ds_step, current_ds_num)
+        ds_train, ds_lengths = self.downsample(train_set_x, self.ds_base,
+                                               self.ds_step,
+                                               current_ds_num)
+        ds_valid, ds_lengths = self.downsample(valid_set_x, self.ds_base,
+                                               self.ds_step,
+                                               current_ds_num)
 
         # concatenate directly
         data_lengths = [length_train]
@@ -245,9 +263,13 @@ class MCNNClassifier(BaseDeepClassifier):
         num_dim = train_set_x.shape[2]  # For MTS
         nb_classes = train_set_y.shape[1]
 
-        self.input_shapes, max_length = self.get_list_of_input_shapes(data_lengths, num_dim)
+        self.input_shapes, max_length = self.get_list_of_input_shapes(
+            data_lengths,
+            num_dim)
 
-        model = self.build_sub_model(self.input_shapes, nb_classes, pool_factor, kernel_size)
+        model = self.build_sub_model(self.input_shapes, nb_classes,
+                                     pool_factor,
+                                     kernel_size)
         # print('submodel built', model)
 
         if (self.verbose == True):
@@ -286,8 +308,12 @@ class MCNNClassifier(BaseDeepClassifier):
 
                 iteration = (epoch - 1) * n_train_batches + minibatch_index
 
-                x = train_set_x[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
-                y = train_set_y[minibatch_index * batch_size: (minibatch_index + 1) * batch_size]
+                x = train_set_x[
+                    minibatch_index * batch_size: (
+                                                          minibatch_index + 1) * batch_size]
+                y = train_set_y[
+                    minibatch_index * batch_size: (
+                                                          minibatch_index + 1) * batch_size]
 
                 x = self.split_input_for_model(x, self.input_shapes)
 
@@ -304,14 +330,20 @@ class MCNNClassifier(BaseDeepClassifier):
 
                     valid_losses = []
                     for i in range(valid_num_batch):
-                        x = valid_set_x[i * (increase_num): (i + 1) * (increase_num)]
-                        y_pred = model.predict_on_batch(self.split_input_for_model(x, self.input_shapes))
+                        x = valid_set_x[
+                            i * (increase_num): (i + 1) * (increase_num)]
+                        y_pred = model.predict_on_batch(
+                            self.split_input_for_model(x, self.input_shapes))
 
                         # convert the predicted from binary to integer 
                         y_pred = np.argmax(y_pred, axis=1)
                         label = np.argmax(valid_set_y[i * increase_num])
 
-                        unique_value, sub_ind, correspond_ind, count = np.unique(y_pred, True, True, True)
+                        unique_value, sub_ind, correspond_ind, count = np.unique(
+                            y_pred,
+                            True,
+                            True,
+                            True)
                         unique_value = unique_value.tolist()
 
                         curr_err = 1.
@@ -320,7 +352,9 @@ class MCNNClassifier(BaseDeepClassifier):
                             count = count.tolist()
                             sorted_count = sorted(count)
                             if count[target_ind] == sorted_count[-1]:
-                                if len(sorted_count) > 1 and sorted_count[-1] == sorted_count[-2]:
+                                if len(sorted_count) > 1 and sorted_count[
+                                    -1] == \
+                                        sorted_count[-2]:
                                     curr_err = 0.5  # tie
                                 else:
                                     curr_err = 0
@@ -335,7 +369,8 @@ class MCNNClassifier(BaseDeepClassifier):
 
                         # improve patience if loss improvement is good enough
                         if valid_loss < best_validation_loss * improvement_threshold:
-                            patience = max(patience, iteration * patience_increase)
+                            patience = max(patience,
+                                           iteration * patience_increase)
 
                         # save best validation score and iteration number
                         best_validation_loss = valid_loss
@@ -371,7 +406,8 @@ class MCNNClassifier(BaseDeepClassifier):
             max_length = max(max_length, i)
         return input_shapes, max_length
 
-    def build_sub_model(self, input_shapes, nb_classes, pool_factor, kernel_size):
+    def build_sub_model(self, input_shapes, nb_classes, pool_factor,
+                        kernel_size):
         input_layers = []
         stage_1_layers = []
 
@@ -380,13 +416,18 @@ class MCNNClassifier(BaseDeepClassifier):
 
             input_layers.append(input_layer)
 
-            conv_layer = keras.layers.Conv1D(filters=256, kernel_size=kernel_size, padding='same',
-                                             activation='sigmoid', kernel_initializer='glorot_uniform')(input_layer)
+            conv_layer = keras.layers.Conv1D(filters=256,
+                                             kernel_size=kernel_size,
+                                             padding='same',
+                                             activation='sigmoid',
+                                             kernel_initializer='glorot_uniform')(
+                input_layer)
 
             # should all concatenated have the same length
             pool_size = int(int(conv_layer.shape[1]) / pool_factor)
 
-            max_layer = keras.layers.MaxPooling1D(pool_size=pool_size)(conv_layer)
+            max_layer = keras.layers.MaxPooling1D(pool_size=pool_size)(
+                conv_layer)
 
             # max_layer = keras.layers.GlobalMaxPooling1D()(conv_layer)
 
@@ -394,10 +435,14 @@ class MCNNClassifier(BaseDeepClassifier):
 
         concat_layer = keras.layers.Concatenate(axis=-1)(stage_1_layers)
 
-        kernel_size = int(min(kernel_size, int(concat_layer.shape[1])))  # kernel shouldn't exceed the length
+        kernel_size = int(min(kernel_size, int(
+            concat_layer.shape[1])))  # kernel shouldn't exceed the length
 
-        full_conv = keras.layers.Conv1D(filters=256, kernel_size=kernel_size, padding='same',
-                                        activation='sigmoid', kernel_initializer='glorot_uniform')(concat_layer)
+        full_conv = keras.layers.Conv1D(filters=256, kernel_size=kernel_size,
+                                        padding='same',
+                                        activation='sigmoid',
+                                        kernel_initializer='glorot_uniform')(
+            concat_layer)
 
         pool_size = int(int(full_conv.shape[1]) / pool_factor)
 
@@ -406,14 +451,18 @@ class MCNNClassifier(BaseDeepClassifier):
         full_max = keras.layers.Flatten()(full_max)
 
         fully_connected = keras.layers.Dense(units=256, activation='sigmoid',
-                                             kernel_initializer='glorot_uniform')(full_max)
+                                             kernel_initializer='glorot_uniform')(
+            full_max)
 
-        output_layer = keras.layers.Dense(units=nb_classes, activation='softmax',
-                                          kernel_initializer='glorot_uniform')(fully_connected)
+        output_layer = keras.layers.Dense(units=nb_classes,
+                                          activation='softmax',
+                                          kernel_initializer='glorot_uniform')(
+            fully_connected)
 
         model = keras.models.Model(inputs=input_layers, outputs=output_layer)
 
-        model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(lr=0.1),
+        model.compile(loss='categorical_crossentropy',
+                      optimizer=keras.optimizers.Adam(lr=0.1),
                       metrics=['accuracy'])
 
         return model
@@ -442,7 +491,8 @@ class MCNNClassifier(BaseDeepClassifier):
         for pool_factor in self.pool_factors:
             for filter_size in self.filter_sizes:
                 # print('pretrain')
-                valid_loss, model = self.train(X, y_onehot, pool_factor, filter_size)
+                valid_loss, model = self.train(X, y_onehot, pool_factor,
+                                               filter_size)
                 # print('posttrain')
 
                 if (valid_loss < best_valid_loss):
@@ -518,7 +568,8 @@ class MCNNClassifier(BaseDeepClassifier):
         if ori_len > 500:
             current_slice_ratio = self.slice_ratio if self.slice_ratio > 0.98 else 0.98
 
-        increase_num = ori_len - int(ori_len * current_slice_ratio) + 1  # this can be used as the bath size
+        increase_num = ori_len - int(
+            ori_len * current_slice_ratio) + 1  # this can be used as the bath size
 
         # will need to slice at some poin
 
@@ -526,14 +577,21 @@ class MCNNClassifier(BaseDeepClassifier):
 
         length_train = x_test.shape[1]  # length after slicing.
 
-        current_window_size = int(length_train * self.window_size) if self.window_size < 1 else int(self.window_size)
+        current_window_size = int(
+            length_train * self.window_size) if self.window_size < 1 else int(
+            self.window_size)
 
-        ds_num_max = length_train / (self.best_pool_factor * current_window_size)
+        ds_num_max = length_train / (
+                self.best_pool_factor * current_window_size)
         current_ds_num = int(min(self.ds_num, ds_num_max))
 
         ##need to batch and downsample the test data.
-        ma_test, ma_lengths = self.movingavrg(x_test, self.ma_base, self.ma_step, self.ma_num)
-        ds_test, ds_lengths = self.downsample(x_test, self.ds_base, self.ds_step, current_ds_num)
+        ma_test, ma_lengths = self.movingavrg(x_test, self.ma_base,
+                                              self.ma_step,
+                                              self.ma_num)
+        ds_test, ds_lengths = self.downsample(x_test, self.ds_base,
+                                              self.ds_step,
+                                              current_ds_num)
 
         test_set_x = x_test
 
@@ -555,7 +613,8 @@ class MCNNClassifier(BaseDeepClassifier):
         y_predicted = []
         for i in range(test_num_batch):
             x = test_set_x[i * (increase_num): (i + 1) * (increase_num)]
-            preds = self.model.predict_on_batch(self.split_input_for_model(x, self.input_shapes))
+            preds = self.model.predict_on_batch(
+                self.split_input_for_model(x, self.input_shapes))
             y_predicted.append(np.average(preds, axis=0))
 
         y_pred = np.array(y_predicted)

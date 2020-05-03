@@ -74,11 +74,13 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
         output : a compiled Keras Model
         """
         input_layer, output_layer = self.build_network(input_shape, **kwargs)
-        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(output_layer)
+        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(
+            output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
-        model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(0.00001),
+        model.compile(loss='categorical_crossentropy',
+                      optimizer=keras.optimizers.Adam(0.00001),
                       metrics=['accuracy'])
 
         return model
@@ -108,8 +110,10 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
         if self.verbose:
             self.model.summary()
 
-        self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
-                                      verbose=self.verbose, callbacks=self.callbacks)
+        self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size,
+                                      epochs=self.nb_epochs,
+                                      verbose=self.verbose,
+                                      callbacks=self.callbacks)
 
         self.save_trained_model()
         self.is_fitted = True

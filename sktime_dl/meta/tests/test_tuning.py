@@ -1,7 +1,7 @@
 from sktime.datasets import load_italy_power_demand
 
-from sktime_dl.meta import TunedDeepLearningClassifier
 from sktime_dl.deeplearning import CNNClassifier
+from sktime_dl.meta import TunedDeepLearningClassifier
 
 
 def test_basic_tuning(network=TunedDeepLearningClassifier(

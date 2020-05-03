@@ -1,13 +1,13 @@
 __author__ = "James Large"
 
-from tensorflow import keras
 import numpy as np
-
 from sklearn.model_selection import train_test_split
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.mcdcnn._base import MCDCNNNetwork
-from sktime_dl.utils import check_and_clean_data, check_is_fitted
+from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_is_fitted
 
 
 class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
@@ -46,7 +46,7 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
             model_name=model_name,
             model_save_directory=model_save_directory)
         MCDCNNNetwork.__init__(
-            self, 
+            self,
             kernel_size=kernel_size,
             pool_size=pool_size,
             filter_sizes=filter_sizes,
@@ -96,12 +96,14 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         """
         input_layers, output_layer = self.build_network(input_shape, **kwargs)
 
-        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(output_layer)
+        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(
+            output_layer)
 
         model = keras.models.Model(inputs=input_layers, outputs=output_layer)
 
         model.compile(loss='categorical_crossentropy',
-                      optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.0005),
+                      optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9,
+                                                     decay=0.0005),
                       metrics=['accuracy'])
 
         # file_path = self.output_directory + 'best_model.hdf5'
@@ -143,8 +145,11 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         if self.verbose:
             self.model.summary()
 
-        self.history = self.model.fit(x_train, y_train_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
-                                      verbose=self.verbose, validation_data=(x_val, y_val_onehot),
+        self.history = self.model.fit(x_train, y_train_onehot,
+                                      batch_size=self.batch_size,
+                                      epochs=self.nb_epochs,
+                                      verbose=self.verbose,
+                                      validation_data=(x_val, y_val_onehot),
                                       callbacks=self.callbacks)
 
         self.save_trained_model()

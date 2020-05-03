@@ -35,7 +35,8 @@ def read(*parts):
 
 def find_version(*file_paths):
     version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
     if version_match:
         return version_match.group(1)
     else:
@@ -141,7 +142,8 @@ class BumpVersion(Step):
 
     def post(self, context):
         wait_for_enter()
-        context["version"] = find_version(context['package_name'], '__init__.py')
+        context["version"] = find_version(context['package_name'],
+                                          '__init__.py')
 
 
 class MakeClean(Step):
@@ -181,7 +183,8 @@ class CheckVersionNumber(Step):
         self.instruct(
             f"Ensure that the following command gives version: {context['version']}"
         )
-        self.do_cmd(f"python -c 'import {context['package_name']}; print({context['package_name']}.__version__)'")
+        self.do_cmd(
+            f"python -c 'import {context['package_name']}; print({context['package_name']}.__version__)'")
 
 
 class DeactivateVenv(Step):

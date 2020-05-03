@@ -1,13 +1,13 @@
 __author__ = "James Large, Withington"
 
-from tensorflow import keras
 import numpy as np
-
 from sklearn.utils.validation import check_is_fitted
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
-from sktime_dl.utils import check_and_clean_data, check_is_fitted
+from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_is_fitted
 
 
 class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
@@ -79,7 +79,8 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
         model.compile(optimizer=keras.optimizers.Adam(lr=0.01, decay=0.005),
-                      loss='mean_squared_error', metrics=['mean_squared_error'])
+                      loss='mean_squared_error',
+                      metrics=['mean_squared_error'])
 
         if save_best_model:
             file_path = self.model_save_directory + 'best_model.hdf5'
@@ -108,11 +109,14 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         self.adjust_parameters(X)
         X, y, __ = self.pre_processing(X, y)
 
-        input_shape = X.shape[1:]  # pylint: disable=E1136  # pylint/issues/3139
+        input_shape = X.shape[
+                      1:]  # pylint: disable=E1136  # pylint/issues/3139
         self.model = self.build_model(input_shape)
 
-        self.hist = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
-                                   verbose=self.verbose, callbacks=self.callbacks)
+        self.hist = self.model.fit(X, y, batch_size=self.batch_size,
+                                   epochs=self.nb_epochs,
+                                   verbose=self.verbose,
+                                   callbacks=self.callbacks)
 
         self.save_trained_model()
         self.is_fitted = True
@@ -146,11 +150,16 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         preds = self.model.predict(X, batch_size=self.batch_size)
 
         y_predicted = []
-        test_num_batch = int(X.shape[0] / tot_increase_num)  # pylint: disable=E1136  # pylint/issues/3139
+        test_num_batch = int(
+            X.shape[
+                0] / tot_increase_num)  # pylint: disable=E1136  # pylint/issues/3139
 
         ##TODO: could fix this to be an array literal.
         for i in range(test_num_batch):
-            y_predicted.append(np.average(preds[i * tot_increase_num: ((i + 1) * tot_increase_num) - 1], axis=0))
+            y_predicted.append(
+                np.average(preds[i * tot_increase_num: ((
+                                                                i + 1) * tot_increase_num) - 1],
+                           axis=0))
 
         y_pred = np.array(y_predicted)
 

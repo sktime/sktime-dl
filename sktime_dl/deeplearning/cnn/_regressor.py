@@ -90,7 +90,8 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         output_layer = keras.layers.Dense(units=1)(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
-        model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
+        model.compile(loss='mean_squared_error',
+                      optimizer=keras.optimizers.Adam(),
                       metrics=['mean_squared_error'])
 
         return model
@@ -119,8 +120,10 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         if self.verbose:
             self.model.summary()
 
-        self.history = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
-                                      verbose=self.verbose, callbacks=self.callbacks)
+        self.history = self.model.fit(X, y, batch_size=self.batch_size,
+                                      epochs=self.nb_epochs,
+                                      verbose=self.verbose,
+                                      callbacks=self.callbacks)
 
         self.save_trained_model()
         self.is_fitted = True

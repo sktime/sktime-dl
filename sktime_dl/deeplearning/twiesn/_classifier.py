@@ -1,16 +1,15 @@
 __author__ = "Aaron Bostrom, James Large"
 
 import numpy as np
-
 from scipy import sparse
 from scipy.sparse import linalg as slinalg
-
 from sklearn.linear_model import Ridge
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
-from sktime_dl.utils import check_and_clean_data, check_is_fitted
+from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_is_fitted
 
 
 class TWIESNClassifier(BaseDeepClassifier):
@@ -65,11 +64,16 @@ class TWIESNClassifier(BaseDeepClassifier):
         self.random_state = np.random.RandomState(self.random_seed)
 
         # hyperparameters
-        first_config = {'N_x': 250, 'connect': 0.5, 'scaleW_in': 1.0, 'lamda': 0.0}
-        second_config = {'N_x': 250, 'connect': 0.5, 'scaleW_in': 2.0, 'lamda': 0.05}
-        third_config = {'N_x': 500, 'connect': 0.1, 'scaleW_in': 2.0, 'lamda': 0.05}
-        fourth_config = {'N_x': 800, 'connect': 0.1, 'scaleW_in': 2.0, 'lamda': 0.05}
-        self.configs = [first_config, second_config, third_config, fourth_config]
+        first_config = {'N_x': 250, 'connect': 0.5, 'scaleW_in': 1.0,
+                        'lamda': 0.0}
+        second_config = {'N_x': 250, 'connect': 0.5, 'scaleW_in': 2.0,
+                         'lamda': 0.05}
+        third_config = {'N_x': 500, 'connect': 0.1, 'scaleW_in': 2.0,
+                        'lamda': 0.05}
+        fourth_config = {'N_x': 800, 'connect': 0.1, 'scaleW_in': 2.0,
+                         'lamda': 0.05}
+        self.configs = [first_config, second_config, third_config,
+                        fourth_config]
         self.rho_s = rho_s
         self.alpha = alpha  # leakage rate
 
@@ -128,7 +132,8 @@ class TWIESNClassifier(BaseDeepClassifier):
 
         # FINE TUNE MODEL PARAMS
         # split train to validation set to choose best hyper parameters
-        x_train, x_val, y_train, y_val = train_test_split(X, y_onehot, test_size=0.2)
+        x_train, x_val, y_train, y_val = train_test_split(X, y_onehot,
+                                                          test_size=0.2)
         self.N = x_train.shape[0]
 
         # limit the hyperparameter search if dataset is too big
@@ -214,7 +219,8 @@ class TWIESNClassifier(BaseDeepClassifier):
         return np.average(new_y_pred, axis=1)
 
     def init_matrices(self):
-        self.W_in = (2.0 * np.random.rand(self.N_x, self.num_dim) - 1.0) / (2.0 * self.scaleW_in)
+        self.W_in = (2.0 * np.random.rand(self.N_x, self.num_dim) - 1.0) / (
+                2.0 * self.scaleW_in)
 
         converged = False
 
@@ -225,7 +231,8 @@ class TWIESNClassifier(BaseDeepClassifier):
             i += 1
 
             # generate sparse, uniformly distributed weights
-            self.W = sparse.rand(self.N_x, self.N_x, density=self.connect).todense()
+            self.W = sparse.rand(self.N_x, self.N_x,
+                                 density=self.connect).todense()
 
             # ensure that the non-zero values are uniformly distributed
             self.W[np.where(self.W > 0)] -= 0.5
@@ -253,7 +260,8 @@ class TWIESNClassifier(BaseDeepClassifier):
             # get all the time series data points for the time step t
             curr_in = x_in[:, t, :]
             # calculate the linear activation
-            curr_state = np.tanh(self.W_in.dot(curr_in.T) + self.W.dot(X_t_1.T)).T
+            curr_state = np.tanh(
+                self.W_in.dot(curr_in.T) + self.W.dot(X_t_1.T)).T
             # apply leakage
             curr_state = (1 - self.alpha) * X_t_1 + self.alpha * curr_state
             # save in previous state
@@ -273,7 +281,8 @@ class TWIESNClassifier(BaseDeepClassifier):
 
     def reshape_prediction(self, y_pred, num_instances, length_series):
         # reshape so the first axis has the number of instances
-        new_y_pred = y_pred.reshape(num_instances, length_series, y_pred.shape[-1])
+        new_y_pred = y_pred.reshape(num_instances, length_series,
+                                    y_pred.shape[-1])
         # average the predictions of instances
         new_y_pred = np.average(new_y_pred, axis=1)
         # get the label with maximum prediction over the last label axis

@@ -1,12 +1,11 @@
 __author__ = "James Large"
 
 import numpy as np
-
-from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
-from sktime_dl.deeplearning import CNNClassifier
-
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
+
+from sktime_dl.deeplearning import CNNClassifier
+from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 
 
 class TunedDeepLearningClassifier(BaseDeepClassifier):
@@ -73,9 +72,11 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         if self.tuned_params is not None:
-            return self.base_model.build_model(input_shape, nb_classes, **kwargs)
+            return self.base_model.build_model(input_shape, nb_classes,
+                                               **kwargs)
         else:
-            return self.base_model.build_model(input_shape, nb_classes, self.tuned_params)
+            return self.base_model.build_model(input_shape, nb_classes,
+                                               self.tuned_params)
 
     def fit(self, X, y, **kwargs):
         """
@@ -106,7 +107,9 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
                                            random_state=self.random_seed)
         else:
             # todo expand, give options etc
-            raise Exception('Unrecognised search method provided: {}'.format(self.search_method))
+            raise Exception(
+                'Unrecognised search method provided: {}'.format(
+                    self.search_method))
 
         self.grid_history = self.grid.fit(X, y)
         self.model = self.grid.best_estimator_.model
@@ -132,7 +135,8 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
         return self.tuned_params
 
     def print_search_summary(self):
-        print("Best: %f using %s" % (self.grid_history.best_score_, self.grid_history.best_params_))
+        print("Best: %f using %s" % (
+            self.grid_history.best_score_, self.grid_history.best_params_))
         means = self.grid_history.cv_results_['mean_test_score']
         stds = self.grid_history.cv_results_['std_test_score']
         params = self.grid_history.cv_results_['params']

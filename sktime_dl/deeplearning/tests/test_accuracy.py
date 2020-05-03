@@ -7,19 +7,18 @@ standard deviations (also published) on the ItalyPowerDemand dataset.
 
 import pytest
 from flaky import flaky
-
 from sktime.datasets import load_italy_power_demand
 
 from sktime_dl.deeplearning import CNNClassifier
 from sktime_dl.deeplearning import EncoderClassifier
 from sktime_dl.deeplearning import FCNClassifier
+from sktime_dl.deeplearning import InceptionTimeClassifier
 from sktime_dl.deeplearning import MCDCNNClassifier
 from sktime_dl.deeplearning import MCNNClassifier
 from sktime_dl.deeplearning import MLPClassifier
 from sktime_dl.deeplearning import ResNetClassifier
 from sktime_dl.deeplearning import TLENETClassifier
 from sktime_dl.deeplearning import TWIESNClassifier
-from sktime_dl.deeplearning import InceptionTimeClassifier
 
 
 def is_not_value_error(err, *args):
@@ -48,25 +47,29 @@ def accuracy_test(network=CNNClassifier(), lower=0.94, upper=1.0):
 @pytest.mark.slow
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_cnn_accuracy():
-    accuracy_test(network=CNNClassifier(), lower=0.955 - ACCURACY_DEVIATION_THRESHOLD * 0.004)
+    accuracy_test(network=CNNClassifier(),
+                  lower=0.955 - ACCURACY_DEVIATION_THRESHOLD * 0.004)
 
 
 @pytest.mark.slow
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_encoder_accuracy():
-    accuracy_test(network=EncoderClassifier(), lower=0.965 - ACCURACY_DEVIATION_THRESHOLD * 0.005)
+    accuracy_test(network=EncoderClassifier(),
+                  lower=0.965 - ACCURACY_DEVIATION_THRESHOLD * 0.005)
 
 
 @pytest.mark.slow
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_fcn_accuracy():
-    accuracy_test(network=FCNClassifier(), lower=0.961 - ACCURACY_DEVIATION_THRESHOLD * 0.003)
+    accuracy_test(network=FCNClassifier(),
+                  lower=0.961 - ACCURACY_DEVIATION_THRESHOLD * 0.003)
 
 
 @pytest.mark.slow
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_mcdcnn_accuracy():
-    accuracy_test(network=MCDCNNClassifier(), lower=0.955 - ACCURACY_DEVIATION_THRESHOLD * 0.019)
+    accuracy_test(network=MCDCNNClassifier(),
+                  lower=0.955 - ACCURACY_DEVIATION_THRESHOLD * 0.019)
 
 
 @pytest.mark.skip(reason="Very slow running, causes Travis to time out.")
@@ -75,20 +78,23 @@ def test_mcdcnn_accuracy():
 def test_mcnn_accuracy():
     # Low accuracy is consistent with published results
     # https://github.com/hfawaz/dl-4-tsc/blob/master/README.md
-    accuracy_test(network=MCNNClassifier(), lower=0.5 - ACCURACY_DEVIATION_THRESHOLD * 0.002,
+    accuracy_test(network=MCNNClassifier(),
+                  lower=0.5 - ACCURACY_DEVIATION_THRESHOLD * 0.002,
                   upper=0.5 + ACCURACY_DEVIATION_THRESHOLD * 0.002)
 
 
 @pytest.mark.slow
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_mlp_accuracy():
-    accuracy_test(network=MLPClassifier(), lower=0.954 - ACCURACY_DEVIATION_THRESHOLD * 0.002)
+    accuracy_test(network=MLPClassifier(),
+                  lower=0.954 - ACCURACY_DEVIATION_THRESHOLD * 0.002)
 
 
 @pytest.mark.slow
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_resnet_accuracy():
-    accuracy_test(network=ResNetClassifier(), lower=0.963 - ACCURACY_DEVIATION_THRESHOLD * 0.004)
+    accuracy_test(network=ResNetClassifier(),
+                  lower=0.963 - ACCURACY_DEVIATION_THRESHOLD * 0.004)
 
 
 @pytest.mark.slow
@@ -102,7 +108,8 @@ def test_tlenet_accuracy():
 @pytest.mark.slow
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_twiesn_accuracy():
-    accuracy_test(network=TWIESNClassifier(), lower=0.88 - ACCURACY_DEVIATION_THRESHOLD * 0.022)
+    accuracy_test(network=TWIESNClassifier(),
+                  lower=0.88 - ACCURACY_DEVIATION_THRESHOLD * 0.022)
 
 
 @pytest.mark.slow

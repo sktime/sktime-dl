@@ -1,7 +1,7 @@
 __author__ = "James Large, Withington"
 
-from tensorflow import keras
 import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
 
@@ -54,8 +54,11 @@ class InceptionTimeNetwork(BaseDeepNetwork):
     def _inception_module(self, input_tensor, stride=1, activation='linear'):
 
         if self.use_bottleneck and int(input_tensor.shape[-1]) > 1:
-            input_inception = keras.layers.Conv1D(filters=self.bottleneck_size, kernel_size=1,
-                                                  padding='same', activation=activation, use_bias=False)(input_tensor)
+            input_inception = keras.layers.Conv1D(filters=self.bottleneck_size,
+                                                  kernel_size=1,
+                                                  padding='same',
+                                                  activation=activation,
+                                                  use_bias=False)(input_tensor)
         else:
             input_inception = input_tensor
 
@@ -65,14 +68,21 @@ class InceptionTimeNetwork(BaseDeepNetwork):
         conv_list = []
 
         for i in range(len(kernel_size_s)):
-            conv_list.append(keras.layers.Conv1D(filters=self.nb_filters, kernel_size=kernel_size_s[i],
-                                                 strides=stride, padding='same', activation=activation, use_bias=False)(
-                input_inception))
+            conv_list.append(
+                keras.layers.Conv1D(filters=self.nb_filters,
+                                    kernel_size=kernel_size_s[i],
+                                    strides=stride, padding='same',
+                                    activation=activation,
+                                    use_bias=False)(
+                    input_inception))
 
-        max_pool_1 = keras.layers.MaxPool1D(pool_size=3, strides=stride, padding='same')(input_tensor)
+        max_pool_1 = keras.layers.MaxPool1D(pool_size=3, strides=stride,
+                                            padding='same')(
+            input_tensor)
 
         conv_6 = keras.layers.Conv1D(filters=self.nb_filters, kernel_size=1,
-                                     padding='same', activation=activation, use_bias=False)(max_pool_1)
+                                     padding='same', activation=activation,
+                                     use_bias=False)(max_pool_1)
 
         conv_list.append(conv_6)
 
@@ -82,8 +92,10 @@ class InceptionTimeNetwork(BaseDeepNetwork):
         return x
 
     def _shortcut_layer(self, input_tensor, out_tensor):
-        shortcut_y = keras.layers.Conv1D(filters=int(out_tensor.shape[-1]), kernel_size=1,
-                                         padding='same', use_bias=False)(input_tensor)
+        shortcut_y = keras.layers.Conv1D(filters=int(out_tensor.shape[-1]),
+                                         kernel_size=1,
+                                         padding='same', use_bias=False)(
+            input_tensor)
         shortcut_y = keras.layers.BatchNormalization()(shortcut_y)
 
         x = keras.layers.Add()([shortcut_y, out_tensor])

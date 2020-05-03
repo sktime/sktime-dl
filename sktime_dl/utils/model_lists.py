@@ -1,23 +1,22 @@
 from sktime_dl.deeplearning import CNNClassifier
+from sktime_dl.deeplearning import CNNRegressor
 from sktime_dl.deeplearning import EncoderClassifier
+from sktime_dl.deeplearning import EncoderRegressor
 from sktime_dl.deeplearning import FCNClassifier
+from sktime_dl.deeplearning import FCNRegressor
+from sktime_dl.deeplearning import InceptionTimeClassifier
+from sktime_dl.deeplearning import InceptionTimeRegressor
 from sktime_dl.deeplearning import MCDCNNClassifier
+from sktime_dl.deeplearning import MCDCNNRegressor
 from sktime_dl.deeplearning import MCNNClassifier
 from sktime_dl.deeplearning import MLPClassifier
-from sktime_dl.deeplearning import ResNetClassifier
-from sktime_dl.deeplearning import TLENETClassifier
-from sktime_dl.deeplearning import TWIESNClassifier
-from sktime_dl.deeplearning import InceptionTimeClassifier
-
-from sktime_dl.deeplearning import CNNRegressor
-from sktime_dl.deeplearning import EncoderRegressor
-from sktime_dl.deeplearning import FCNRegressor
-from sktime_dl.deeplearning import MCDCNNRegressor
 from sktime_dl.deeplearning import MLPRegressor
+from sktime_dl.deeplearning import ResNetClassifier
 from sktime_dl.deeplearning import ResNetRegressor
-from sktime_dl.deeplearning import TLENETRegressor
-from sktime_dl.deeplearning import InceptionTimeRegressor
 from sktime_dl.deeplearning import SimpleRNNRegressor
+from sktime_dl.deeplearning import TLENETClassifier
+from sktime_dl.deeplearning import TLENETRegressor
+from sktime_dl.deeplearning import TWIESNClassifier
 
 SMALL_NB_EPOCHS = 3
 

@@ -1,16 +1,16 @@
 import numpy as np
 import pandas as pd
-
 from sklearn.metrics import mean_squared_error
-
-from sktime.highlevel.tasks import ForecastingTask
+from sktime.datasets import load_italy_power_demand
+from sktime.datasets import load_shampoo_sales
 from sktime.highlevel.strategies import Forecasting2TSRReductionStrategy
-from sktime.datasets import load_shampoo_sales, load_italy_power_demand
-from sktime.transformers.compose import Tabulariser
+from sktime.highlevel.tasks import ForecastingTask
 from sktime.pipeline import Pipeline
+from sktime.transformers.compose import Tabulariser
 
 from sktime_dl.deeplearning import MLPRegressor
-from sktime_dl.utils.model_lists import construct_all_regressors, SMALL_NB_EPOCHS
+from sktime_dl.utils.model_lists import SMALL_NB_EPOCHS
+from sktime_dl.utils.model_lists import construct_all_regressors
 
 
 def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
@@ -37,8 +37,9 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
     print("End test_regressor()")
 
 
-def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS),
-                               window_length=4):
+def test_regressor_forecasting(
+        estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS),
+        window_length=4):
     '''
     test a regressor used for forecasting
     '''
@@ -46,8 +47,10 @@ def test_regressor_forecasting(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)
 
     # get data into expected nested format
     shampoo = load_shampoo_sales(return_y_as_dataframe=True)
-    train = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[:24]]), columns=shampoo.columns)
-    update = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[:30]]), columns=shampoo.columns)
+    train = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[:24]]),
+                         columns=shampoo.columns)
+    update = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[:30]]),
+                          columns=shampoo.columns)
 
     # define simple time-series regressor using time-series as features
     steps = [
@@ -80,9 +83,11 @@ def test_all_forecasters():
     window_length = 8
 
     for network in construct_all_regressors(SMALL_NB_EPOCHS):
-        print('\n\t\t' + network.__class__.__name__ + ' forecast testing started')
+        print(
+            '\n\t\t' + network.__class__.__name__ + ' forecast testing started')
         test_regressor_forecasting(network, window_length=window_length)
-        print('\t\t' + network.__class__.__name__ + ' forecast testing finished')
+        print(
+            '\t\t' + network.__class__.__name__ + ' forecast testing finished')
 
 
 if __name__ == "__main__":

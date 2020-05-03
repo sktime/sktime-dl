@@ -1,7 +1,7 @@
 __author__ = "James Large, Withington"
 
-from tensorflow import keras
 import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
 
@@ -62,7 +62,8 @@ class TLENETNetwork(BaseDeepNetwork):
 
         for i in range(n):
             for j in range(increase_num):
-                new_x[i * increase_num + j, :, :] = X[i, j: j + length_sliced, :]
+                new_x[i * increase_num + j, :, :] = X[i, j: j + length_sliced,
+                                                    :]
 
         # transform y, if present.
         new_y = None
@@ -116,17 +117,22 @@ class TLENETNetwork(BaseDeepNetwork):
         """
         input_layer = keras.layers.Input(input_shape)
 
-        conv_1 = keras.layers.Conv1D(filters=5, kernel_size=5, activation='relu', padding='same')(input_layer)
+        conv_1 = keras.layers.Conv1D(filters=5, kernel_size=5,
+                                     activation='relu',
+                                     padding='same')(input_layer)
         conv_1 = keras.layers.MaxPool1D(pool_size=2)(conv_1)
 
-        conv_2 = keras.layers.Conv1D(filters=20, kernel_size=5, activation='relu', padding='same')(conv_1)
+        conv_2 = keras.layers.Conv1D(filters=20, kernel_size=5,
+                                     activation='relu',
+                                     padding='same')(conv_1)
         conv_2 = keras.layers.MaxPool1D(pool_size=4)(conv_2)
 
         # they did not mention the number of hidden units in the fully-connected layer
         # so we took the lenet they referenced 
 
         flatten_layer = keras.layers.Flatten()(conv_2)
-        fully_connected_layer = keras.layers.Dense(500, activation='relu')(flatten_layer)
+        fully_connected_layer = keras.layers.Dense(500, activation='relu')(
+            flatten_layer)
 
         return input_layer, fully_connected_layer
 
@@ -164,7 +170,8 @@ class TLENETNetwork(BaseDeepNetwork):
 
         # data augmentation using WS
         for i in range(0, len(x_augmented)):
-            x_augmented[i], y_train_augmented_i, increase_num = self.slice_data(
+            x_augmented[
+                i], y_train_augmented_i, increase_num = self.slice_data(
                 x_augmented[i], y, length_ratio)
             # print("inc num",increase_num)
             if y is not None:
@@ -174,14 +181,18 @@ class TLENETNetwork(BaseDeepNetwork):
 
         tot_increase_num = np.array(increase_nums).sum()
 
-        new_x = np.zeros((X.shape[0] * tot_increase_num, length_ratio, X.shape[2]))
+        new_x = np.zeros(
+            (X.shape[0] * tot_increase_num, length_ratio, X.shape[2]))
 
         # merge the list of augmented data
         idx = 0
         for i in range(X.shape[0]):
             for j in range(len(increase_nums)):
                 increase_num = increase_nums[j]
-                new_x[idx:idx + increase_num, :, :] = x_augmented[j][i * increase_num:(i + 1) * increase_num, :, :]
+                new_x[idx:idx + increase_num, :, :] = x_augmented[j][
+                                                      i * increase_num:(
+                                                                               i + 1) * increase_num,
+                                                      :, :]
                 idx += increase_num
 
         # merge y if its not None.
@@ -196,7 +207,9 @@ class TLENETNetwork(BaseDeepNetwork):
             for i in range(X.shape[0]):
                 for j in range(len(increase_nums)):
                     increase_num = increase_nums[j]
-                    new_y[idx:idx + increase_num] = y_augmented[j][i * increase_num:(i + 1) * increase_num]
+                    new_y[idx:idx + increase_num] = y_augmented[j][
+                                                    i * increase_num:(
+                                                                             i + 1) * increase_num]
                     idx += increase_num
 
         return new_x, new_y, tot_increase_num

@@ -1,7 +1,7 @@
 __author__ = "James Large, Withington"
 
-from tensorflow import keras
 import numpy as np
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
 
@@ -76,14 +76,16 @@ class CNNNetwork(BaseDeepNetwork):
                                    kernel_size=self.kernel_size,
                                    padding=padding,
                                    activation='sigmoid')(input_layer)
-        conv = keras.layers.AveragePooling1D(pool_size=self.avg_pool_size)(conv)
+        conv = keras.layers.AveragePooling1D(pool_size=self.avg_pool_size)(
+            conv)
 
         for i in range(1, self.nb_conv_layers):
             conv = keras.layers.Conv1D(filters=self.filter_sizes[i],
                                        kernel_size=self.kernel_size,
                                        padding=padding,
                                        activation='sigmoid')(conv)
-            conv = keras.layers.AveragePooling1D(pool_size=self.avg_pool_size)(conv)
+            conv = keras.layers.AveragePooling1D(pool_size=self.avg_pool_size)(
+                conv)
 
         flatten_layer = keras.layers.Flatten()(conv)
 

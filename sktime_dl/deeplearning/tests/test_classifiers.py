@@ -1,7 +1,9 @@
-from sktime.datasets import load_italy_power_demand, load_basic_motions
+from sktime.datasets import load_basic_motions
+from sktime.datasets import load_italy_power_demand
 
 from sktime_dl.deeplearning import CNNClassifier
-from sktime_dl.utils.model_lists import construct_all_classifiers, SMALL_NB_EPOCHS
+from sktime_dl.utils.model_lists import SMALL_NB_EPOCHS
+from sktime_dl.utils.model_lists import construct_all_classifiers
 
 
 def test_basic_univariate(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):

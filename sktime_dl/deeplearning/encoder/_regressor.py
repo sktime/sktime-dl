@@ -74,7 +74,8 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
         output_layer = keras.layers.Dense(units=1)(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
-        model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(0.00001),
+        model.compile(loss='mean_squared_error',
+                      optimizer=keras.optimizers.Adam(0.00001),
                       metrics=['mean_squared_error'])
 
         self.callbacks = []
@@ -105,8 +106,10 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
         if self.verbose:
             self.model.summary()
 
-        self.history = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
-                                      verbose=self.verbose, callbacks=self.callbacks)
+        self.history = self.model.fit(X, y, batch_size=self.batch_size,
+                                      epochs=self.nb_epochs,
+                                      verbose=self.verbose,
+                                      callbacks=self.callbacks)
 
         self.save_trained_model()
         self.is_fitted = True

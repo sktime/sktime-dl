@@ -1,18 +1,16 @@
 __author__ = "James Large"
 
-import numpy as np
-import pandas as pd
-import os
 import gc
+import os
 from pathlib import Path
 
-from tensorflow import keras
-
-from sklearn.utils.multiclass import class_distribution
+import numpy as np
+import pandas as pd
 from sklearn.base import clone
-
+from sklearn.utils.multiclass import class_distribution
 from sktime.classifiers.base import BaseClassifier
 from sktime.utils.validation.supervised import validate_X
+from tensorflow import keras
 
 from sktime_dl.deeplearning import InceptionTimeClassifier
 
@@ -67,7 +65,8 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         self.is_fitted = False
 
         if base_model.is_fitted:
-            raise ValueError("base_model to ensemble over cannot have already been fit(...) to data")
+            raise ValueError(
+                "base_model to ensemble over cannot have already been fit(...) to data")
 
         self.base_model = base_model
         self.nb_iterations = nb_iterations
@@ -225,8 +224,10 @@ class EnsembleFromFileClassifier(BaseClassifier):
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
 
-    def load_network_probs(self, network_name, itr, res_path, dataset_name, fold):
-        path = os.path.join(res_path, network_name + str(itr), "Predictions", dataset_name,
+    def load_network_probs(self, network_name, itr, res_path, dataset_name,
+                           fold):
+        path = os.path.join(res_path, network_name + str(itr), "Predictions",
+                            dataset_name,
                             "testFold" + str(fold) + ".csv")
         probs = pd.read_csv(path, engine='python', skiprows=3, header=None)
         return np.asarray(probs)[:, 3:]
@@ -237,7 +238,10 @@ class EnsembleFromFileClassifier(BaseClassifier):
 
         for itr in range(self.nb_iterations):
             # each construction shall have a different random initialisation
-            y_cur = self.load_network_probs(self.network_name, itr, self.res_path, self.dataset_name, self.random_seed)
+            y_cur = self.load_network_probs(self.network_name, itr,
+                                            self.res_path,
+                                            self.dataset_name,
+                                            self.random_seed)
 
             if itr == 0:
                 self.y_pred = y_cur

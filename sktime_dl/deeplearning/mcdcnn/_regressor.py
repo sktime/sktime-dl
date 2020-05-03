@@ -1,9 +1,7 @@
 __author__ = "James Large, Withington"
 
-from tensorflow import keras
-import numpy as np
-
 from sklearn.model_selection import train_test_split
+from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mcdcnn._base import MCDCNNNetwork
@@ -46,7 +44,7 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
             model_name=model_name,
             model_save_directory=model_save_directory)
         MCDCNNNetwork.__init__(
-            self, 
+            self,
             kernel_size=kernel_size,
             pool_size=pool_size,
             filter_sizes=filter_sizes,
@@ -95,7 +93,8 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
         model = keras.models.Model(inputs=input_layers, outputs=output_layer)
 
         model.compile(loss='mean_squared_error',
-                      optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.0005),
+                      optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9,
+                                                     decay=0.0005),
                       metrics=['mean_squared_error'])
 
         # file_path = self.output_directory + 'best_model.hdf5'
@@ -136,8 +135,11 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
         if self.verbose:
             self.model.summary()
 
-        self.history = self.model.fit(x_train, y_train, batch_size=self.batch_size, epochs=self.nb_epochs,
-                                      verbose=self.verbose, validation_data=(x_val, y_val),
+        self.history = self.model.fit(x_train, y_train,
+                                      batch_size=self.batch_size,
+                                      epochs=self.nb_epochs,
+                                      verbose=self.verbose,
+                                      validation_data=(x_val, y_val),
                                       callbacks=self.callbacks)
 
         self.save_trained_model()

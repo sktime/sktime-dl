@@ -89,10 +89,13 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
         """
         input_layer, output_layer = self.build_network(input_shape, **kwargs)
 
-        output_layer = keras.layers.Dense(units=nb_classes, activation='sigmoid')(output_layer)
+        output_layer = keras.layers.Dense(units=nb_classes,
+                                          activation='sigmoid')(
+            output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
-        model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
+        model.compile(loss='mean_squared_error',
+                      optimizer=keras.optimizers.Adam(),
                       metrics=['accuracy'])
 
         return model
@@ -122,8 +125,10 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
         if self.verbose:
             self.model.summary()
 
-        self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size, epochs=self.nb_epochs,
-                                      verbose=self.verbose, callbacks=self.callbacks)
+        self.history = self.model.fit(X, y_onehot, batch_size=self.batch_size,
+                                      epochs=self.nb_epochs,
+                                      verbose=self.verbose,
+                                      callbacks=self.callbacks)
 
         self.save_trained_model()
         self.is_fitted = True
