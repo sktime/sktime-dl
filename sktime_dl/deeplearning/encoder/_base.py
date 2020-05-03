@@ -11,7 +11,6 @@ if tensorflow.__version__ < '2.1.0':
 else:
     import tensorflow_addons as ADDONS
 
-import numpy as np
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
 
 
@@ -40,7 +39,6 @@ class EncoderNetwork(BaseDeepNetwork):
         :param random_seed: int, seed to any needed random actions
         '''
         self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
 
     def build_network(self, input_shape, **kwargs):
         """
@@ -77,7 +75,8 @@ class EncoderNetwork(BaseDeepNetwork):
         attention_softmax = keras.layers.Lambda(lambda x: x[:, :, 256:])(conv3)
         # attention mechanism
         attention_softmax = keras.layers.Softmax()(attention_softmax)
-        multiply_layer = keras.layers.Multiply()([attention_softmax, attention_data])
+        multiply_layer = keras.layers.Multiply()([attention_softmax, 
+                                                  attention_data])
         # last layer
         dense_layer = keras.layers.Dense(units=256, activation='sigmoid')(multiply_layer)
         dense_layer = ADDONS.layers.InstanceNormalization()(dense_layer)
