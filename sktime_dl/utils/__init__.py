@@ -1,6 +1,7 @@
 __all__ = [
     "check_and_clean_data",
-    "check_is_fitted"
+    "check_is_fitted",
+    "save_trained_model"
 ]
 
 from sktime_dl.utils._data import check_and_clean_data
