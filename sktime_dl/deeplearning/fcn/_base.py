@@ -1,7 +1,6 @@
 __author__ = "James Large, Withington"
 
 from tensorflow import keras
-import numpy as np
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
 

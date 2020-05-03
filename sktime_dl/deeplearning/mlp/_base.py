@@ -31,7 +31,6 @@ class MLPNetwork(BaseDeepNetwork):
         :param random_seed: int, seed to any needed random actions
         '''
         self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
 
     def build_network(self, input_shape, **kwargs):
         """
