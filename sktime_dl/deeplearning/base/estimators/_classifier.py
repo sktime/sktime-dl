@@ -14,10 +14,7 @@ from sktime_dl.utils import save_trained_model
 
 
 class BaseDeepClassifier(BaseClassifier):
-
-    def __init__(self,
-                 model_name=None,
-                 model_save_directory=None):
+    def __init__(self, model_name=None, model_save_directory=None):
         self.classes_ = None
         self.nb_classes = None
         self.model_save_directory = model_save_directory
@@ -26,17 +23,19 @@ class BaseDeepClassifier(BaseClassifier):
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
-        Construct a compiled, un-trained, keras model that is ready for training
+        Construct a compiled, un-trained, keras model that is ready for
+        training
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
         nb_classes: int
-            The number of classes, which shall become the size of the output layer
+            The number of classes, which shall become the size of the output
+            layer
         Returns
         -------
         output : a compiled Keras Model
         """
-        raise NotImplementedError('this is an abstract method')
+        raise NotImplementedError("this is an abstract method")
 
     def predict_proba(self, X, input_checks=True, **kwargs):
         """
@@ -46,8 +45,10 @@ class BaseDeepClassifier(BaseClassifier):
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
             The training input samples.
             If a Pandas data frame is passed (sktime format)
-            If a Pandas data frame is passed, a check is performed that it only has one column.
-            If not, an exception is thrown, since this classifier does not yet have
+            If a Pandas data frame is passed, a check is performed that it
+            only has one column.
+            If not, an exception is thrown, since this classifier does not
+            yet have
             multivariate capability.
         input_checks: boolean
             whether to check the X parameter
@@ -70,13 +71,12 @@ class BaseDeepClassifier(BaseClassifier):
 
     def save_trained_model(self):
         save_trained_model(
-            self.model,
-            self.model_save_directory,
-            self.model_name)
+            self.model, self.model_save_directory, self.model_name
+        )
 
     def convert_y(self, y):
         self.label_encoder = LabelEncoder()
-        self.onehot_encoder = OneHotEncoder(sparse=False, categories='auto')
+        self.onehot_encoder = OneHotEncoder(sparse=False, categories="auto")
         # categories='auto' to get rid of FutureWarning
 
         y = self.label_encoder.fit_transform(y)

@@ -20,8 +20,10 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
     Network originally defined in:
 
     @inproceedings{zheng2014time,
-      title={Time series classification using multi-channels deep convolutional neural networks},
-      author={Zheng, Yi and Liu, Qi and Chen, Enhong and Ge, Yong and Zhao, J Leon},
+      title={Time series classification using multi-channels deep
+      convolutional neural networks},
+      author={Zheng, Yi and Liu, Qi and Chen, Enhong and Ge, Yong and Zhao,
+      J Leon},
       booktitle={International Conference on Web-Age Information Management},
       pages={298--310},
       year={2014},
@@ -29,43 +31,48 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
     }
     """
 
-    def __init__(self,
-                 nb_epochs=120,
-                 batch_size=16,
-                 kernel_size=5,
-                 pool_size=2,
-                 filter_sizes=[8, 8],
-                 dense_units=732,
-
-                 callbacks=[],
-                 random_seed=0,
-                 verbose=False,
-                 model_name="mcdcnn",
-                 model_save_directory=None):
+    def __init__(
+            self,
+            nb_epochs=120,
+            batch_size=16,
+            kernel_size=5,
+            pool_size=2,
+            filter_sizes=[8, 8],
+            dense_units=732,
+            callbacks=[],
+            random_seed=0,
+            verbose=False,
+            model_name="mcdcnn",
+            model_save_directory=None,
+    ):
         super().__init__(
-            model_name=model_name,
-            model_save_directory=model_save_directory)
+            model_name=model_name, model_save_directory=model_save_directory
+        )
         MCDCNNNetwork.__init__(
             self,
             kernel_size=kernel_size,
             pool_size=pool_size,
             filter_sizes=filter_sizes,
             dense_units=dense_units,
-            random_seed=random_seed
+            random_seed=random_seed,
         )
-        '''
+        """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
-        :param kernel_size: int, specifying the length of the 1D convolution window
+        :param kernel_size: int, specifying the length of the 1D convolution
+         window
         :param pool_size: int, size of the max pooling windows
-        :param filter_sizes: int, array of shape = 2, size of filter for each conv layer
+        :param filter_sizes: int, array of shape = 2, size of filter for each
+         conv layer
         :param dense_units: int, number of units in the penultimate dense layer
         :param callbacks: not used
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and file writing purposes
-        :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
-        '''
+        :param model_name: string, the name of this model for printing and
+        file writing purposes
+        :param model_save_directory: string, if not None; location to save
+        the trained keras model in hdf5 format
+        """
 
         self.verbose = verbose
         self.is_fitted = False
@@ -84,31 +91,38 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
-        Construct a compiled, un-trained, keras model that is ready for training
+        Construct a compiled, un-trained, keras model that is ready for
+        training
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
         nb_classes: int
-            The number of classes, which shall become the size of the output layer
+            The number of classes, which shall become the size of the output
+             layer
         Returns
         -------
         output : a compiled Keras Model
         """
         input_layers, output_layer = self.build_network(input_shape, **kwargs)
 
-        output_layer = keras.layers.Dense(nb_classes, activation='softmax')(
-            output_layer)
+        output_layer = keras.layers.Dense(nb_classes, activation="softmax")(
+            output_layer
+        )
 
         model = keras.models.Model(inputs=input_layers, outputs=output_layer)
 
-        model.compile(loss='categorical_crossentropy',
-                      optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9,
-                                                     decay=0.0005),
-                      metrics=['accuracy'])
+        model.compile(
+            loss="categorical_crossentropy",
+            optimizer=keras.optimizers.SGD(
+                lr=0.01, momentum=0.9, decay=0.0005
+            ),
+            metrics=["accuracy"],
+        )
 
         # file_path = self.output_directory + 'best_model.hdf5'
-        # model_checkpoint = keras.callbacks.ModelCheckpoint(filepath=file_path, monitor='val_loss',
-        #                                                   save_best_only=True)
+        # model_checkpoint = keras.callbacks.ModelCheckpoint(
+        #     filepath=file_path, monitor='val_loss',
+        #     save_best_only=True)
         # self.callbacks = [model_checkpoint]
         self.callbacks = []
 
@@ -119,7 +133,8 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         Build the classifier on the training set (X, y)
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+            The training input samples.  If a Pandas data frame is passed,
+             column 0 is extracted.
         y : array-like, shape = [n_instances]
             The class labels.
         input_checks: boolean
@@ -131,11 +146,13 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
-        # ignore the number of instances, X.shape[0], just want the shape of each instance
+        # ignore the number of instances, X.shape[0],
+        # just want the shape of each instance
         self.input_shape = X.shape[1:]
 
-        x_train, x_val, y_train_onehot, y_val_onehot = \
-            train_test_split(X, y_onehot, test_size=0.33)
+        x_train, x_val, y_train_onehot, y_val_onehot = train_test_split(
+            X, y_onehot, test_size=0.33
+        )
 
         x_train = self.prepare_input(x_train)
         x_val = self.prepare_input(x_val)
@@ -145,12 +162,15 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         if self.verbose:
             self.model.summary()
 
-        self.history = self.model.fit(x_train, y_train_onehot,
-                                      batch_size=self.batch_size,
-                                      epochs=self.nb_epochs,
-                                      verbose=self.verbose,
-                                      validation_data=(x_val, y_val_onehot),
-                                      callbacks=self.callbacks)
+        self.history = self.model.fit(
+            x_train,
+            y_train_onehot,
+            batch_size=self.batch_size,
+            epochs=self.nb_epochs,
+            verbose=self.verbose,
+            validation_data=(x_val, y_val_onehot),
+            callbacks=self.callbacks,
+        )
 
         self.save_trained_model()
         self.is_fitted = True
@@ -165,8 +185,10 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
             The training input samples.
             If a Pandas data frame is passed (sktime format)
-            If a Pandas data frame is passed, a check is performed that it only has one column.
-            If not, an exception is thrown, since this classifier does not yet have
+            If a Pandas data frame is passed, a check is performed that it
+            only has one column.
+            If not, an exception is thrown, since this classifier does not
+            yet have
             multivariate capability.
         input_checks: boolean
             whether to check the X parameter

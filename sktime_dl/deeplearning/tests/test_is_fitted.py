@@ -11,9 +11,9 @@ from sktime_dl.utils.model_lists import construct_all_regressors
 
 
 def test_is_fitted(network=CNNClassifier()):
-    '''
+    """
     testing that the networks correctly recognise when they are not fitted
-    '''
+    """
 
     X_train, y_train = load_italy_power_demand("TRAIN", return_X_y=True)
 
@@ -30,15 +30,19 @@ def test_is_fitted(network=CNNClassifier()):
 
 def test_all_networks():
     networks = construct_all_classifiers(
-        SMALL_NB_EPOCHS) + construct_all_regressors(
-        SMALL_NB_EPOCHS)
+        SMALL_NB_EPOCHS
+    ) + construct_all_regressors(SMALL_NB_EPOCHS)
 
     for network in networks:
         print(
-            '\n\t\t' + network.__class__.__name__ + ' is_fitted testing started')
+            "\n\t\t"
+            + network.__class__.__name__
+            + " is_fitted testing started"
+        )
         test_is_fitted(network)
         print(
-            '\t\t' + network.__class__.__name__ + ' is_fitted testing finished')
+            "\t\t" + network.__class__.__name__ + " is_fitted testing finished"
+        )
 
 
 if __name__ == "__main__":

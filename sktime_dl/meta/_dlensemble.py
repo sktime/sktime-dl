@@ -16,43 +16,53 @@ from sktime_dl.deeplearning import InceptionTimeClassifier
 
 
 class DeepLearnerEnsembleClassifier(BaseClassifier):
-    '''
-    Simplified/streamlined class to ensemble over homogeneous network architectures with different random initialisations
+    """
+    Simplified/streamlined class to ensemble over homogeneous network
+    architectures with different random initialisations
 
-    This may be refactored to use standard scikit-learn ensemble mechanisms in the future, currently somewhat bespoke
+    This may be refactored to use standard scikit-learn ensemble mechanisms in
+    the future, currently somewhat bespoke
     for speed of implementation
 
     Originally proposed by:
 
     @article{fawaz2019deep,
       title={Deep neural network ensembles for time series classification},
-      author={Fawaz, H Ismail and Forestier, Germain and Weber, Jonathan and Idoumghar, Lhassane and Muller, P},
+      author={Fawaz, H Ismail and Forestier, Germain and Weber, Jonathan and
+      Idoumghar, Lhassane and Muller, P},
       journal={arXiv preprint arXiv:1903.06602},
       year={2019}
     }
-    '''
+    """
 
-    def __init__(self,
-                 base_model=InceptionTimeClassifier(),
-                 nb_iterations=5,
-                 keep_in_memory=False,
-                 random_seed=0,
-                 verbose=False,
-                 model_name=None,
-                 model_save_directory=None):
-        '''
-        :param base_model: an implementation of BaseDeepClassifier, the model to ensemble over. 
+    def __init__(
+            self,
+            base_model=InceptionTimeClassifier(),
+            nb_iterations=5,
+            keep_in_memory=False,
+            random_seed=0,
+            verbose=False,
+            model_name=None,
+            model_save_directory=None,
+    ):
+        """
+        :param base_model: an implementation of BaseDeepClassifier, the model
+        to ensemble over.
                                 MUST NOT have had fit called on it
         :param nb_iterations: int, the number of models to ensemble over
-        :param keep_in_memory: boolean, if True, all models will be kept in memory while fitting/predicting.
-                Otherwise, models will be written to/read from file individually while fitting/predicting.
+        :param keep_in_memory: boolean, if True, all models will be kept in
+        memory while fitting/predicting.
+                Otherwise, models will be written to/read from file
+                individually while fitting/predicting.
                 model_name and model_save_directory must be set in this case
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and file writing purposes. if None, will default
+        :param model_name: string, the name of this model for printing and
+        file writing purposes. if None, will default
                 to base_model.model_name + '_ensemble'
-        :param model_save_directory: string, if not None; location to save the trained BASE MODELS of the ensemble
-        '''
+        :param model_save_directory: string, if not None; location to save
+        the trained BASE MODELS of the ensemble
+        """
 
         self.verbose = verbose
 
@@ -66,7 +76,9 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
 
         if base_model.is_fitted:
             raise ValueError(
-                "base_model to ensemble over cannot have already been fit(...) to data")
+                "base_model to ensemble over cannot have already been "
+                "fit(...) to data"
+            )
 
         self.base_model = base_model
         self.nb_iterations = nb_iterations
@@ -97,7 +109,8 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         Build the ensemble constituents on the training set (X, y)
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+            The training input samples.  If a Pandas data frame is passed,
+            column 0 is extracted.
         y : array-like, shape = [n_instances]
             The class labels.
         input_checks: boolean
@@ -143,8 +156,10 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
             The training input samples.
             If a Pandas data frame is passed (sktime format)
-            If a Pandas data frame is passed, a check is performed that it only has one column.
-            If not, an exception is thrown, since this classifier does not yet have
+            If a Pandas data frame is passed, a check is performed that it
+            only has one column.
+            If not, an exception is thrown, since this classifier does not
+            yet have
             multivariate capability.
         input_checks: boolean
             whether to check the X parameter
@@ -158,7 +173,10 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         if isinstance(X, pd.DataFrame):
             if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
                 raise TypeError(
-                    "Input should either be a 2d numpy array, or a pandas dataframe with a single column of Series objects (networks cannot yet handle multivariate problems")
+                    "Input should either be a 2d numpy array, or a pandas "
+                    "dataframe with a single column of Series objects "
+                    "(networks cannot yet handle multivariate problems"
+                )
             else:
                 X = np.asarray([a.values for a in X.iloc[:, 0]])
 
@@ -173,9 +191,11 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
                 keras_model = skdl_model.model
             else:
                 keras_model = keras.models.load_model(
-                    Path(self.model_save_directory) / (skdl_model + '.hdf5'))
+                    Path(self.model_save_directory) / (skdl_model + ".hdf5")
+                )
 
-            # keras models' predict is same as what we/sklearn means by predict_proba, i.e. give prob distributions
+            # keras models' predict is same as what we/sklearn means by
+            # predict_proba, i.e. give prob distributions
             probs = probs + keras_model.predict(X, **kwargs)
 
             if not self.keep_in_memory:
@@ -193,21 +213,26 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
 
 
 class EnsembleFromFileClassifier(BaseClassifier):
-    '''
-    A simple utility for post-hoc ensembling over the results of networks that have already been trained and had their results
+    """
+    A simple utility for post-hoc ensembling over the results of networks
+    that have already been trained and had their results
     saved via sktime.contrib.experiments.py
 
-    Note that there will be faulty edge cases with this, e.g. if the build process using this is naively timed, only the
-    file read and prediction averaging will be taken in to consideration, not the actual network training
-    '''
+    Note that there will be faulty edge cases with this, e.g. if the build
+    process using this is naively timed, only the
+    file read and prediction averaging will be taken in to consideration,
+    not the actual network training
+    """
 
-    def __init__(self,
-                 res_path,
-                 dataset_name,
-                 nb_iterations=5,
-                 network_name='inception',
-                 random_seed=0,
-                 verbose=False):
+    def __init__(
+            self,
+            res_path,
+            dataset_name,
+            nb_iterations=5,
+            network_name="inception",
+            random_seed=0,
+            verbose=False,
+    ):
         self.network_name = network_name
         self.nb_iterations = nb_iterations
         self.verbose = verbose
@@ -224,12 +249,17 @@ class EnsembleFromFileClassifier(BaseClassifier):
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
 
-    def load_network_probs(self, network_name, itr, res_path, dataset_name,
-                           fold):
-        path = os.path.join(res_path, network_name + str(itr), "Predictions",
-                            dataset_name,
-                            "testFold" + str(fold) + ".csv")
-        probs = pd.read_csv(path, engine='python', skiprows=3, header=None)
+    def load_network_probs(
+            self, network_name, itr, res_path, dataset_name, fold
+    ):
+        path = os.path.join(
+            res_path,
+            network_name + str(itr),
+            "Predictions",
+            dataset_name,
+            "testFold" + str(fold) + ".csv",
+        )
+        probs = pd.read_csv(path, engine="python", skiprows=3, header=None)
         return np.asarray(probs)[:, 3:]
 
     def fit(self, X, y, **kwargs):
@@ -238,10 +268,13 @@ class EnsembleFromFileClassifier(BaseClassifier):
 
         for itr in range(self.nb_iterations):
             # each construction shall have a different random initialisation
-            y_cur = self.load_network_probs(self.network_name, itr,
-                                            self.res_path,
-                                            self.dataset_name,
-                                            self.random_seed)
+            y_cur = self.load_network_probs(
+                self.network_name,
+                itr,
+                self.res_path,
+                self.dataset_name,
+                self.random_seed,
+            )
 
             if itr == 0:
                 self.y_pred = y_cur

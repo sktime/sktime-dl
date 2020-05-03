@@ -14,12 +14,12 @@ from sktime_dl.utils.model_lists import construct_all_regressors
 
 
 def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
-    '''
+    """
     test a regressor
-    '''
+    """
     print("Start test_regressor()")
-    X_train, y_train = load_italy_power_demand(split='TRAIN', return_X_y=True)
-    X_test, y_test = load_italy_power_demand(split='TEST', return_X_y=True)
+    X_train, y_train = load_italy_power_demand(split="TRAIN", return_X_y=True)
+    X_test, y_test = load_italy_power_demand(split="TEST", return_X_y=True)
 
     # Create some regression values
     y_train = np.zeros(len(y_train))
@@ -30,53 +30,53 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
         y_test[i] = X_test.iloc[i].iloc[0].iloc[0]
 
     estimator.fit(X_train[:10], y_train[:10])
-    __ = estimator.predict(X_test[:10])
+    estimator.predict(X_test[:10])
     score = estimator.score(X_test[:10], y_test[:10])
 
-    print('Estimator score:', score)
+    print("Estimator score:", score)
     print("End test_regressor()")
 
 
 def test_regressor_forecasting(
-        estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS),
-        window_length=4):
-    '''
+    estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS), window_length=4
+):
+    """
     test a regressor used for forecasting
-    '''
+    """
     print("Start test_regressor_forecasting()")
 
     # get data into expected nested format
     shampoo = load_shampoo_sales(return_y_as_dataframe=True)
-    train = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[:24]]),
-                         columns=shampoo.columns)
-    update = pd.DataFrame(pd.Series([shampoo.iloc[0, 0].iloc[:30]]),
-                          columns=shampoo.columns)
+    train = pd.DataFrame(
+        pd.Series([shampoo.iloc[0, 0].iloc[:24]]), columns=shampoo.columns
+    )
+    update = pd.DataFrame(
+        pd.Series([shampoo.iloc[0, 0].iloc[:30]]), columns=shampoo.columns
+    )
 
     # define simple time-series regressor using time-series as features
-    steps = [
-        ('tabularise', Tabulariser()),
-        ('rgs', estimator)
-    ]
+    steps = [("tabularise", Tabulariser()), ("rgs", estimator)]
     estimator = Pipeline(steps)
 
-    task = ForecastingTask(target='ShampooSales', fh=[1], metadata=train)
-    strategy = Forecasting2TSRReductionStrategy(estimator=estimator,
-                                                window_length=window_length)
+    task = ForecastingTask(target="ShampooSales", fh=[1], metadata=train)
+    strategy = Forecasting2TSRReductionStrategy(
+        estimator=estimator, window_length=window_length
+    )
     strategy.fit(task, train)
     y_pred = strategy.predict()
 
     # Compare the prediction to the test data
     test = update.iloc[0, 0][y_pred.index]
     mse = np.sqrt(mean_squared_error(test, y_pred))
-    print('Error:', mse)
+    print("Error:", mse)
     print("End test_regressor_forecasting()")
 
 
 def test_all_regressors():
     for network in construct_all_regressors(SMALL_NB_EPOCHS):
-        print('\n\t\t' + network.__class__.__name__ + ' testing started')
+        print("\n\t\t" + network.__class__.__name__ + " testing started")
         test_regressor(network)
-        print('\t\t' + network.__class__.__name__ + ' testing finished')
+        print("\t\t" + network.__class__.__name__ + " testing finished")
 
 
 def test_all_forecasters():
@@ -84,10 +84,12 @@ def test_all_forecasters():
 
     for network in construct_all_regressors(SMALL_NB_EPOCHS):
         print(
-            '\n\t\t' + network.__class__.__name__ + ' forecast testing started')
+            "\n\t\t" + network.__class__.__name__ + " forecast testing started"
+        )
         test_regressor_forecasting(network, window_length=window_length)
         print(
-            '\t\t' + network.__class__.__name__ + ' forecast testing finished')
+            "\t\t" + network.__class__.__name__ + " forecast testing finished"
+        )
 
 
 if __name__ == "__main__":

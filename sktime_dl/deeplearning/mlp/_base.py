@@ -15,21 +15,17 @@ class MLPNetwork(BaseDeepNetwork):
 
     Network originally defined in:
 
-    @inproceedings{wang2017time,
-      title={Time series classification from scratch with deep neural networks: A strong baseline},
-      author={Wang, Zhiguang and Yan, Weizhong and Oates, Tim},
-      booktitle={2017 International joint conference on neural networks (IJCNN)},
-      pages={1578--1585},
-      year={2017},
-      organization={IEEE}
-    }
+    @inproceedings{wang2017time, title={Time series classification from
+    scratch with deep neural networks: A strong baseline}, author={Wang,
+    Zhiguang and Yan, Weizhong and Oates, Tim}, booktitle={2017
+    International joint conference on neural networks (IJCNN)}, pages={
+    1578--1585}, year={2017}, organization={IEEE} }
     """
 
-    def __init__(self,
-                 random_seed=0):
-        '''
+    def __init__(self, random_seed=0):
+        """
         :param random_seed: int, seed to any needed random actions
-        '''
+        """
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
 
@@ -46,17 +42,18 @@ class MLPNetwork(BaseDeepNetwork):
         """
         input_layer = keras.layers.Input(input_shape)
 
-        # flatten/reshape because when multivariate all should be on the same axis
+        # flatten/reshape because when multivariate all should be on the
+        # same axis
         input_layer_flattened = keras.layers.Flatten()(input_layer)
 
         layer_1 = keras.layers.Dropout(0.1)(input_layer_flattened)
-        layer_1 = keras.layers.Dense(500, activation='relu')(layer_1)
+        layer_1 = keras.layers.Dense(500, activation="relu")(layer_1)
 
         layer_2 = keras.layers.Dropout(0.2)(layer_1)
-        layer_2 = keras.layers.Dense(500, activation='relu')(layer_2)
+        layer_2 = keras.layers.Dense(500, activation="relu")(layer_2)
 
         layer_3 = keras.layers.Dropout(0.2)(layer_2)
-        layer_3 = keras.layers.Dense(500, activation='relu')(layer_3)
+        layer_3 = keras.layers.Dense(500, activation="relu")(layer_3)
 
         output_layer = keras.layers.Dropout(0.3)(layer_3)
 

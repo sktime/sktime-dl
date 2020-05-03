@@ -22,12 +22,13 @@ SMALL_NB_EPOCHS = 3
 
 
 def construct_all_classifiers(nb_epochs=None):
-    '''
+    """
     Creates a list of all classification networks ready for testing
 
-    :param nb_epochs: int, if not None, value shall be set for all networks that accept it
+    :param nb_epochs: int, if not None, value shall be set for all networks
+    that accept it
     :return: list of sktime_dl BaseDeepClassifier imeplementations
-    '''
+    """
     if nb_epochs is not None:
         # potentially quicker versions for tests
         return [
@@ -59,12 +60,13 @@ def construct_all_classifiers(nb_epochs=None):
 
 
 def construct_all_regressors(nb_epochs=None):
-    '''
+    """
     Creates a list of all regression networks ready for testing
 
-    :param nb_epochs: int, if not None, value shall be set for all networks that accept it
+    :param nb_epochs: int, if not None, value shall be set for all networks
+    that accept it
     :return: list of sktime_dl BaseDeepRegressor imeplementations
-    '''
+    """
     if nb_epochs is not None:
         # potentially quicker versions for tests
         return [
@@ -76,7 +78,7 @@ def construct_all_regressors(nb_epochs=None):
             ResNetRegressor(nb_epochs=nb_epochs),
             TLENETRegressor(nb_epochs=nb_epochs),
             InceptionTimeRegressor(nb_epochs=nb_epochs),
-            SimpleRNNRegressor(nb_epochs=nb_epochs)
+            SimpleRNNRegressor(nb_epochs=nb_epochs),
         ]
     else:
         # the 'literature-conforming' versions
@@ -89,5 +91,5 @@ def construct_all_regressors(nb_epochs=None):
             ResNetRegressor(),
             TLENETRegressor(),
             InceptionTimeRegressor(),
-            SimpleRNNRegressor()
+            SimpleRNNRegressor(),
         ]

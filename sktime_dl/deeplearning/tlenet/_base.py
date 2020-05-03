@@ -15,19 +15,17 @@ class TLENETNetwork(BaseDeepNetwork):
 
     Network originally defined in:
 
-    @inproceedings{le2016data,
-      title={Data augmentation for time series classification using convolutional neural networks},
-      author={Le Guennec, Arthur and Malinowski, Simon and Tavenard, Romain},
-      booktitle={ECML/PKDD workshop on advanced analytics and learning on temporal data},
-      year={2016}
-    }
+    @inproceedings{le2016data, title={Data augmentation for time series
+    classification using convolutional neural networks}, author={Le Guennec,
+    Arthur and Malinowski, Simon and Tavenard, Romain}, booktitle={ECML/PKDD
+    workshop on advanced analytics and learning on temporal data},
+    year={2016} }
     """
 
-    def __init__(self,
-                 random_seed=0):
-        '''
+    def __init__(self, random_seed=0):
+        """
         :param random_seed: int, seed to any needed random actions
-        '''
+        """
         self.warping_ratios = [0.5, 1, 2]
         self.slice_ratio = 0.1
 
@@ -35,25 +33,32 @@ class TLENETNetwork(BaseDeepNetwork):
         self.random_state = np.random.RandomState(self.random_seed)
 
     def slice_data(self, X, y=None, length_sliced=1):
-        '''
+        """
         Perform window slicing (WS) to provide additional data.
 
-        "At training, each slice extracted from a time series of class y is 
-        assigned the same class and a classifier is learned using the slices. 
-        The size of the slice is a parameter of this method. At test time, each 
-        slice from a test time series is classified using the learned classifier 
-        and a majority vote is performed to decide a predicted label." 
-        Le Guennec et al. (2016)
-        '''
+        "At training, each slice extracted from a time series of class y is
+        assigned the same class and a classifier is learned using the slices.
+        The size of the slice is a parameter of this method. At test time, each
+        slice from a test time series is classified using the learned
+        classifier and a majority vote is performed to decide a predicted
+        label." Le Guennec et al. (2016)
+        """
         n = X.shape[0]
         length = X.shape[1]
         n_dim = X.shape[2]  # for MTS
 
-        increase_num = length - length_sliced + 1  # if increase_num =5, it means one ori becomes 5 new instances.
+        increase_num = (
+            length - length_sliced + 1
+        )  # if increase_num =5, it means one ori becomes 5 new instances.
         if increase_num < 0:
-            raise Exception('Number of augmented data samples cannot be \
-                negative. Length of time series:', length, 'Slice length:',
-                            length_sliced, '.')
+            raise Exception(
+                "Number of augmented data samples cannot be \
+                negative. Length of time series:",
+                length,
+                "Slice length:",
+                length_sliced,
+                ".",
+            )
         n_sliced = n * increase_num
 
         # print((n_sliced, length_sliced, n_dim))
@@ -62,8 +67,9 @@ class TLENETNetwork(BaseDeepNetwork):
 
         for i in range(n):
             for j in range(increase_num):
-                new_x[i * increase_num + j, :, :] = X[i, j: j + length_sliced,
-                                                    :]
+                new_x[i * increase_num + j, :, :] = X[
+                    i, j: j + length_sliced, :
+                ]
 
         # transform y, if present.
         new_y = None
@@ -80,13 +86,13 @@ class TLENETNetwork(BaseDeepNetwork):
         return new_x, new_y, increase_num
 
     def window_warping(self, data_x, warping_ratio):
-        '''
-        Warp a slice of a time series by speeding it up or down. 
+        """
+        Warp a slice of a time series by speeding it up or down.
 
-        "This method generates input time series of different lengths. To deal 
-        with this issue, we [then] perform window slicing on transformed 
+        "This method generates input time series of different lengths. To deal
+        with this issue, we [then] perform window slicing on transformed
         timeseries for all to have equal length" Le Guennec et al. (2016)
-        '''
+        """
         num_x = data_x.shape[0]
         len_x = data_x.shape[1]
         dim_x = data_x.shape[2]
@@ -117,31 +123,33 @@ class TLENETNetwork(BaseDeepNetwork):
         """
         input_layer = keras.layers.Input(input_shape)
 
-        conv_1 = keras.layers.Conv1D(filters=5, kernel_size=5,
-                                     activation='relu',
-                                     padding='same')(input_layer)
+        conv_1 = keras.layers.Conv1D(
+            filters=5, kernel_size=5, activation="relu", padding="same"
+        )(input_layer)
         conv_1 = keras.layers.MaxPool1D(pool_size=2)(conv_1)
 
-        conv_2 = keras.layers.Conv1D(filters=20, kernel_size=5,
-                                     activation='relu',
-                                     padding='same')(conv_1)
+        conv_2 = keras.layers.Conv1D(
+            filters=20, kernel_size=5, activation="relu", padding="same"
+        )(conv_1)
         conv_2 = keras.layers.MaxPool1D(pool_size=4)(conv_2)
 
-        # they did not mention the number of hidden units in the fully-connected layer
-        # so we took the lenet they referenced 
+        # they did not mention the number of hidden units in the
+        # fully-connected layer so we took the lenet they referenced
 
         flatten_layer = keras.layers.Flatten()(conv_2)
-        fully_connected_layer = keras.layers.Dense(500, activation='relu')(
-            flatten_layer)
+        fully_connected_layer = keras.layers.Dense(500, activation="relu")(
+            flatten_layer
+        )
 
         return input_layer, fully_connected_layer
 
     def adjust_parameters(self, X):
-        ''' Adjust warping and slicing for overly long or short data. '''
+        """ Adjust warping and slicing for overly long or short data. """
         n = X.shape[0]  # num cases
         m = X.shape[1]  # series length
 
-        # limit the number of augmented time series if series too long or too many
+        # limit the number of augmented time series if series too long or
+        # too many
         if m > 500 or n > 2000:
             self.warping_ratios = [1]
             self.slice_ratio = 0.9
@@ -170,9 +178,11 @@ class TLENETNetwork(BaseDeepNetwork):
 
         # data augmentation using WS
         for i in range(0, len(x_augmented)):
-            x_augmented[
-                i], y_train_augmented_i, increase_num = self.slice_data(
-                x_augmented[i], y, length_ratio)
+            (
+                x_augmented[i],
+                y_train_augmented_i,
+                increase_num,
+            ) = self.slice_data(x_augmented[i], y, length_ratio)
             # print("inc num",increase_num)
             if y is not None:
                 y_augmented[i] = y_train_augmented_i
@@ -182,17 +192,17 @@ class TLENETNetwork(BaseDeepNetwork):
         tot_increase_num = np.array(increase_nums).sum()
 
         new_x = np.zeros(
-            (X.shape[0] * tot_increase_num, length_ratio, X.shape[2]))
+            (X.shape[0] * tot_increase_num, length_ratio, X.shape[2])
+        )
 
         # merge the list of augmented data
         idx = 0
         for i in range(X.shape[0]):
             for j in range(len(increase_nums)):
                 increase_num = increase_nums[j]
-                new_x[idx:idx + increase_num, :, :] = x_augmented[j][
-                                                      i * increase_num:(
-                                                                               i + 1) * increase_num,
-                                                      :, :]
+                new_x[idx: idx + increase_num, :, :] = x_augmented[j][
+                    i * increase_num: (i + 1) * increase_num, :, :
+                ]
                 idx += increase_num
 
         # merge y if its not None.
@@ -207,9 +217,9 @@ class TLENETNetwork(BaseDeepNetwork):
             for i in range(X.shape[0]):
                 for j in range(len(increase_nums)):
                     increase_num = increase_nums[j]
-                    new_y[idx:idx + increase_num] = y_augmented[j][
-                                                    i * increase_num:(
-                                                                             i + 1) * increase_num]
+                    new_y[idx: idx + increase_num] = y_augmented[j][
+                        i * increase_num: (i + 1) * increase_num
+                    ]
                     idx += increase_num
 
         return new_x, new_y, tot_increase_num

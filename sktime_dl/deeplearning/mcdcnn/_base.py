@@ -15,29 +15,30 @@ class MCDCNNNetwork(BaseDeepNetwork):
 
     Network originally defined in:
 
-    @inproceedings{zheng2014time,
-      title={Time series classification using multi-channels deep convolutional neural networks},
-      author={Zheng, Yi and Liu, Qi and Chen, Enhong and Ge, Yong and Zhao, J Leon},
-      booktitle={International Conference on Web-Age Information Management},
-      pages={298--310},
-      year={2014},
-      organization={Springer}
-    }
+    @inproceedings{zheng2014time, title={Time series classification using
+    multi-channels deep convolutional neural networks}, author={Zheng,
+    Yi and Liu, Qi and Chen, Enhong and Ge, Yong and Zhao, J Leon},
+    booktitle={International Conference on Web-Age Information Management},
+    pages={298--310}, year={2014}, organization={Springer} }
     """
 
-    def __init__(self,
-                 kernel_size=5,
-                 pool_size=2,
-                 filter_sizes=[8, 8],
-                 dense_units=732,
-                 random_seed=0):
-        '''
-        :param kernel_size: int, specifying the length of the 1D convolution window
+    def __init__(
+            self,
+            kernel_size=5,
+            pool_size=2,
+            filter_sizes=[8, 8],
+            dense_units=732,
+            random_seed=0,
+    ):
+        """
+        :param kernel_size: int, specifying the length of the 1D convolution
+         window
         :param pool_size: int, size of the max pooling windows
-        :param filter_sizes: int, array of shape = 2, size of filter for each conv layer
+        :param filter_sizes: int, array of shape = 2, size of filter for each
+         conv layer
         :param dense_units: int, number of units in the penultimate dense layer
         :param random_seed: int, seed to any needed random actions
-        '''
+        """
 
         self.random_seed = random_seed
         self.random_state = np.random.RandomState(self.random_seed)
@@ -61,10 +62,10 @@ class MCDCNNNetwork(BaseDeepNetwork):
         n_t = input_shape[0]
         n_vars = input_shape[1]
 
-        padding = 'valid'
+        padding = "valid"
 
         if n_t < 60:  # for ItalyPowerOndemand
-            padding = 'same'
+            padding = "same"
 
         input_layers = []
         conv2_layers = []
@@ -73,19 +74,25 @@ class MCDCNNNetwork(BaseDeepNetwork):
             input_layer = keras.layers.Input((n_t, 1))
             input_layers.append(input_layer)
 
-            conv1_layer = keras.layers.Conv1D(self.filter_sizes[0],
-                                              kernel_size=self.kernel_size,
-                                              activation='relu',
-                                              padding=padding)(input_layer)
+            conv1_layer = keras.layers.Conv1D(
+                self.filter_sizes[0],
+                kernel_size=self.kernel_size,
+                activation="relu",
+                padding=padding,
+            )(input_layer)
             conv1_layer = keras.layers.MaxPooling1D(pool_size=self.pool_size)(
-                conv1_layer)
+                conv1_layer
+            )
 
-            conv2_layer = keras.layers.Conv1D(self.filter_sizes[1],
-                                              kernel_size=self.kernel_size,
-                                              activation='relu',
-                                              padding=padding)(conv1_layer)
+            conv2_layer = keras.layers.Conv1D(
+                self.filter_sizes[1],
+                kernel_size=self.kernel_size,
+                activation="relu",
+                padding=padding,
+            )(conv1_layer)
             conv2_layer = keras.layers.MaxPooling1D(pool_size=self.pool_size)(
-                conv2_layer)
+                conv2_layer
+            )
             conv2_layer = keras.layers.Flatten()(conv2_layer)
 
             conv2_layers.append(conv2_layer)
@@ -96,9 +103,9 @@ class MCDCNNNetwork(BaseDeepNetwork):
         else:
             concat_layer = keras.layers.Concatenate(axis=-1)(conv2_layers)
 
-        fully_connected = keras.layers.Dense(units=self.dense_units,
-                                             activation='relu')(
-            concat_layer)
+        fully_connected = keras.layers.Dense(
+            units=self.dense_units, activation="relu"
+        )(concat_layer)
 
         return input_layers, fully_connected
 
