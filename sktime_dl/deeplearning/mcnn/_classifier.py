@@ -219,7 +219,7 @@ class MCNNClassifier(BaseDeepClassifier):
         if train_batch_size > self.max_train_batch_size:
             # limit the train_batch_size
             current_n_train_batch = int(x_train.shape[0] * increase_num /
-                                self.max_train_batch_size)
+                                        self.max_train_batch_size)
 
         # data augmentation by slicing the length of the series
         x_train, y_train = self.slice_data(
