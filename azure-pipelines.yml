@@ -71,7 +71,7 @@ stages:
               PYTHON_VERSION: 3.6
               TF_VERSION: 1.9
       - job: 'Windows'
-        timeoutInMinutes: 0  # set to time out to maximum
+        timeoutInMinutes: 120  # use 0 set to time out to maximum
         pool:
           vmImage: 'vs2017-win2016'
         steps:
