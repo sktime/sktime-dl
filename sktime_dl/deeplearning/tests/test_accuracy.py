@@ -5,6 +5,9 @@ Test that accuracy is higher than the published accuracy minus three
 standard deviations (also published) on the ItalyPowerDemand dataset.
 """
 
+import os
+import sys
+
 import pytest
 from flaky import flaky
 from sktime.datasets import load_italy_power_demand
@@ -65,6 +68,10 @@ def test_encoder_accuracy():
 
 
 @pytest.mark.slow
+@pytest.mark.skipif(
+    sys.platform == "win32" and
+    os.environ["TF_VERSION"] == "1.9" and
+    os.environ["PYTHON_VERSION"] == "3.6")
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_fcn_accuracy():
     accuracy_test(
@@ -82,7 +89,8 @@ def test_mcdcnn_accuracy():
     )
 
 
-@pytest.mark.skip(reason="Very slow running, causes Travis to time out.")
+# @pytest.mark.skip(reason="Very slow running, causes Travis to time out.")
+@pytest.mark.skipif(os.environ["TRAVIS"] == "true")
 @pytest.mark.slow
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_mcnn_accuracy():
@@ -96,6 +104,10 @@ def test_mcnn_accuracy():
 
 
 @pytest.mark.slow
+@pytest.mark.skipif(
+    os.environ["TRAVIS"] == "true" and
+    os.environ["TF_VERSION"] in ("1.9", "1.15") and
+    os.environ["PYTHON_VERSION"] == "3.6")
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_mlp_accuracy():
     accuracy_test(
