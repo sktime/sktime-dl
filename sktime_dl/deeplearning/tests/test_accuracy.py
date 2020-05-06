@@ -33,7 +33,7 @@ ACCURACY_DEVIATION_THRESHOLD = (
 )
 
 
-def accuracy_test(network=CNNClassifier(), lower=0.94, upper=1.0):
+def accuracy_test(network, lower=0.94, upper=1.0):
     """
     Test the classifier accuracy against expected lower and upper bounds.
     """
@@ -46,7 +46,7 @@ def accuracy_test(network=CNNClassifier(), lower=0.94, upper=1.0):
 
     accuracy = network.score(X_test, y_test)
     print(network.__class__.__name__, "accuracy:", accuracy)
-    assert accuracy > lower and accuracy <= upper
+    assert lower < accuracy <= upper
 
 
 @pytest.mark.slow
@@ -71,7 +71,9 @@ def test_encoder_accuracy():
 @pytest.mark.skipif(
     sys.platform == "win32" and
     os.environ["TF_VERSION"] == "1.9" and
-    os.environ["PYTHON_VERSION"] == "3.6")
+    os.environ["PYTHON_VERSION"] == "3.6",
+    reason="Does not work on Windows"
+)
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_fcn_accuracy():
     accuracy_test(
@@ -90,7 +92,8 @@ def test_mcdcnn_accuracy():
 
 
 # @pytest.mark.skip(reason="Very slow running, causes Travis to time out.")
-@pytest.mark.skipif(os.environ["TRAVIS"] == "true")
+@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+                    reason="Very slow running, causes Travis to time out.")
 @pytest.mark.slow
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_mcnn_accuracy():
@@ -105,9 +108,11 @@ def test_mcnn_accuracy():
 
 @pytest.mark.slow
 @pytest.mark.skipif(
-    os.environ["TRAVIS"] == "true" and
+    ("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true") and
     os.environ["TF_VERSION"] in ("1.9", "1.15") and
-    os.environ["PYTHON_VERSION"] == "3.6")
+    os.environ["PYTHON_VERSION"] == "3.6",
+    reason="Very slow running, causes Travis to time out."
+)
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_mlp_accuracy():
     accuracy_test(
