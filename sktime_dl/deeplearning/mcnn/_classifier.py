@@ -212,14 +212,14 @@ class MCNNClassifier(BaseDeepClassifier):
         )  # this can be used as the bath size
         # print(increase_num)
 
-        # train_batch_size = int(
-        #     x_train.shape[0] * increase_num / self.n_train_batch
-        # )
+        train_batch_size = int(
+            x_train.shape[0] * increase_num / self.n_train_batch
+        )
         current_n_train_batch = self.n_train_batch
-        # if train_batch_size > self.max_train_batch_size:
-        #     # limit the train_batch_size
-        #     n_train_batch = int(x_train.shape[0] * increase_num /
-        #                         self.max_train_batch_size)
+        if train_batch_size > self.max_train_batch_size:
+            # limit the train_batch_size
+            current_n_train_batch = int(x_train.shape[0] * increase_num /
+                                        self.max_train_batch_size)
 
         # data augmentation by slicing the length of the series
         x_train, y_train = self.slice_data(
