@@ -6,7 +6,6 @@ standard deviations (also published) on the ItalyPowerDemand dataset.
 """
 
 import os
-import sys
 
 import pytest
 from flaky import flaky

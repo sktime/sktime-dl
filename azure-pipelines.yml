@@ -7,7 +7,7 @@
 variables:
   REQUIREMENTS: build_tools/requirements.txt
   TEST_DIR: tmp/
-  TEST_SLOW: false
+  TEST_SLOW: false # whether or not to run slow tests
 
 trigger:
   branches:

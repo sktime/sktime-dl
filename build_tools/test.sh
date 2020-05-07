@@ -25,7 +25,7 @@ cd "$TEST_DIR"
 # Define test command
 TEST_CMD="pytest --verbose --showlocals --durations=20 \
 --cov-report html --cov-report xml --junitxml=junit/test-results.xml \
---cov=sktime_dl --pyargs ../sktime_dl"
+--cov=sktime_dl --pyargs"
 
 if [[ "$TEST_SLOW" == "true" ]]; then
   TEST_CMD+=" -m='not slow'"
@@ -35,7 +35,7 @@ fi
 set -o xtrace
 
 # Run tests
-"$TEST_CMD"
+"$TEST_CMD" ../sktime_dl
 
 set +o xtrace
 set +e
