@@ -55,7 +55,7 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
         self.model_name = model_name
         self.model_save_directory = model_save_directory
 
-        self.is_fitted = False 
+        self.is_fitted = False
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """

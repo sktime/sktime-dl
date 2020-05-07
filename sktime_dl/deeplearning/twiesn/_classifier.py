@@ -48,30 +48,23 @@ class TWIESNClassifier(BaseDeepClassifier):
         :param model_name: string, the name of this model for printing and file writing purposes
         :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
         '''
+        self.rho_s = rho_s
+        self.alpha = alpha  # leakage rate
 
+        self.random_seed = random_seed
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
+        
         self.is_fitted = False
 
-        # calced in fit
-        self.classes_ = None
-        self.nb_classes = -1
-        self.input_shape = None
-        self.model = None
-        self.history = None
-
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
-
+    def set_hyperparameters(self):
         # hyperparameters
         first_config = {'N_x': 250, 'connect': 0.5, 'scaleW_in': 1.0, 'lamda': 0.0}
         second_config = {'N_x': 250, 'connect': 0.5, 'scaleW_in': 2.0, 'lamda': 0.05}
         third_config = {'N_x': 500, 'connect': 0.1, 'scaleW_in': 2.0, 'lamda': 0.05}
         fourth_config = {'N_x': 800, 'connect': 0.1, 'scaleW_in': 2.0, 'lamda': 0.05}
         self.configs = [first_config, second_config, third_config, fourth_config]
-        self.rho_s = rho_s
-        self.alpha = alpha  # leakage rate
 
     def evaluate_paramset(self, X, y, val_X, val_y, rho, config):
 
@@ -117,6 +110,11 @@ class TWIESNClassifier(BaseDeepClassifier):
         -------
         self : object
         """
+        if self.random_state is None:
+            self.random_state = np.random.RandomState(self.random_seed)
+
+        self.set_hyperparameters()
+
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
