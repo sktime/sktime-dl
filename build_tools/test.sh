@@ -19,7 +19,7 @@ mkdir -p "$TEST_DIR"
 # We need to copy the setup.cfg for the pytest settings
 cp setup.cfg "$TEST_DIR"
 
-# Set up tests
+# Change directory
 cd "$TEST_DIR"
 
 # Define test command
