@@ -27,7 +27,7 @@ TEST_CMD="pytest --verbose --showlocals --durations=20 \
 --cov-report html --cov-report xml --junitxml=junit/test-results.xml \
 --cov=sktime_dl --pyargs"
 
-if [[ "$TEST_SLOW" == "true" ]]; then
+if [[ "$TEST_SLOW" == "false" ]]; then
   TEST_CMD+=" -m='not slow'"
 fi
 
