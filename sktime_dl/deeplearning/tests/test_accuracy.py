@@ -68,12 +68,6 @@ def test_encoder_accuracy():
 
 
 @pytest.mark.slow
-@pytest.mark.skipif(
-    sys.platform == "win32" and
-    os.environ["TF_VERSION"] == "1.9" and
-    os.environ["PYTHON_VERSION"] == "3.6",
-    reason="Does not work on Windows"
-)
 @flaky(max_runs=3, rerun_filter=is_not_value_error)
 def test_fcn_accuracy():
     accuracy_test(
@@ -91,7 +85,6 @@ def test_mcdcnn_accuracy():
     )
 
 
-# @pytest.mark.skip(reason="Very slow running, causes Travis to time out.")
 @pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
                     reason="Very slow running, causes Travis to time out.")
 @pytest.mark.slow
@@ -109,7 +102,7 @@ def test_mcnn_accuracy():
 @pytest.mark.slow
 @pytest.mark.skipif(
     ("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true") and
-    os.environ["TF_VERSION"] in ("1.9", "1.15") and
+    os.environ["TF_VERSION"] == "1.15" and
     os.environ["PYTHON_VERSION"] == "3.6",
     reason="Very slow running, causes Travis to time out."
 )

@@ -8,6 +8,7 @@ env:
   global:
     - TEST_DIR=tmp/
     - REQUIREMENTS=build_tools/requirements.txt
+    - TEST_SLOW=false
 
 dist: xenial
 sudo: false
