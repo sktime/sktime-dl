@@ -28,11 +28,7 @@ class TLENETNetwork(BaseDeepNetwork):
         '''
         :param random_seed: int, seed to any needed random actions
         '''
-        self.warping_ratios = [0.5, 1, 2]
-        self.slice_ratio = 0.1
-
         self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
 
     def slice_data(self, X, y=None, length_sliced=1):
         '''

@@ -78,6 +78,9 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
                       metrics=['accuracy'])
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
+        if self.callbacks is None:
+            self.callbacks = []
+
         if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
             reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
                                                           min_lr=0.0001)
@@ -101,9 +104,6 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
         """
         if self.random_state is None:
             self.random_state = np.random.RandomState(self.random_seed)
-
-        if self.callbacks is None:
-            self.callbacks = []
 
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)

@@ -75,6 +75,9 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
                       metrics=['mean_squared_error'])
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already, add the default from literature
+        if self.callbacks is None:
+            self.callbacks = []
+
         if not any(isinstance(callback, keras.callbacks.ReduceLROnPlateau) for callback in self.callbacks):
             reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=50,
                                                           min_lr=0.0001)
@@ -96,9 +99,6 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
         -------
         self : object
         """
-        if self.callbacks is None:
-            self.callbacks = []
-            
         X = check_and_clean_data(X, y, input_checks=input_checks)
 
         # ignore the number of instances, X.shape[0], just want the shape of each instance
