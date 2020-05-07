@@ -29,7 +29,7 @@ TEST_ARGS=(--verbose --showlocals "--durations=20" --cov-report html
 --pyargs)
 
 if [[ "$TEST_SLOW" == "false" ]]; then
-  TEST_ARGS+=("-m='not slow'")
+  TEST_ARGS+=("-m=not slow")
 fi
 
 # Print command before executing
