@@ -35,7 +35,7 @@ fi
 set -o xtrace
 
 # Run tests
-"$TEST_CMD" ../sktime_dl
+$TEST_CMD ../sktime_dl
 
 set +o xtrace
 set +e
