@@ -23,19 +23,20 @@ cp setup.cfg "$TEST_DIR"
 cd "$TEST_DIR"
 
 # Define test command
-TEST_CMD="pytest --verbose --showlocals --durations=20 \
---cov-report html --cov-report xml --junitxml=junit/test-results.xml \
---cov=sktime_dl --pyargs"
+TEST_CMD="pytest"
+TEST_ARGS=(--verbose --showlocals "--durations=20" --cov-report html
+--cov-report xml "--junitxml=junit/test-results.xml" "--cov=sktime_dl"
+--pyargs)
 
 if [[ "$TEST_SLOW" == "false" ]]; then
-  TEST_CMD+=" -m='not slow'"
+  TEST_ARGS+=("-m='not slow'")
 fi
 
 # Print command before executing
 set -o xtrace
 
 # Run tests
-$TEST_CMD ../sktime_dl
+"$TEST_CMD" "${TEST_ARGS[@]}" "../sktime_dl/"
 
 set +o xtrace
 set +e
