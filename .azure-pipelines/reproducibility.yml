@@ -1,0 +1,31 @@
+# author: Markus Löning
+# runs a daily cron job to check if we can still reproduce published results
+
+variables:
+  REQUIREMENTS: build_tools/requirements.txt
+  TEST_DIR: tmp/
+  TEST_SLOW: true # whether or not to run slow tests
+
+schedules:
+- cron: "0 0 * * *"
+  displayName: 'Daily reproducibility check'
+  branches:
+    include:
+    - master
+    - dev
+  always: false  # runs only if there have been source code changes
+
+stages:
+  - stage: 'Check'
+    jobs:
+      - job: 'Linux_latest'
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          PYTHON_VERSION: 3.7
+          TF_VERSION: 2.1
+        steps:
+          - bash: echo "##vso[task.prependpath]$CONDA/bin"
+            displayName: 'Add conda to PATH'
+          - template: build_tools/azure/build_and_test.yml
+
