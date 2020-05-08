@@ -1,16 +1,15 @@
 __author__ = "Aaron Bostrom, James Large"
 
 import numpy as np
-
 from scipy import sparse
 from scipy.sparse import linalg as slinalg
-
 from sklearn.linear_model import Ridge
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
-from sktime_dl.utils import check_and_clean_data, check_is_fitted
+from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_is_fitted
 
 
 class TWIESNClassifier(BaseDeepClassifier):
@@ -22,32 +21,32 @@ class TWIESNClassifier(BaseDeepClassifier):
 
     Network originally defined in:
 
-    @inproceedings{tanisaro2016time,
-      title={Time series classification using time warping invariant echo state networks},
-      author={Tanisaro, Pattreeya and Heidemann, Gunther},
-      booktitle={2016 15th IEEE International Conference on Machine Learning and Applications (ICMLA)},
-      pages={831--836},
-      year={2016},
-      organization={IEEE}
-    }
+    @inproceedings{tanisaro2016time, title={Time series classification using
+    time warping invariant echo state networks}, author={Tanisaro, Pattreeya
+    and Heidemann, Gunther}, booktitle={2016 15th IEEE International
+    Conference on Machine Learning and Applications (ICMLA)}, pages={
+    831--836}, year={2016}, organization={IEEE} }
     """
 
-    def __init__(self,
-                 rho_s=[0.55, 0.9, 2.0, 5.0],
-                 alpha=0.1,  # leaky rate
-
-                 random_seed=0,
-                 verbose=False,
-                 model_name="twiesn",
-                 model_save_directory=None):
-        '''
+    def __init__(
+        self,
+        rho_s=[0.55, 0.9, 2.0, 5.0],
+        alpha=0.1,  # leaky rate
+        random_seed=0,
+        verbose=False,
+        model_name="twiesn",
+        model_save_directory=None,
+    ):
+        """
         :param rho_s: array of shape
         :param alpha: float, the leakage rate
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and file writing purposes
-        :param model_save_directory: string, if not None; location to save the trained keras model in hdf5 format
-        '''
+        :param model_name: string, the name of this model for printing and
+         file writing purposes
+        :param model_save_directory: string, if not None; location to save
+         the trained keras model in hdf5 format
+        """
 
         self.verbose = verbose
         self.model_name = model_name
@@ -65,11 +64,36 @@ class TWIESNClassifier(BaseDeepClassifier):
         self.random_state = np.random.RandomState(self.random_seed)
 
         # hyperparameters
-        first_config = {'N_x': 250, 'connect': 0.5, 'scaleW_in': 1.0, 'lamda': 0.0}
-        second_config = {'N_x': 250, 'connect': 0.5, 'scaleW_in': 2.0, 'lamda': 0.05}
-        third_config = {'N_x': 500, 'connect': 0.1, 'scaleW_in': 2.0, 'lamda': 0.05}
-        fourth_config = {'N_x': 800, 'connect': 0.1, 'scaleW_in': 2.0, 'lamda': 0.05}
-        self.configs = [first_config, second_config, third_config, fourth_config]
+        first_config = {
+            "N_x": 250,
+            "connect": 0.5,
+            "scaleW_in": 1.0,
+            "lamda": 0.0,
+        }
+        second_config = {
+            "N_x": 250,
+            "connect": 0.5,
+            "scaleW_in": 2.0,
+            "lamda": 0.05,
+        }
+        third_config = {
+            "N_x": 500,
+            "connect": 0.1,
+            "scaleW_in": 2.0,
+            "lamda": 0.05,
+        }
+        fourth_config = {
+            "N_x": 800,
+            "connect": 0.1,
+            "scaleW_in": 2.0,
+            "lamda": 0.05,
+        }
+        self.configs = [
+            first_config,
+            second_config,
+            third_config,
+            fourth_config,
+        ]
         self.rho_s = rho_s
         self.alpha = alpha  # leakage rate
 
@@ -77,10 +101,10 @@ class TWIESNClassifier(BaseDeepClassifier):
 
         # param setting is correct.
         self.rho = rho
-        self.N_x = config['N_x']
-        self.connect = config['connect']
-        self.scaleW_in = config['scaleW_in']
-        self.lamda = config['lamda']
+        self.N_x = config["N_x"]
+        self.connect = config["connect"]
+        self.scaleW_in = config["scaleW_in"]
+        self.lamda = config["lamda"]
 
         # init transformer based on paras.
         self.init_matrices()
@@ -108,7 +132,8 @@ class TWIESNClassifier(BaseDeepClassifier):
         Build the classifier on the training set (X, y)
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame is passed, column 0 is extracted.
+            The training input samples.  If a Pandas data frame is passed,
+             column 0 is extracted.
         y : array-like, shape = [n_instances]
             The class labels.
         input_checks: boolean
@@ -120,7 +145,8 @@ class TWIESNClassifier(BaseDeepClassifier):
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
-        # ignore the number of instances, X.shape[0], just want the shape of each instance
+        # ignore the number of instances, X.shape[0],
+        # just want the shape of each instance
         self.input_shape = X.shape[1:]
 
         self.num_dim = X.shape[2]
@@ -128,13 +154,15 @@ class TWIESNClassifier(BaseDeepClassifier):
 
         # FINE TUNE MODEL PARAMS
         # split train to validation set to choose best hyper parameters
-        x_train, x_val, y_train, y_val = train_test_split(X, y_onehot, test_size=0.2)
+        x_train, x_val, y_train, y_val = train_test_split(
+            X, y_onehot, test_size=0.2
+        )
         self.N = x_train.shape[0]
 
         # limit the hyperparameter search if dataset is too big
         if x_train.shape[0] > 1000:
             for config in self.configs:
-                config['N_x'] = 100
+                config["N_x"] = 100
             self.configs = [self.configs[0], self.configs[1], self.configs[2]]
 
         # search for best hyper parameters
@@ -143,12 +171,14 @@ class TWIESNClassifier(BaseDeepClassifier):
         best_config = None
         for idx_config in range(len(self.configs)):
             for rho in self.rho_s:
-                train_acc = self.evaluate_paramset(x_train,
-                                                   y_train,
-                                                   x_val,
-                                                   y_val,
-                                                   rho,
-                                                   self.configs[idx_config])
+                train_acc = self.evaluate_paramset(
+                    x_train,
+                    y_train,
+                    x_val,
+                    y_val,
+                    rho,
+                    self.configs[idx_config],
+                )
 
                 # print(train_acc)
                 if best_train_acc < train_acc:
@@ -157,10 +187,10 @@ class TWIESNClassifier(BaseDeepClassifier):
                     best_config = self.configs[idx_config]
 
         self.rho = best_rho
-        self.N_x = best_config['N_x']
-        self.connect = best_config['connect']
-        self.scaleW_in = best_config['scaleW_in']
-        self.lamda = best_config['lamda']
+        self.N_x = best_config["N_x"]
+        self.connect = best_config["connect"]
+        self.scaleW_in = best_config["scaleW_in"]
+        self.lamda = best_config["lamda"]
 
         # init transformer based on paras.
         self.init_matrices()
@@ -188,8 +218,10 @@ class TWIESNClassifier(BaseDeepClassifier):
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
             The training input samples.
             If a Pandas data frame is passed (sktime format)
-            If a Pandas data frame is passed, a check is performed that it only has one column.
-            If not, an exception is thrown, since this classifier does not yet have
+            If a Pandas data frame is passed, a check is performed that it
+             only has one column.
+            If not, an exception is thrown, since this classifier does not
+             yet have
             multivariate capability.
         input_checks: boolean
             whether to check the X parameter
@@ -205,7 +237,8 @@ class TWIESNClassifier(BaseDeepClassifier):
         X_transformed = self.transform_to_feature_space(X)
         y_pred = self.model.predict(X_transformed)
 
-        # self.reshape_prediction will give us PREDICTIONS, not DISTRIBUTIONS (even if only one-hot)
+        # self.reshape_prediction will give us PREDICTIONS,
+        # not DISTRIBUTIONS (even if only one-hot)
         # Computing first 2 lines of that but not the last here
 
         # reshape so the first axis has the number of instances
@@ -214,28 +247,32 @@ class TWIESNClassifier(BaseDeepClassifier):
         return np.average(new_y_pred, axis=1)
 
     def init_matrices(self):
-        self.W_in = (2.0 * np.random.rand(self.N_x, self.num_dim) - 1.0) / (2.0 * self.scaleW_in)
+        self.W_in = (2.0 * np.random.rand(self.N_x, self.num_dim) - 1.0) / (
+            2.0 * self.scaleW_in
+        )
 
         converged = False
 
         i = 0
 
         # repeat because could not converge to find eigenvalues
-        while (not converged):
+        while not converged:
             i += 1
 
             # generate sparse, uniformly distributed weights
-            self.W = sparse.rand(self.N_x, self.N_x, density=self.connect).todense()
+            self.W = sparse.rand(
+                self.N_x, self.N_x, density=self.connect
+            ).todense()
 
             # ensure that the non-zero values are uniformly distributed
             self.W[np.where(self.W > 0)] -= 0.5
 
             try:
                 # get the largest eigenvalue
-                eig, _ = slinalg.eigs(self.W, k=1, which='LM')
+                eig, _ = slinalg.eigs(self.W, k=1, which="LM")
                 converged = True
-            except:
-                print('not converged ', i)
+            except Exception:
+                print("not converged ", i)
                 continue
 
         # adjust the spectral radius
@@ -253,7 +290,9 @@ class TWIESNClassifier(BaseDeepClassifier):
             # get all the time series data points for the time step t
             curr_in = x_in[:, t, :]
             # calculate the linear activation
-            curr_state = np.tanh(self.W_in.dot(curr_in.T) + self.W.dot(X_t_1.T)).T
+            curr_state = np.tanh(
+                self.W_in.dot(curr_in.T) + self.W.dot(X_t_1.T)
+            ).T
             # apply leakage
             curr_state = (1 - self.alpha) * X_t_1 + self.alpha * curr_state
             # save in previous state
@@ -269,11 +308,14 @@ class TWIESNClassifier(BaseDeepClassifier):
         # add the input to form the new feature space and transform to
         # the new feature space to be feeded to the classifier
         return np.concatenate((X, state_matrix), axis=2).reshape(
-            X.shape[0] * self.T, self.num_dim + self.N_x)
+            X.shape[0] * self.T, self.num_dim + self.N_x
+        )
 
     def reshape_prediction(self, y_pred, num_instances, length_series):
         # reshape so the first axis has the number of instances
-        new_y_pred = y_pred.reshape(num_instances, length_series, y_pred.shape[-1])
+        new_y_pred = y_pred.reshape(
+            num_instances, length_series, y_pred.shape[-1]
+        )
         # average the predictions of instances
         new_y_pred = np.average(new_y_pred, axis=1)
         # get the label with maximum prediction over the last label axis

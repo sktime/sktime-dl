@@ -14,9 +14,10 @@ from setuptools import setup
 
 # raise early warning for incompatible Python versions
 if sys.version_info < (3, 6) or sys.version_info >= (3, 8):
-    raise RuntimeError("sktime-dl requires Python 3.6 or 3.7 (only with tensorflow>=1.13.1). The current"
-                       " Python version is %s installed in %s."
-                       % (platform.python_version(), sys.executable))
+    raise RuntimeError(
+        "sktime-dl requires Python 3.6 or 3.7 (only with tensorflow>=1.13.1). The current"
+        " Python version is %s installed in %s."
+        % (platform.python_version(), sys.executable))
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -30,7 +31,8 @@ def read(*parts):
 
 def find_version(*file_paths):
     version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
     if version_match:
         return version_match.group(1)
     else:
@@ -85,9 +87,10 @@ def find_install_requires():
     else:
         # fall back to keras-contrib, not on pypi so need to instal it separately
         # not printing. TODO
-        print('Existing version of tensorflow older than version 2.1.0 detected. '
-              'You shall need to install keras-contrib (for tf.keras) in order to use all the features of sktime-dl. '
-              '\nSee https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras')
+        print(
+            'Existing version of tensorflow older than version 2.1.0 detected. '
+            'You shall need to install keras-contrib (for tf.keras) in order to use all the features of sktime-dl. '
+            '\nSee https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras')
 
     return install_requires
 
