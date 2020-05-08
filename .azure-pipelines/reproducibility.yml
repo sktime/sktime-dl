@@ -2,7 +2,7 @@
 # runs a daily cron job to check if we can still reproduce published results
 
 variables:
-  REQUIREMENTS: ../build_tools/requirements.txt
+  REQUIREMENTS: build_tools/requirements.txt
   TEST_DIR: tmp/
   TEST_SLOW: true # whether or not to run slow tests
 

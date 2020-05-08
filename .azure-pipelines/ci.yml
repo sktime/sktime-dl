@@ -6,7 +6,7 @@
 # - https://iscinumpy.gitlab.io/post/azure-devops-releases/
 
 variables:
-  REQUIREMENTS: ../build_tools/requirements.txt
+  REQUIREMENTS: build_tools/requirements.txt
   TEST_DIR: tmp/
   TEST_SLOW: false # whether or not to run slow tests
 
