@@ -5,6 +5,8 @@
 # - https://iscinumpy.gitlab.io/post/azure-devops-python-wheels/
 # - https://iscinumpy.gitlab.io/post/azure-devops-releases/
 
+name: CI.$(Date:yyyyMMdd).$(Rev:r)
+
 variables:
   REQUIREMENTS: build_tools/requirements.txt
   TEST_DIR: tmp/

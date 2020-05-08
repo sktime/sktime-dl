@@ -1,13 +1,15 @@
 # author: Markus Löning
 # runs a daily cron job to check if we can still reproduce published results
 
+name: Cron.$(Date:yyyyMMdd).$(Rev:r)
+
 variables:
   REQUIREMENTS: build_tools/requirements.txt
   TEST_DIR: tmp/
   TEST_SLOW: true # whether or not to run slow tests
 
 schedules:
-- cron: "0 0 * * *"
+- cron: "0 0 * * *"  # daily midnight build
   displayName: 'Daily reproducibility check'
   branches:
     include:
