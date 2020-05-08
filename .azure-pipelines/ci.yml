@@ -35,7 +35,7 @@ stages:
               versionSpec: 3.x
           - script: pip install flake8
             displayName: 'Installing flake8'
-          - bash: ../maint_tools/linting.sh
+          - bash: maint_tools/linting.sh
             displayName: 'Linting'
 
   - stage: 'Build'
