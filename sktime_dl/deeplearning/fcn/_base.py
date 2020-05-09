@@ -15,20 +15,21 @@ class FCNNetwork(BaseDeepNetwork):
     Network originally defined in:
 
     @inproceedings{wang2017time,
-      title={Time series classification from scratch with deep neural networks: A strong baseline},
+      title={Time series classification from scratch with deep neural networks:
+       A strong baseline},
       author={Wang, Zhiguang and Yan, Weizhong and Oates, Tim},
-      booktitle={2017 International joint conference on neural networks (IJCNN)},
+      booktitle={2017 International joint conference on neural networks
+      (IJCNN)},
       pages={1578--1585},
       year={2017},
       organization={IEEE}
     }
     """
 
-    def __init__(self,
-                 random_seed=0):
-        '''
+    def __init__(self, random_seed=0):
+        """
         :param random_seed: int, seed to any needed random actions
-        '''
+        """
         self.random_seed = random_seed
 
     def build_network(self, input_shape, **kwargs):
@@ -44,17 +45,21 @@ class FCNNetwork(BaseDeepNetwork):
         """
         input_layer = keras.layers.Input(input_shape)
 
-        conv1 = keras.layers.Conv1D(filters=128, kernel_size=8, padding='same')(input_layer)
+        conv1 = keras.layers.Conv1D(
+            filters=128, kernel_size=8, padding="same"
+        )(input_layer)
         conv1 = keras.layers.BatchNormalization()(conv1)
-        conv1 = keras.layers.Activation(activation='relu')(conv1)
+        conv1 = keras.layers.Activation(activation="relu")(conv1)
 
-        conv2 = keras.layers.Conv1D(filters=256, kernel_size=5, padding='same')(conv1)
+        conv2 = keras.layers.Conv1D(
+            filters=256, kernel_size=5, padding="same"
+        )(conv1)
         conv2 = keras.layers.BatchNormalization()(conv2)
-        conv2 = keras.layers.Activation('relu')(conv2)
+        conv2 = keras.layers.Activation("relu")(conv2)
 
-        conv3 = keras.layers.Conv1D(128, kernel_size=3, padding='same')(conv2)
+        conv3 = keras.layers.Conv1D(128, kernel_size=3, padding="same")(conv2)
         conv3 = keras.layers.BatchNormalization()(conv3)
-        conv3 = keras.layers.Activation('relu')(conv3)
+        conv3 = keras.layers.Activation("relu")(conv3)
 
         gap_layer = keras.layers.GlobalAveragePooling1D()(conv3)
 

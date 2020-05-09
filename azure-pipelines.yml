@@ -7,6 +7,7 @@
 variables:
   REQUIREMENTS: build_tools/requirements.txt
   TEST_DIR: tmp/
+  TEST_SLOW: false # whether or not to run slow tests
 
 trigger:
   branches:
@@ -71,6 +72,7 @@ stages:
               PYTHON_VERSION: 3.6
               TF_VERSION: 1.9
       - job: 'Windows'
+        timeoutInMinutes: 120  # use 0 set to time out to maximum
         pool:
           vmImage: 'vs2017-win2016'
         steps:

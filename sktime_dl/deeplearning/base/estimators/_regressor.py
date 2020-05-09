@@ -3,32 +3,26 @@
 __author__ = "Withington, James Large"
 
 from sklearn.base import RegressorMixin
-
 from sktime.regressors.base import BaseRegressor
 
-from sktime_dl.utils import save_trained_model, check_and_clean_data, check_is_fitted
+from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_is_fitted
+from sktime_dl.utils import save_trained_model
 
 
 class BaseDeepRegressor(BaseRegressor, RegressorMixin):
-
-    def __init__(self,
-                 model_name=None,
-                 model_save_directory=None):
+    def __init__(self, model_name=None, model_save_directory=None):
         self.model_save_directory = model_save_directory
         self.model = None
         self.model_name = model_name
 
     def build_model(self, input_shape, **kwargs):
         """
-        Construct a compiled, un-trained, keras model that is ready for training
-        ----------
-        input_shape : tuple
-            The shape of the data fed into the input layer
-        Returns
-        -------
-        output : a compiled Keras Model
+        Construct a compiled, un-trained, keras model that is ready for
+        training ---------- input_shape : tuple The shape of the data fed
+        into the input layer Returns ------- output : a compiled Keras Model
         """
-        raise NotImplementedError('this is an abstract method')
+        raise NotImplementedError("this is an abstract method")
 
     def predict(self, X, input_checks=True, **kwargs):
         """
@@ -37,10 +31,10 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
             The training input samples.
-            If a Pandas data frame of Series objects is passed (sktime format), 
-            a check is performed that it only has one column.
-            If not, an exception is thrown, since this regressor does not yet have
-            multivariate capability.
+            If a Pandas data frame of Series objects is passed (sktime
+            format), a check is performed that it only has one column.
+            If not, an exception is thrown, since this regressor does not yet
+            have smultivariate capability.
         input_checks: boolean
             whether to check the X parameter
         Returns
@@ -60,6 +54,5 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
 
     def save_trained_model(self):
         save_trained_model(
-            self.model,
-            self.model_save_directory,
-            self.model_name)
+            self.model, self.model_save_directory, self.model_name
+        )
