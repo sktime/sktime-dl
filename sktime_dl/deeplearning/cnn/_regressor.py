@@ -19,8 +19,13 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
     @article{zhao2017convolutional, title={Convolutional neural networks for
     time series classification}, author={Zhao, Bendong and Lu, Huanzhang and
     Chen, Shangfeng and Liu, Junliang and Wu, Dongya}, journal={Journal of
-    Systems Engineering and Electronics}, volume={28}, number={1}, pages={
-    162--169}, year={2017}, publisher={BIAI} }
+    Systems Engineering and Electronics}, 
+    volume={28}, 
+    number={1},
+    pages={162--169},
+    year={2017},
+    publisher={BIAI}
+    }
     """
 
     def __init__(self,

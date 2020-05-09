@@ -19,8 +19,13 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
     def build_model(self, input_shape, **kwargs):
         """
         Construct a compiled, un-trained, keras model that is ready for
-        training ---------- input_shape : tuple The shape of the data fed
-        into the input layer Returns ------- output : a compiled Keras Model
+        training
+        ----------
+        input_shape : tuple The shape of the data fed
+        into the input layer
+        Returns
+        -------
+        output : a compiled Keras Model
         """
         raise NotImplementedError("this is an abstract method")
 
@@ -34,7 +39,7 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
             If a Pandas data frame of Series objects is passed (sktime
             format), a check is performed that it only has one column.
             If not, an exception is thrown, since this regressor does not yet
-            have smultivariate capability.
+            have multivariate capability.
         input_checks: boolean
             whether to check the X parameter
         Returns
