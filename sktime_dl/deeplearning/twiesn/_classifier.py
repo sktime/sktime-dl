@@ -43,9 +43,9 @@ class TWIESNClassifier(BaseDeepClassifier):
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and
-        file writing purposes
+         file writing purposes
         :param model_save_directory: string, if not None; location to save
-        the trained keras model in hdf5 format
+         the trained keras model in hdf5 format
         """
         self.rho_s = rho_s
         self.alpha = alpha  # leakage rate

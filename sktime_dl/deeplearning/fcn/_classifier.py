@@ -24,14 +24,16 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
     1578--1585}, year={2017}, organization={IEEE} }
     """
 
-    def __init__(self,
-                 nb_epochs=2000,
-                 batch_size=16,
-                 callbacks=None,
-                 random_seed=0,
-                 verbose=False,
-                 model_name="fcn",
-                 model_save_directory=None):
+    def __init__(
+        self,
+        nb_epochs=2000,
+        batch_size=16,
+        callbacks=None,
+        random_seed=0,
+        verbose=False,
+        model_name="fcn",
+        model_save_directory=None
+    ):
         """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution

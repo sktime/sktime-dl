@@ -17,32 +17,34 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
 
     Network originally defined in:
 
-    @article{zhao2017convolutional, title={Convolutional neural networks for
-    time series classification}, author={Zhao, Bendong and Lu, Huanzhang and
-    Chen, Shangfeng and Liu, Junliang and Wu, Dongya}, journal={Journal of
-    Systems Engineering and Electronics}, 
-    volume={28}, 
-    number={1},
-    pages={162--169},
-    year={2017},
-    publisher={BIAI}
+    @article{zhao2017convolutional,
+      title={Convolutional neural networks for time series classification},
+      author={Zhao, Bendong and Lu, Huanzhang and Chen, Shangfeng and Liu,
+      Junliang and Wu, Dongya},
+      journal={Journal of Systems Engineering and Electronics},
+      volume={28},
+      number={1},
+      pages={162--169},
+      year={2017},
+      publisher={BIAI}
     }
     """
 
-    def __init__(self,
-                 nb_epochs=2000,
-                 batch_size=16,
-                 kernel_size=7,
-                 avg_pool_size=3,
-                 nb_conv_layers=2,
-                 filter_sizes=[6, 12],
-
-                 callbacks=None,
-                 random_seed=0,
-                 verbose=False,
-                 model_name="cnn",
-                 model_save_directory=None):
-        '''
+    def __init__(
+        self,
+        nb_epochs=2000,
+        batch_size=16,
+        kernel_size=7,
+        avg_pool_size=3,
+        nb_conv_layers=2,
+        filter_sizes=[6, 12],
+        callbacks=None,
+        random_seed=0,
+        verbose=False,
+        model_name="cnn",
+        model_save_directory=None
+    ):
+        """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
         :param kernel_size: int, specifying the length of the 1D convolution
@@ -58,7 +60,7 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
         file writing purposes
         :param model_save_directory: string, if not None; location to save the
         trained keras model in hdf5 format
-        '''
+        """
         self.kernel_size = kernel_size
         self.avg_pool_size = avg_pool_size
         self.nb_conv_layers = nb_conv_layers

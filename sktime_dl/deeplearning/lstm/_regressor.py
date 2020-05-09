@@ -8,28 +8,29 @@ from sktime_dl.utils import check_and_clean_data
 
 
 class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
-    ''' Long Short-Term Memory (LSTM)
+    """ Long Short-Term Memory (LSTM)
 
     Adapted from the implementation of Brownlee, J. (2018)
 
     https://machinelearningmastery.com/how-to-develop-lstm-models-for-time-series-forecasting/
-    '''
+    """
 
-    def __init__(self,
-                 nb_epochs=200,
-                 batch_size=16,
-                 units=[50, 50],
-                 
-                 random_seed=0,
-                 verbose=False,
-                 model_name="lstm_regressor",
-                 model_save_directory=None):
-        '''
+    def __init__(
+        self,
+        nb_epochs=200,
+        batch_size=16,
+        units=[50, 50],
+        random_seed=0,
+        verbose=False,
+        model_name="lstm_regressor",
+        model_save_directory=None
+    ):
+        """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
         :param units: int, array of size 2, the number units in each LSTM layer
         :param random_seed: int, seed to any needed random actions
-        '''
+        """
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
         self.units = units
@@ -41,21 +42,23 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
         self.is_fitted = False
 
     def build_model(self, input_shape, **kwargs):
-        '''
-        Construct a compiled, un-trained, keras model that is ready for training
+        """
+        Construct a compiled, un-trained, keras model
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
         Returns
         -------
         output : a compiled Keras Model
-        '''
+        """
         input_layer, output_layer = self.build_network(input_shape, **kwargs)
         output_layer = keras.layers.Dense(units=1)(output_layer)
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
-        model.compile(loss='mean_squared_error', optimizer=keras.optimizers.Adam(),
-                        metrics=['mean_squared_error'])
+        model.compile(
+            loss='mean_squared_error',
+            optimizer=keras.optimizers.Adam(),
+            metrics=['mean_squared_error'])
         return model
 
     def fit(self, X, y, input_checks=True, **kwargs):
@@ -63,7 +66,8 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
         Build the regressor on the training set (X, y)
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame of Series objects is passed, column 0 is extracted.
+            The training input samples.  If a Pandas data frame of Series
+            objects is passed, column 0 is extracted.
         y : array-like, shape = [n_instances]
             The regression values.
         input_checks: boolean
@@ -81,8 +85,9 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
         if self.verbose:
             self.model.summary()
 
-        self.history = self.model.fit(X, y, batch_size=self.batch_size, epochs=self.nb_epochs,
-                                        verbose=self.verbose)
+        self.history = self.model.fit(
+            X, y, batch_size=self.batch_size,
+            epochs=self.nb_epochs, verbose=self.verbose)
 
         self.save_trained_model()
         self.is_fitted = True

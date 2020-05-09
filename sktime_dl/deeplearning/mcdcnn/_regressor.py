@@ -24,19 +24,21 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
     pages={298--310}, year={2014}, organization={Springer} }
     """
 
-    def __init__(self,
-                 nb_epochs=120,
-                 batch_size=16,
-                 kernel_size=5,
-                 pool_size=2,
-                 filter_sizes=[8, 8],
-                 dense_units=732,
+    def __init__(
+            self,
+            nb_epochs=120,
+            batch_size=16,
+            kernel_size=5,
+            pool_size=2,
+            filter_sizes=[8, 8],
+            dense_units=732,
 
-                 callbacks=[],
-                 random_seed=0,
-                 verbose=False,
-                 model_name="mcdcnn_regressor",
-                 model_save_directory=None):
+            callbacks=[],
+            random_seed=0,
+            verbose=False,
+            model_name="mcdcnn_regressor",
+            model_save_directory=None
+    ):
         """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update

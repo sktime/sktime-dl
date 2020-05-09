@@ -41,7 +41,7 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
         :param model_name: string, the name of this model for printing and
         file writing purposes
         :param model_save_directory: string, if not None; location to save
-        the trained keras model in hdf5 format
+         the trained keras model in hdf5 format
         """
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size

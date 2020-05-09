@@ -23,14 +23,16 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
     1578--1585}, year={2017}, organization={IEEE} }
     """
 
-    def __init__(self,
-                 nb_epochs=2000,
-                 batch_size=16,
-                 callbacks=None,
-                 random_seed=0,
-                 verbose=False,
-                 model_name="fcn_regressor",
-                 model_save_directory=None):
+    def __init__(
+        self,
+        nb_epochs=2000,
+        batch_size=16,
+        callbacks=None,
+        random_seed=0,
+        verbose=False,
+        model_name="fcn_regressor",
+        model_save_directory=None
+    ):
         """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution
@@ -41,7 +43,7 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
         :param model_name: string, the name of this model for printing and
         file writing purposes
         :param model_save_directory: string, if not None; location to save
-        the trained keras model in hdf5 format
+         the trained keras model in hdf5 format
         """
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size

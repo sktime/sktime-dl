@@ -25,30 +25,32 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
     year={2016} }
     """
 
-    def __init__(self,
-                 nb_epochs=1000,
-                 batch_size=256,
-                 warping_ratios=[0.5, 1, 2],
-                 slice_ratio=0.1,
-                 callbacks=None,
-                 verbose=False,
-                 random_seed=0,
-                 model_name="tlenet_regressor",
-                 model_save_directory=None):
+    def __init__(
+        self,
+        nb_epochs=1000,
+        batch_size=256,
+        warping_ratios=[0.5, 1, 2],
+        slice_ratio=0.1,
+        callbacks=None,
+        verbose=False,
+        random_seed=0,
+        model_name="tlenet_regressor",
+        model_save_directory=None
+    ):
         """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution
-        window
+         window
         :param warping_ratios: list of floats, warping ratio for each window
         :param slice_ratio: float, ratio of the time series used to create a
-        slice
+         slice
         :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and
-        file writing purposes
+         file writing purposes
         :param model_save_directory: string, if not None; location to save
-        the trained keras model in hdf5 format
+         the trained keras model in hdf5 format
         """
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size

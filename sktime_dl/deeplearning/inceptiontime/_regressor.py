@@ -27,21 +27,22 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
                     ArXiv}, Year                     = {2019} }
     """
 
-    def __init__(self,
-                 nb_filters=32,
-                 use_residual=True,
-                 use_bottleneck=True,
-                 bottleneck_size=32,
-                 depth=6,
-                 kernel_size=41 - 1,
-                 batch_size=64,
-                 nb_epochs=1500,
-
-                 callbacks=None,
-                 random_seed=0,
-                 verbose=False,
-                 model_name="inception_regressor",
-                 model_save_directory=None):
+    def __init__(
+        self,
+        nb_filters=32,
+        use_residual=True,
+        use_bottleneck=True,
+        bottleneck_size=32,
+        depth=6,
+        kernel_size=41 - 1,
+        batch_size=64,
+        nb_epochs=1500,
+        callbacks=None,
+        random_seed=0,
+        verbose=False,
+        model_name="inception_regressor",
+        model_save_directory=None
+    ):
         """
         :param nb_filters: int,
         :param use_residual: boolean,
@@ -56,9 +57,9 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and
-        file writing purposes
+         file writing purposes
         :param model_save_directory: string, if not None; location to save
-        the trained keras model in hdf5 format
+         the trained keras model in hdf5 format
         """
         self.nb_filters = nb_filters
         self.use_residual = use_residual

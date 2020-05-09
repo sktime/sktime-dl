@@ -68,7 +68,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
 
         if self.callbacks is None:
             self.callbacks = []
-            
+
         if not any(
             isinstance(callback, ReduceLROnPlateau)
             for callback in self.callbacks
