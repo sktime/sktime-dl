@@ -38,7 +38,7 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
 
 
 def test_regressor_forecasting(
-    estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS), window_length=4
+        estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS), window_length=4
 ):
     """
     test a regressor used for forecasting

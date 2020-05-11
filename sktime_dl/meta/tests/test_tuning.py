@@ -5,11 +5,11 @@ from sktime_dl.meta import TunedDeepLearningClassifier
 
 
 def test_basic_tuning(
-    network=TunedDeepLearningClassifier(
-        base_model=CNNClassifier(),
-        param_grid=dict(nb_epochs=[50, 100],),
-        cv_folds=3,
-    )
+        network=TunedDeepLearningClassifier(
+            base_model=CNNClassifier(),
+            param_grid=dict(nb_epochs=[50, 100], ),
+            cv_folds=3,
+        )
 ):
     """
     just a super basic test of the tuner

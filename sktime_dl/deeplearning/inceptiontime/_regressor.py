@@ -25,72 +25,68 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
                     Idoumghar, Lhassane and Muller, Pierre-Alain and
                     Petitjean, François}, journal                  = {
                     ArXiv}, Year                     = {2019} }
+
+    :param nb_filters: int,
+    :param use_residual: boolean,
+    :param use_bottleneck: boolean,
+    :param depth: int
+    :param kernel_size: int, specifying the length of the 1D convolution
+     window
+    :param batch_size: int, the number of samples per gradient update.
+    :param bottleneck_size: int,
+    :param nb_epochs: int, the number of epochs to train the model
+    :param callbacks: list of tf.keras.callbacks.Callback objects
+    :param random_seed: int, seed to any needed random actions
+    :param verbose: boolean, whether to output extra information
+    :param model_name: string, the name of this model for printing and
+     file writing purposes
+    :param model_save_directory: string, if not None; location to save
+     the trained keras model in hdf5 format
     """
 
     def __init__(
-        self,
-        nb_filters=32,
-        use_residual=True,
-        use_bottleneck=True,
-        bottleneck_size=32,
-        depth=6,
-        kernel_size=41 - 1,
-        batch_size=64,
-        nb_epochs=1500,
-        callbacks=None,
-        random_seed=0,
-        verbose=False,
-        model_name="inception_regressor",
-        model_save_directory=None,
+            self,
+            nb_filters=32,
+            use_residual=True,
+            use_bottleneck=True,
+            bottleneck_size=32,
+            depth=6,
+            kernel_size=41 - 1,
+            batch_size=64,
+            nb_epochs=1500,
+            callbacks=None,
+            random_seed=0,
+            verbose=False,
+            model_name="inception_regressor",
+            model_save_directory=None,
     ):
         super().__init__(
             model_name=model_name, model_save_directory=model_save_directory
         )
-        InceptionTimeNetwork.__init__(
-            self,
-            nb_filters=nb_filters,
-            use_residual=use_residual,
-            use_bottleneck=use_bottleneck,
-            bottleneck_size=bottleneck_size,
-            depth=depth,
-            kernel_size=kernel_size,
-            random_seed=random_seed,
-        )
-        """
-        :param nb_filters: int,
-        :param use_residual: boolean,
-        :param use_bottleneck: boolean,
-        :param depth: int
-        :param kernel_size: int, specifying the length of the 1D convolution
-         window
-        :param batch_size: int, the number of samples per gradient update.
-        :param bottleneck_size: int,
-        :param nb_epochs: int, the number of epochs to train the model
-        :param callbacks: list of tf.keras.callbacks.Callback objects
-        :param random_seed: int, seed to any needed random actions
-        :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and
-         file writing purposes
-        :param model_save_directory: string, if not None; location to save
-         the trained keras model in hdf5 format
-        """
 
         self.verbose = verbose
         self.is_fitted = False
 
         # predefined
+        self.nb_filters = nb_filters
+        self.use_residual = use_residual
+        self.use_bottleneck = use_bottleneck
+        self.bottleneck_size = bottleneck_size
+        self.depth = depth
+        self.kernel_size = kernel_size
         self.batch_size = batch_size
         self.nb_epochs = nb_epochs
 
-        # calced in fit
-        self.input_shape = None
-        self.history = None
-        self.callbacks = callbacks if callbacks is not None else []
+        self.callbacks = callbacks
+        self.random_seed = random_seed
+        self.verbose = verbose
+
+        self.is_fitted = False
 
     def build_model(self, input_shape, **kwargs):
         """
         Construct a compiled, un-trained, keras model that is ready for
-         training
+        Parameters
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
@@ -111,9 +107,12 @@ class InceptionTimeRegressor(BaseDeepRegressor, InceptionTimeNetwork):
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already,
         # add the default from literature
+        if self.callbacks is None:
+            self.callbacks = []
+
         if not any(
-            isinstance(callback, keras.callbacks.ReduceLROnPlateau)
-            for callback in self.callbacks
+                isinstance(callback, keras.callbacks.ReduceLROnPlateau)
+                for callback in self.callbacks
         ):
             reduce_lr = keras.callbacks.ReduceLROnPlateau(
                 monitor="loss", factor=0.5, patience=50, min_lr=0.0001

@@ -28,20 +28,14 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
     }
     """
 
-    def __init__(
-            self,
-            nb_epochs=2000,
-            batch_size=16,
-            callbacks=None,
-            random_seed=0,
-            verbose=False,
-            model_name="mlp_regressor",
-            model_save_directory=None,
-    ):
-        super().__init__(
-            model_name=model_name, model_save_directory=model_save_directory
-        )
-        MLPNetwork.__init__(self, random_seed=random_seed)
+    def __init__(self,
+                 nb_epochs=2000,
+                 batch_size=16,
+                 callbacks=None,
+                 random_seed=0,
+                 verbose=False,
+                 model_name="mlp_regressor",
+                 model_save_directory=None):
         """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
@@ -53,6 +47,10 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
         :param model_save_directory: string, if not None; location to save the
          trained keras model in hdf5 format
         """
+        super(MLPRegressor, self).__init__(
+            model_name=model_name,
+            model_save_directory=model_save_directory)
+
         self.verbose = verbose
         self.is_fitted = False
 
@@ -63,7 +61,11 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = callbacks if callbacks is not None else []
+        self.callbacks = callbacks
+        self.random_seed = random_seed
+        self.verbose = verbose
+
+        self.is_fitted = False
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -88,6 +90,9 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already,
         # add the default from literature
+        if self.callbacks is None:
+            self.callbacks = []
+
         if not any(
                 isinstance(callback, keras.callbacks.ReduceLROnPlateau)
                 for callback in self.callbacks

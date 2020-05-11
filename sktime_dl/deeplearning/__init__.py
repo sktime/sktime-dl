@@ -7,6 +7,7 @@ __all__ = [
     "FCNRegressor",
     "InceptionTimeClassifier",
     "InceptionTimeRegressor",
+    "LSTMRegressor",
     "MCDCNNClassifier",
     "MCDCNNRegressor",
     "MCNNClassifier",
@@ -26,12 +27,11 @@ from sktime_dl.deeplearning.encoder._classifier import EncoderClassifier
 from sktime_dl.deeplearning.encoder._regressor import EncoderRegressor
 from sktime_dl.deeplearning.fcn._classifier import FCNClassifier
 from sktime_dl.deeplearning.fcn._regressor import FCNRegressor
-from sktime_dl.deeplearning.inceptiontime._classifier import (
-    InceptionTimeClassifier,
-)
-from sktime_dl.deeplearning.inceptiontime._regressor import (
-    InceptionTimeRegressor,
-)
+from sktime_dl.deeplearning.inceptiontime._classifier import \
+    InceptionTimeClassifier
+from sktime_dl.deeplearning.inceptiontime._regressor import \
+    InceptionTimeRegressor
+from sktime_dl.deeplearning.lstm._regressor import LSTMRegressor
 from sktime_dl.deeplearning.mcdcnn._classifier import MCDCNNClassifier
 from sktime_dl.deeplearning.mcdcnn._regressor import MCDCNNRegressor
 from sktime_dl.deeplearning.mcnn._classifier import MCNNClassifier

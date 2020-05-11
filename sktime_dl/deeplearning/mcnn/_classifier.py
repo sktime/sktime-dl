@@ -64,10 +64,10 @@ class MCNNClassifier(BaseDeepClassifier):
          the trained keras model in hdf5 format
         """
 
+        self.random_seed = random_seed
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
-        self.is_fitted = False
 
         self.pool_factors = (
             pool_factors  # used for hyperparameters grid search
@@ -76,11 +76,14 @@ class MCNNClassifier(BaseDeepClassifier):
             filter_sizes  # used for hyperparameters grid search
         )
         self.window_size = window_size
-        self.n_train_batch = nb_train_batch
-        self.n_epochs = nb_epochs
+        self.nb_train_batch = nb_train_batch
+        self.nb_epochs = nb_epochs
         self.max_train_batch_size = max_train_batch_size
         self.slice_ratio = slice_ratio
 
+        self.is_fitted = False
+
+    def set_hyperparameters(self):
         # *******set up the ma and ds********#
         self.ma_base = 5
         self.ma_step = 6
@@ -88,16 +91,6 @@ class MCNNClassifier(BaseDeepClassifier):
         self.ds_base = 2
         self.ds_step = 1
         self.ds_num = 4
-
-        # calced in fit
-        self.classes_ = None
-        self.nb_classes = -1
-        self.input_shape = None
-        self.model = None
-        self.history = None
-
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
 
     def slice_data(self, data_x, data_y, slice_ratio):
         n = data_x.shape[0]
@@ -213,9 +206,9 @@ class MCNNClassifier(BaseDeepClassifier):
         # print(increase_num)
 
         train_batch_size = int(
-            x_train.shape[0] * increase_num / self.n_train_batch
+            x_train.shape[0] * increase_num / self.nb_train_batch
         )
-        current_n_train_batch = self.n_train_batch
+        current_n_train_batch = self.nb_train_batch
         if train_batch_size > self.max_train_batch_size:
             # limit the train_batch_size
             current_n_train_batch = int(x_train.shape[0] * increase_num /
@@ -315,7 +308,7 @@ class MCNNClassifier(BaseDeepClassifier):
         epoch_avg_cost = float("inf")
         # epoch_avg_err = float("inf")
 
-        while (epoch < self.n_epochs) and (not done_looping):
+        while (epoch < self.nb_epochs) and (not done_looping):
             epoch = epoch + 1
             epoch_train_err = 0.0
             epoch_cost = 0.0
@@ -521,6 +514,11 @@ class MCNNClassifier(BaseDeepClassifier):
         -------
         self : object
         """
+        if self.random_state is None:
+            self.random_state = np.random.RandomState(self.random_seed)
+
+        self.set_hyperparameters()
+
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
