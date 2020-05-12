@@ -44,9 +44,8 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
         :param model_save_directory: string, if not None; location to save
          the trained keras model in hdf5 format
         """
-        super(MLPClassifier, self).__init__(
-            model_name=model_name,
-            model_save_directory=model_save_directory)
+        self.model_name = model_name,
+        self.model_save_directory = model_save_directory
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
         self.callbacks = callbacks
@@ -98,49 +97,48 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
 
         return model
 
+    def fit(self, X, y, input_checks=True, **kwargs):
+        """
+        Build the classifier on the training set (X, y)
+        ----------
+        X : array-like or sparse matrix of shape = [n_instances, n_columns]
+            The training input samples.  If a Pandas data frame is passed,
+            column 0 is extracted.
+        y : array-like, shape = [n_instances]
+            The class labels.
+        input_checks: boolean
+            whether to check the X and y parameters
+        Returns
+        -------
+        self : object
+        """
+        if self.random_state is None:
+            self.random_state = np.random.RandomState(self.random_seed)
 
-def fit(self, X, y, input_checks=True, **kwargs):
-    """
-    Build the classifier on the training set (X, y)
-    ----------
-    X : array-like or sparse matrix of shape = [n_instances, n_columns]
-        The training input samples.  If a Pandas data frame is passed,
-        column 0 is extracted.
-    y : array-like, shape = [n_instances]
-        The class labels.
-    input_checks: boolean
-        whether to check the X and y parameters
-    Returns
-    -------
-    self : object
-    """
-    if self.random_state is None:
-        self.random_state = np.random.RandomState(self.random_seed)
+        X = check_and_clean_data(X, y, input_checks=input_checks)
+        y_onehot = self.convert_y(y)
 
-    X = check_and_clean_data(X, y, input_checks=input_checks)
-    y_onehot = self.convert_y(y)
+        # ignore the number of instances, X.shape[0], just want the shape of
+        # each instance
+        self.input_shape = X.shape[1:]
 
-    # ignore the number of instances, X.shape[0], just want the shape of
-    # each instance
-    self.input_shape = X.shape[1:]
+        self.batch_size = int(min(X.shape[0] / 10, self.batch_size))
 
-    self.batch_size = int(min(X.shape[0] / 10, self.batch_size))
+        self.model = self.build_model(self.input_shape, self.nb_classes)
 
-    self.model = self.build_model(self.input_shape, self.nb_classes)
+        if self.verbose:
+            self.model.summary()
 
-    if self.verbose:
-        self.model.summary()
+        self.history = self.model.fit(
+            X,
+            y_onehot,
+            batch_size=self.batch_size,
+            epochs=self.nb_epochs,
+            verbose=self.verbose,
+            callbacks=self.callbacks,
+        )
 
-    self.history = self.model.fit(
-        X,
-        y_onehot,
-        batch_size=self.batch_size,
-        epochs=self.nb_epochs,
-        verbose=self.verbose,
-        callbacks=self.callbacks,
-    )
+        self.save_trained_model()
+        self.is_fitted = True
 
-    self.save_trained_model()
-    self.is_fitted = True
-
-    return self
+        return self

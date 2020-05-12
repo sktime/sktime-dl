@@ -46,7 +46,6 @@ class CNNNetwork(BaseDeepNetwork):
         """
 
         self.random_seed = random_seed
-
         self.kernel_size = kernel_size
         self.avg_pool_size = avg_pool_size
         self.nb_conv_layers = nb_conv_layers
