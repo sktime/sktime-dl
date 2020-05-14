@@ -42,7 +42,8 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
         self.callbacks = callbacks
         self.random_seed = random_seed
         super(SimpleRNNRegressor, self).__init__(
-            model_name=model_name, model_save_directory=model_save_directory
+            model_name=model_name,
+            model_save_directory=model_save_directory
         )
 
     def build_model(self, input_shape, **kwargs):

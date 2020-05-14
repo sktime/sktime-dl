@@ -44,8 +44,10 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
         :param model_save_directory: string, if not None; location to save
          the trained keras model in hdf5 format
         """
-        self.model_name = model_name,
-        self.model_save_directory = model_save_directory
+        super(MLPClassifier, self).__init__(
+            model_save_directory=model_save_directory,
+            model_name=model_name
+        )
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
         self.callbacks = callbacks

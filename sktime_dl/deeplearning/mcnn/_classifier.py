@@ -63,11 +63,12 @@ class MCNNClassifier(BaseDeepClassifier):
         :param model_save_directory: string, if not None; location to save
          the trained keras model in hdf5 format
         """
-
+        super(MCNNClassifier, self).__init__(
+            model_save_directory=model_save_directory,
+            model_name=model_name
+        )
         self.random_seed = random_seed
         self.verbose = verbose
-        self.model_name = model_name
-        self.model_save_directory = model_save_directory
 
         self.pool_factors = (
             pool_factors  # used for hyperparameters grid search

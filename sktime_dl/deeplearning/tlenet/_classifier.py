@@ -55,7 +55,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         :param model_save_directory: string, if not None; location to save
          the trained keras model in hdf5 format
         """
-        super().__init__(
+        super(TLENETClassifier, self).__init__(
             model_name=model_name, model_save_directory=model_save_directory
         )
         self.nb_epochs = nb_epochs

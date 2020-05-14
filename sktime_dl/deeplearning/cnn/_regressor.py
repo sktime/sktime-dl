@@ -53,8 +53,10 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
             model_name="cnn_regressor",
             model_save_directory=None,
     ):
-        self.model_name = model_name
-        self.model_save_directory = model_save_directory
+        super(CNNRegressor, self).__init__(
+            model_save_directory=model_save_directory,
+            model_name=model_name,
+        )
         self.filter_sizes = filter_sizes
         self.nb_conv_layers = nb_conv_layers
         self.avg_pool_size = avg_pool_size

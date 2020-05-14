@@ -46,7 +46,7 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
             model_name="encoder_regressor",
             model_save_directory=None,
     ):
-        super().__init__(
+        super(EncoderRegressor, self).__init__(
             model_name=model_name, model_save_directory=model_save_directory
         )
 

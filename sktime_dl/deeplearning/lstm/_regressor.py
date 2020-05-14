@@ -31,13 +31,15 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
         :param units: int, array of size 2, the number units in each LSTM layer
         :param random_seed: int, seed to any needed random actions
         """
+        super(LSTMRegressor, self).__init__(
+            model_save_directory=model_save_directory,
+            model_name=model_name
+        )
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
         self.units = units
         self.random_seed = random_seed
         self.verbose = verbose
-        self.model_name = model_name
-        self.model_save_directory = model_save_directory
 
         self.is_fitted = False
 
