@@ -1,5 +1,6 @@
 # author: Markus Löning
-# runs a daily cron job to check if we can still reproduce published results
+# runs a daily cron job to check if we can still reproduce published results,
+# running all tests, including slow ones
 
 name: Cron.$(Date:yyyyMMdd).$(Rev:r)
 

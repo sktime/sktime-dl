@@ -1,5 +1,6 @@
 # author: Markus Löning
-# runs continuous integration checks for commits and PRs
+# runs continuous integration checks for commits and PRs, running some
+# tests, but skipping slow ones
 
 # adapted from
 # - https://iscinumpy.gitlab.io/post/azure-devops-python-wheels/
