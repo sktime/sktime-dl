@@ -8,14 +8,19 @@ variables:
   TEST_DIR: tmp/
   TEST_SLOW: true # whether or not to run slow tests
 
-schedules:
-- cron: "0 0 * * *"  # daily midnight build
-  displayName: 'Daily reproducibility check'
+trigger:
   branches:
     include:
-    - master
-    - dev
-  always: false  # runs only if there have been source code changes
+      - master
+      - dev
+
+schedules:
+  - cron: "0 0 * * *"  # daily midnight build
+    displayName: 'Daily reproducibility check'
+    always: false  # runs only if there have been source code changes
+
+pr:
+  autoCancel: true
 
 stages:
   - stage: 'Check'
