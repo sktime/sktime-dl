@@ -1,8 +1,12 @@
 # author: Markus Löning
-#
+# runs continuous integration checks for commits and PRs, running some
+# tests, but skipping slow ones
+
 # adapted from
 # - https://iscinumpy.gitlab.io/post/azure-devops-python-wheels/
 # - https://iscinumpy.gitlab.io/post/azure-devops-releases/
+
+name: CI.$(Date:yyyyMMdd).$(Rev:r)
 
 variables:
   REQUIREMENTS: build_tools/requirements.txt
@@ -47,7 +51,7 @@ stages:
         steps:
           - bash: echo "##vso[task.prependpath]$CONDA/bin"
             displayName: 'Add conda to PATH'
-          - template: build_tools/azure/build_and_test.yml
+          - template: ../build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf19:
@@ -65,7 +69,7 @@ stages:
         steps:
           - bash: echo "##vso[task.prependpath]$CONDA/bin"
             displayName: 'Add conda to PATH'
-          - template: build_tools/azure/build_and_test.yml
+          - template: ../build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf19:
@@ -78,7 +82,7 @@ stages:
         steps:
           - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
             displayName: 'Add conda to PATH'
-          - template: build_tools/azure/build_and_test.yml
+          - template: ../build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf19:
@@ -98,7 +102,7 @@ stages:
             displayName: 'Add conda to PATH'
           - bash: sudo chown -R $USER $CONDA
             displayName: 'Take ownership of conda installation'
-          - template: build_tools/azure/build_and_test.yml
+          - template: ../build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf115:
@@ -112,7 +116,7 @@ stages:
             displayName: 'Add conda to PATH'
           - bash: sudo chown -R $USER $CONDA
             displayName: 'Take ownership of conda installation'
-          - template: build_tools/azure/build_and_test.yml
+          - template: ../build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf19:
