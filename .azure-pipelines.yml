@@ -1,6 +1,5 @@
 # author: Markus Löning
-# runs continuous integration checks for commits and PRs, running some
-# tests, but skipping slow ones
+# runs continuous integration checks for commits and PRs
 
 # adapted from
 # - https://iscinumpy.gitlab.io/post/azure-devops-python-wheels/
@@ -60,9 +59,12 @@ stages:
             py36_tf115:
               PYTHON_VERSION: 3.6
               TF_VERSION: 1.15
+            # runs all checks, including slow ones, to check if we can still
+            # reproduce published results
             py37_tf21:
               PYTHON_VERSION: 3.7
               TF_VERSION: 2.1
+              TEST_SLOW: true
       - job: 'Linux_xenial'
         pool:
           vmImage: 'ubuntu-16.04'
