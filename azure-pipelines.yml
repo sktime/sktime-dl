@@ -1,6 +1,5 @@
 # author: Markus Löning
-# runs continuous integration checks for commits and PRs, running some
-# tests, but skipping slow ones
+# runs continuous integration checks for commits and PRs
 
 # adapted from
 # - https://iscinumpy.gitlab.io/post/azure-devops-python-wheels/
@@ -51,7 +50,7 @@ stages:
         steps:
           - bash: echo "##vso[task.prependpath]$CONDA/bin"
             displayName: 'Add conda to PATH'
-          - template: ../build_tools/azure/build_and_test.yml
+          - template: build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf19:
@@ -60,16 +59,19 @@ stages:
             py36_tf115:
               PYTHON_VERSION: 3.6
               TF_VERSION: 1.15
+            # runs all checks, including slow ones, to check if we can still
+            # reproduce published results
             py37_tf21:
               PYTHON_VERSION: 3.7
               TF_VERSION: 2.1
+              TEST_SLOW: true
       - job: 'Linux_xenial'
         pool:
           vmImage: 'ubuntu-16.04'
         steps:
           - bash: echo "##vso[task.prependpath]$CONDA/bin"
             displayName: 'Add conda to PATH'
-          - template: ../build_tools/azure/build_and_test.yml
+          - template: build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf19:
@@ -82,7 +84,7 @@ stages:
         steps:
           - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
             displayName: 'Add conda to PATH'
-          - template: ../build_tools/azure/build_and_test.yml
+          - template: build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf19:
@@ -102,7 +104,7 @@ stages:
             displayName: 'Add conda to PATH'
           - bash: sudo chown -R $USER $CONDA
             displayName: 'Take ownership of conda installation'
-          - template: ../build_tools/azure/build_and_test.yml
+          - template: build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf115:
@@ -116,7 +118,7 @@ stages:
             displayName: 'Add conda to PATH'
           - bash: sudo chown -R $USER $CONDA
             displayName: 'Take ownership of conda installation'
-          - template: ../build_tools/azure/build_and_test.yml
+          - template: build_tools/azure/build_and_test.yml
         strategy:
           matrix:
             py36_tf19:
