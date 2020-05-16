@@ -216,7 +216,7 @@ def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
 
 
 def dlExperiment(
-    data_dir, res_dir, classifier_name, dset, fold, classifier=None
+        data_dir, res_dir, classifier_name, dset, fold, classifier=None
 ):
     if classifier is None:
         classifier = setNetwork(
@@ -311,7 +311,7 @@ if __name__ == "__main__":
 
     classifier = sys.argv[3]
     if (
-        classifier == "inception"
+            classifier == "inception"
     ):  # seeding inception ensemble exps for bakeoff redux
         classifier = classifier + sys.argv[7]
 

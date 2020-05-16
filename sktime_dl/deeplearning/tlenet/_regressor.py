@@ -29,20 +29,21 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
             self,
             nb_epochs=1000,
             batch_size=256,
+            warping_ratios=[0.5, 1, 2],
+            slice_ratio=0.1,
             callbacks=None,
             verbose=False,
             random_seed=0,
             model_name="tlenet_regressor",
-            model_save_directory=None,
+            model_save_directory=None
     ):
-        super().__init__(
-            model_name=model_name, model_save_directory=model_save_directory
-        )
-        TLENETNetwork.__init__(self, random_seed=random_seed)
         """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution
          window
+        :param warping_ratios: list of floats, warping ratio for each window
+        :param slice_ratio: float, ratio of the time series used to create a
+         slice
         :param callbacks: list of tf.keras.callbacks.Callback objects
         :param random_seed: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
@@ -51,17 +52,22 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         :param model_save_directory: string, if not None; location to save
          the trained keras model in hdf5 format
         """
+        super(TLENETRegressor, self).__init__(
+            model_name=model_name, model_save_directory=model_save_directory)
 
         self.verbose = verbose
         self.is_fitted = False
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = callbacks if callbacks is not None else []
+        self.warping_ratios = warping_ratios
+        self.slice_ratio = slice_ratio
 
-        # calced in fit
-        self.input_shape = None
-        self.history = None
+        self.callbacks = callbacks
+        self.verbose = verbose
+        self.random_seed = random_seed
+
+        self.is_fitted = False
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -86,6 +92,9 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
             loss="mean_squared_error",
             metrics=["mean_squared_error"],
         )
+
+        if self.callbacks is None:
+            self.callbacks = []
 
         if save_best_model:
             file_path = self.model_save_directory + "best_model.hdf5"
@@ -167,11 +176,11 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         # TODO: could fix this to be an array literal.
         for i in range(test_num_batch):
             y_predicted.append(
-                np.average(preds[
-                    i * tot_increase_num: ((i + 1) * tot_increase_num) - 1
-                    ],
-                    axis=0,
-                )
+                np.average(preds[i
+                                 * tot_increase_num: ((i + 1)
+                                                      * tot_increase_num) - 1],
+                           axis=0,
+                           )
             )
 
         y_pred = np.array(y_predicted)

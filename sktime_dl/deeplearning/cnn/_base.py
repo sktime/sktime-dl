@@ -1,6 +1,5 @@
 __author__ = "James Large, Withington"
 
-import numpy as np
 from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
@@ -29,12 +28,12 @@ class CNNNetwork(BaseDeepNetwork):
     """
 
     def __init__(
-        self,
-        kernel_size=7,
-        avg_pool_size=3,
-        nb_conv_layers=2,
-        filter_sizes=[6, 12],
-        random_seed=0,
+            self,
+            kernel_size=7,
+            avg_pool_size=3,
+            nb_conv_layers=2,
+            filter_sizes=[6, 12],
+            random_seed=0,
     ):
         """
         :param kernel_size: int, specifying the length of the 1D convolution
@@ -47,8 +46,6 @@ class CNNNetwork(BaseDeepNetwork):
         """
 
         self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
-
         self.kernel_size = kernel_size
         self.avg_pool_size = avg_pool_size
         self.nb_conv_layers = nb_conv_layers
@@ -75,7 +72,7 @@ class CNNNetwork(BaseDeepNetwork):
             self.filter_sizes = self.filter_sizes[: self.nb_conv_layers]
         elif len(self.filter_sizes) < self.nb_conv_layers:
             self.filter_sizes = self.filter_sizes + [self.filter_sizes[-1]] * (
-                self.nb_conv_layers - len(self.filter_sizes)
+                    self.nb_conv_layers - len(self.filter_sizes)
             )
 
         conv = keras.layers.Conv1D(

@@ -9,7 +9,7 @@ from sklearn.exceptions import NotFittedError
 
 
 def save_trained_model(
-    model, model_save_directory, model_name, save_format="h5"
+        model, model_save_directory, model_name, save_format="h5"
 ):
     """
     Saves the model to an HDF file.

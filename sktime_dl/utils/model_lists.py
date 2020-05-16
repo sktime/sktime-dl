@@ -6,6 +6,7 @@ from sktime_dl.deeplearning import FCNClassifier
 from sktime_dl.deeplearning import FCNRegressor
 from sktime_dl.deeplearning import InceptionTimeClassifier
 from sktime_dl.deeplearning import InceptionTimeRegressor
+from sktime_dl.deeplearning import LSTMRegressor
 from sktime_dl.deeplearning import MCDCNNClassifier
 from sktime_dl.deeplearning import MCDCNNRegressor
 from sktime_dl.deeplearning import MCNNClassifier
@@ -73,6 +74,7 @@ def construct_all_regressors(nb_epochs=None):
             CNNRegressor(nb_epochs=nb_epochs, kernel_size=3, avg_pool_size=1),
             EncoderRegressor(nb_epochs=nb_epochs),
             FCNRegressor(nb_epochs=nb_epochs),
+            LSTMRegressor(nb_epochs=nb_epochs),
             MCDCNNRegressor(nb_epochs=nb_epochs, dense_units=1),
             MLPRegressor(nb_epochs=nb_epochs),
             ResNetRegressor(nb_epochs=nb_epochs),
@@ -86,6 +88,7 @@ def construct_all_regressors(nb_epochs=None):
             CNNRegressor(),
             EncoderRegressor(),
             FCNRegressor(),
+            LSTMRegressor(),
             MCDCNNRegressor(),
             MLPRegressor(),
             ResNetRegressor(),
