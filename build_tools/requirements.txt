@@ -1,6 +1,6 @@
 sktime>=0.3.0
 tensorflow>=1.9
-tensorflow_addons
+tensorflow_addons==0.9.*
 h5py
 pytest
 pytest-cov
