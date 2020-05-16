@@ -42,10 +42,10 @@ def find_version(*file_paths):
 def find_install_requires():
     """Return a list of dependencies and non-pypi dependency links.
 
-    A supported version of tensorflow and/or tensorflow-gpu is required. If not 
+    A supported version of tensorflow and/or tensorflow-gpu is required. If not
     found, then tensorflow is added to the install_requires list.
 
-    Depending on the version of tensorflow found or installed, either keras-contrib or 
+    Depending on the version of tensorflow found or installed, either keras-contrib or
     tensorflow-addons needs to be installed as well.
     """
 
@@ -55,7 +55,7 @@ def find_install_requires():
     ]
 
     # tensorflow version requirements
-    # by default, make sure anything already installed is above 1.8.0, or if installing from new 
+    # by default, make sure anything already installed is above 1.8.0, or if installing from new
     # get the most recent stable (i.e. not nightly) version
     MINIMUM_TF_VERSION = '1.9.0'
     tf_requires = 'tensorflow>=' + MINIMUM_TF_VERSION
@@ -129,7 +129,6 @@ EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
         'pytest-cov'
-        'nose',
         'flaky'],
     'docs': [
         'sphinx',
