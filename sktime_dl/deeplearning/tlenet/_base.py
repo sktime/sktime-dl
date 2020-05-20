@@ -28,9 +28,7 @@ class TLENETNetwork(BaseDeepNetwork):
         """
         self.warping_ratios = [0.5, 1, 2]
         self.slice_ratio = 0.1
-
         self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
 
     def slice_data(self, X, y=None, length_sliced=1):
         """
@@ -48,7 +46,7 @@ class TLENETNetwork(BaseDeepNetwork):
         n_dim = X.shape[2]  # for MTS
 
         increase_num = (
-            length - length_sliced + 1
+                length - length_sliced + 1
         )  # if increase_num =5, it means one ori becomes 5 new instances.
         if increase_num < 0:
             raise Exception(
@@ -68,8 +66,8 @@ class TLENETNetwork(BaseDeepNetwork):
         for i in range(n):
             for j in range(increase_num):
                 new_x[i * increase_num + j, :, :] = X[
-                    i, j: j + length_sliced, :
-                ]
+                                                    i, j: j + length_sliced, :
+                                                    ]
 
         # transform y, if present.
         new_y = None
@@ -200,9 +198,9 @@ class TLENETNetwork(BaseDeepNetwork):
         for i in range(X.shape[0]):
             for j in range(len(increase_nums)):
                 increase_num = increase_nums[j]
-                new_x[idx: idx + increase_num, :, :] = x_augmented[j][
-                    i * increase_num: (i + 1) * increase_num, :, :
-                ]
+                new_x[idx: idx + increase_num, :, :] = \
+                    x_augmented[j][i *
+                                   increase_num: (i + 1) * increase_num, :, :]
                 idx += increase_num
 
         # merge y if its not None.
@@ -217,9 +215,9 @@ class TLENETNetwork(BaseDeepNetwork):
             for i in range(X.shape[0]):
                 for j in range(len(increase_nums)):
                     increase_num = increase_nums[j]
-                    new_y[idx: idx + increase_num] = y_augmented[j][
-                        i * increase_num: (i + 1) * increase_num
-                    ]
+                    new_y[idx: idx + increase_num] = \
+                        y_augmented[j][i *
+                                       increase_num: (i + 1) * increase_num]
                     idx += increase_num
 
         return new_x, new_y, tot_increase_num

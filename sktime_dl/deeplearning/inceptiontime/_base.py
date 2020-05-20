@@ -1,6 +1,5 @@
 __author__ = "James Large, Withington"
 
-import numpy as np
 from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
@@ -27,14 +26,14 @@ class InceptionTimeNetwork(BaseDeepNetwork):
     """
 
     def __init__(
-        self,
-        nb_filters=32,
-        use_residual=True,
-        use_bottleneck=True,
-        bottleneck_size=32,
-        depth=6,
-        kernel_size=41 - 1,
-        random_seed=0,
+            self,
+            nb_filters=32,
+            use_residual=True,
+            use_bottleneck=True,
+            bottleneck_size=32,
+            depth=6,
+            kernel_size=41 - 1,
+            random_seed=0,
     ):
         """
         :param nb_filters: int,
@@ -55,7 +54,6 @@ class InceptionTimeNetwork(BaseDeepNetwork):
         self.bottleneck_size = bottleneck_size
 
         self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
 
     def _inception_module(self, input_tensor, stride=1, activation="linear"):
 

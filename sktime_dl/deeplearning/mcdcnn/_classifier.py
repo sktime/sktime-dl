@@ -45,17 +45,6 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
             model_name="mcdcnn",
             model_save_directory=None,
     ):
-        super().__init__(
-            model_name=model_name, model_save_directory=model_save_directory
-        )
-        MCDCNNNetwork.__init__(
-            self,
-            kernel_size=kernel_size,
-            pool_size=pool_size,
-            filter_sizes=filter_sizes,
-            dense_units=dense_units,
-            random_seed=random_seed,
-        )
         """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
@@ -73,6 +62,9 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         :param model_save_directory: string, if not None; location to save
         the trained keras model in hdf5 format
         """
+        super(MCDCNNClassifier, self).__init__(
+            model_name=model_name, model_save_directory=model_save_directory
+        )
 
         self.verbose = verbose
         self.is_fitted = False
@@ -87,7 +79,16 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+        self.kernel_size = kernel_size
+        self.pool_size = pool_size
+        self.filter_sizes = filter_sizes
+        self.dense_units = dense_units
+
         self.callbacks = callbacks
+        self.random_seed = random_seed
+        self.verbose = verbose
+
+        self.is_fitted = False
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -143,6 +144,9 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         -------
         self : object
         """
+        if self.random_state is None:
+            self.random_state = np.random.RandomState(self.random_seed)
+
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 

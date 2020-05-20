@@ -23,20 +23,14 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
     1578--1585}, year={2017}, organization={IEEE} }
     """
 
-    def __init__(
-        self,
-        nb_epochs=1500,
-        batch_size=16,
-        callbacks=None,
-        random_seed=0,
-        verbose=False,
-        model_name="resnet_regressor",
-        model_save_directory=None,
-    ):
-        super().__init__(
-            model_name=model_name, model_save_directory=model_save_directory
-        )
-        ResNetNetwork.__init__(self, random_seed=random_seed)
+    def __init__(self,
+                 nb_epochs=1500,
+                 batch_size=16,
+                 callbacks=None,
+                 random_seed=0,
+                 verbose=False,
+                 model_name="resnet_regressor",
+                 model_save_directory=None):
         """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, specifying the length of the 1D convolution
@@ -50,17 +44,18 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
          trained keras model in hdf5 format
         """
 
-        self.verbose = verbose
-        self.is_fitted = False
+        super(ResNetRegressor, self).__init__(
+            model_name=model_name, model_save_directory=model_save_directory
+        )
 
-        # calced in fit
-        self.input_shape = None
-        self.history = None
-
-        # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-        self.callbacks = callbacks if callbacks is not None else []
+
+        self.callbacks = callbacks
+        self.random_seed = random_seed
+        self.verbose = verbose
+
+        self.is_fitted = False
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -89,9 +84,12 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already,
         # add the default from literature
+        if self.callbacks is None:
+            self.callbacks = []
+
         if not any(
-            isinstance(callback, keras.callbacks.ReduceLROnPlateau)
-            for callback in self.callbacks
+                isinstance(callback, keras.callbacks.ReduceLROnPlateau)
+                for callback in self.callbacks
         ):
             reduce_lr = keras.callbacks.ReduceLROnPlateau(
                 monitor="loss", factor=0.5, patience=50, min_lr=0.0001

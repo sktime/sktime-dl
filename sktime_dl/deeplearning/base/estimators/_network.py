@@ -6,6 +6,7 @@ __author__ = "Withington"
 
 
 class BaseDeepNetwork:
+
     def build_network(self, input_shape, **kwargs):
         """
         Construct a network and return its input and output layers

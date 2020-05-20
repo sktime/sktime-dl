@@ -1,5 +1,6 @@
 __author__ = "James Large"
 
+import numpy as np
 from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
@@ -15,66 +16,57 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
     https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/cnn.py
 
     Network originally defined in:
-
     @article{zhao2017convolutional, title={Convolutional neural networks for
     time series classification}, author={Zhao, Bendong and Lu, Huanzhang and
     Chen, Shangfeng and Liu, Junliang and Wu, Dongya}, journal={Journal of
     Systems Engineering and Electronics}, volume={28}, number={1}, pages={
     162--169}, year={2017}, publisher={BIAI} }
+
+    :param nb_epochs: int, the number of epochs to train the model
+    :param batch_size: int, the number of samples per gradient update.
+    :param kernel_size: int, specifying the length of the 1D convolution
+     window
+    :param avg_pool_size: int, size of the average pooling windows
+    :param nb_conv_layers: int, the number of convolutional plus average
+     pooling layers
+    :param filter_sizes: int, array of shape = (nb_conv_layers)
+    :param callbacks: list of tf.keras.callbacks.Callback objects
+    :param random_seed: int, seed to any needed random actions
+    :param verbose: boolean, whether to output extra information
+    :param model_name: string, the name of this model for printing and
+    file writing purposes
+    :param model_save_directory: string, if not None; location to save
+    the trained keras model in hdf5 format
     """
 
     def __init__(
-        self,
-        nb_epochs=2000,
-        batch_size=16,
-        kernel_size=7,
-        avg_pool_size=3,
-        nb_conv_layers=2,
-        filter_sizes=[6, 12],
-        callbacks=None,
-        random_seed=0,
-        verbose=False,
-        model_name="cnn",
-        model_save_directory=None,
-    ):
-        super().__init__(
-            model_name=model_name, model_save_directory=model_save_directory
-        )
-        CNNNetwork.__init__(
             self,
-            kernel_size=kernel_size,
-            avg_pool_size=avg_pool_size,
-            nb_conv_layers=nb_conv_layers,
-            filter_sizes=filter_sizes,
-            random_seed=random_seed,
-        )
-        """
-        :param nb_epochs: int, the number of epochs to train the model
-        :param batch_size: int, the number of samples per gradient update.
-        :param kernel_size: int, specifying the length of the 1D convolution
-         window
-        :param avg_pool_size: int, size of the average pooling windows
-        :param nb_conv_layers: int, the number of convolutional plus average
-         pooling layers
-        :param filter_sizes: int, array of shape = (nb_conv_layers)
-        :param callbacks: list of tf.keras.callbacks.Callback objects
-        :param random_seed: int, seed to any needed random actions
-        :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and
-        file writing purposes
-        :param model_save_directory: string, if not None; location to save
-        the trained keras model in hdf5 format
-        """
+            nb_epochs=2000,
+            batch_size=16,
+            kernel_size=7,
+            avg_pool_size=3,
+            nb_conv_layers=2,
+            filter_sizes=[6, 12],
+            callbacks=None,
+            random_seed=0,
+            verbose=False,
+            model_name="cnn",
+            model_save_directory=None,
+    ):
+        super(CNNClassifier, self).__init__(
+            model_save_directory=model_save_directory,
+            model_name=model_name)
+        self.filter_sizes = filter_sizes
+        self.nb_conv_layers = nb_conv_layers
+        self.avg_pool_size = avg_pool_size
+        self.random_seed = random_seed
+        self.kernel_size = kernel_size
         self.verbose = verbose
-        self.is_fitted = False
-
-        self.callbacks = callbacks if callbacks is not None else []
-
-        self.input_shape = None
-        self.history = None
-
+        self.callbacks = callbacks
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+
+        self.is_fitted = False
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -120,6 +112,12 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
         -------
         self : object
         """
+        if self.random_state is None:
+            self.random_state = np.random.RandomState(self.random_seed)
+
+        if self.callbacks is None:
+            self.callbacks = []
+
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 

@@ -1,6 +1,5 @@
 __author__ = "James Large, Withington"
 
-import numpy as np
 from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
@@ -26,9 +25,7 @@ class ResNetNetwork(BaseDeepNetwork):
         """
         :param random_seed: int, seed to any needed random actions
         """
-
         self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
 
     def build_network(self, input_shape, **kwargs):
         """

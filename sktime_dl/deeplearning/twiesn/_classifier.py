@@ -29,13 +29,13 @@ class TWIESNClassifier(BaseDeepClassifier):
     """
 
     def __init__(
-        self,
-        rho_s=[0.55, 0.9, 2.0, 5.0],
-        alpha=0.1,  # leaky rate
-        random_seed=0,
-        verbose=False,
-        model_name="twiesn",
-        model_save_directory=None,
+            self,
+            rho_s=[0.55, 0.9, 2.0, 5.0],
+            alpha=0.1,  # leaky rate
+            random_seed=0,
+            verbose=False,
+            model_name="twiesn",
+            model_save_directory=None,
     ):
         """
         :param rho_s: array of shape
@@ -47,22 +47,20 @@ class TWIESNClassifier(BaseDeepClassifier):
         :param model_save_directory: string, if not None; location to save
          the trained keras model in hdf5 format
         """
+        super(TWIESNClassifier, self).__init__(
+            model_name,
+            model_save_directory)
+        self.rho_s = rho_s
+        self.alpha = alpha  # leakage rate
 
+        self.random_seed = random_seed
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
+
         self.is_fitted = False
 
-        # calced in fit
-        self.classes_ = None
-        self.nb_classes = -1
-        self.input_shape = None
-        self.model = None
-        self.history = None
-
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
-
+    def set_hyperparameters(self):
         # hyperparameters
         first_config = {
             "N_x": 250,
@@ -94,8 +92,6 @@ class TWIESNClassifier(BaseDeepClassifier):
             third_config,
             fourth_config,
         ]
-        self.rho_s = rho_s
-        self.alpha = alpha  # leakage rate
 
     def evaluate_paramset(self, X, y, val_X, val_y, rho, config):
 
@@ -142,6 +138,11 @@ class TWIESNClassifier(BaseDeepClassifier):
         -------
         self : object
         """
+        if self.random_state is None:
+            self.random_state = np.random.RandomState(self.random_seed)
+
+        self.set_hyperparameters()
+
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
@@ -248,7 +249,7 @@ class TWIESNClassifier(BaseDeepClassifier):
 
     def init_matrices(self):
         self.W_in = (2.0 * np.random.rand(self.N_x, self.num_dim) - 1.0) / (
-            2.0 * self.scaleW_in
+                2.0 * self.scaleW_in
         )
 
         converged = False
