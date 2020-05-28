@@ -3,12 +3,12 @@ __author__ = "James Large"
 from tensorflow import keras
 import numpy as np
 
-from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
+from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mlstmfcn._base import MLSTMFCNNetwork
 from sktime_dl.utils import check_and_clean_data
 
 
-class MLSTMFCNClassifier(BaseDeepClassifier, MLSTMFCNNetwork):
+class MLSTMFCNRegressor(BaseDeepRegressor, MLSTMFCNNetwork):
     """
     Multivariate Long Short Term Memory Fully Convolutional Network(MLSTMFCN)
 
@@ -90,16 +90,13 @@ class MLSTMFCNClassifier(BaseDeepClassifier, MLSTMFCNNetwork):
         """
 
         input_layer, output_layer = self.build_network(input_shape, **kwargs)
-        output_layer = keras.layers.Dense(nb_classes, activation="softmax")(
-            output_layer
-        )
+        output_layer = keras.layers.Dense(units=1)(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
-
         model.compile(
-            loss="categorical_crossentropy",
-            optimizer=keras.optimizers.Adam(lr=1e-3),
-            metrics=["accuracy"],
+            loss="mean_squared_error",
+            optimizer=keras.optimizers.Adadelta(),
+            metrics=["mean_squared_error"],
         )
 
         # if user hasn't provided a custom ReduceLROnPlateau via init already,
@@ -169,19 +166,3 @@ class MLSTMFCNClassifier(BaseDeepClassifier, MLSTMFCNNetwork):
         self.is_fitted = True
 
         return self
-
-
-if __name__ == '__main__':
-    # from sktime_dl.deeplearning.tests.test_classifiers import test_basic_univariate
-    # test_basic_univariate(MLSTMFCNClassifier(nb_epochs=2))
-
-    from sktime.datasets import load_japanese_vowels
-
-    network = MLSTMFCNClassifier(nb_lstm_cells=8)
-
-    X_train, y_train = load_japanese_vowels(split="TRAIN", return_X_y=True)
-    X_test, y_test = load_japanese_vowels(split="TEST", return_X_y=True)
-
-    network.fit(X_train, y_train)
-
-    print(network.score(X_test, y_test))

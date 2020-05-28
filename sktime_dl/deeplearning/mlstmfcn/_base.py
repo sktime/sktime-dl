@@ -11,6 +11,9 @@ class MLSTMFCNNetwork(BaseDeepNetwork):
     Multivariate Long Short Term Memory Fully Convolutional Network(MLSTMFCN)
     (minus the final output layer).
 
+    We implement this network only, and not the preceding univariate verion,
+    since the former is assumed to subsume the latter.
+
     Adapted from the implementation by Karim et. al
 
     https://github.com/houshd/MLSTM-FCN

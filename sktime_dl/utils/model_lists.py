@@ -12,6 +12,8 @@ from sktime_dl.deeplearning import MCDCNNRegressor
 from sktime_dl.deeplearning import MCNNClassifier
 from sktime_dl.deeplearning import MLPClassifier
 from sktime_dl.deeplearning import MLPRegressor
+from sktime_dl.deeplearning import MLSTMFCNClassifier
+from sktime_dl.deeplearning import MLSTMFCNRegressor
 from sktime_dl.deeplearning import ResNetClassifier
 from sktime_dl.deeplearning import ResNetRegressor
 from sktime_dl.deeplearning import SimpleRNNRegressor
@@ -31,18 +33,19 @@ def construct_all_classifiers(nb_epochs=None):
     :return: list of sktime_dl BaseDeepClassifier imeplementations
     """
     if nb_epochs is not None:
-        # potentially quicker versions for tests
+        # quicker versions for tests
         return [
             CNNClassifier(nb_epochs=nb_epochs),
             EncoderClassifier(nb_epochs=nb_epochs),
             FCNClassifier(nb_epochs=nb_epochs),
+            InceptionTimeClassifier(nb_epochs=nb_epochs),
             MCDCNNClassifier(nb_epochs=nb_epochs),
             MCNNClassifier(nb_epochs=nb_epochs),
             MLPClassifier(nb_epochs=nb_epochs),
+            MLSTMFCNClassifier(nb_epochs=nb_epochs),
             ResNetClassifier(nb_epochs=nb_epochs),
             TLENETClassifier(nb_epochs=nb_epochs),
             TWIESNClassifier(),
-            InceptionTimeClassifier(nb_epochs=nb_epochs),
         ]
     else:
         # the 'literature-conforming' versions
@@ -50,13 +53,14 @@ def construct_all_classifiers(nb_epochs=None):
             CNNClassifier(),
             EncoderClassifier(),
             FCNClassifier(),
+            InceptionTimeClassifier(),
             MCDCNNClassifier(),
             MCNNClassifier(),
             MLPClassifier(),
+            MLSTMFCNClassifier(),
             ResNetClassifier(),
             TLENETClassifier(),
             TWIESNClassifier(),
-            InceptionTimeClassifier(),
         ]
 
 
@@ -69,18 +73,19 @@ def construct_all_regressors(nb_epochs=None):
     :return: list of sktime_dl BaseDeepRegressor imeplementations
     """
     if nb_epochs is not None:
-        # potentially quicker versions for tests
+        # quicker versions for tests
         return [
             CNNRegressor(nb_epochs=nb_epochs, kernel_size=3, avg_pool_size=1),
             EncoderRegressor(nb_epochs=nb_epochs),
             FCNRegressor(nb_epochs=nb_epochs),
+            InceptionTimeRegressor(nb_epochs=nb_epochs),
             LSTMRegressor(nb_epochs=nb_epochs),
+            MLSTMFCNRegressor(nb_epochs=nb_epochs),
             MCDCNNRegressor(nb_epochs=nb_epochs, dense_units=1),
             MLPRegressor(nb_epochs=nb_epochs),
             ResNetRegressor(nb_epochs=nb_epochs),
-            TLENETRegressor(nb_epochs=nb_epochs),
-            InceptionTimeRegressor(nb_epochs=nb_epochs),
             SimpleRNNRegressor(nb_epochs=nb_epochs),
+            TLENETRegressor(nb_epochs=nb_epochs),
         ]
     else:
         # the 'literature-conforming' versions
@@ -88,11 +93,12 @@ def construct_all_regressors(nb_epochs=None):
             CNNRegressor(),
             EncoderRegressor(),
             FCNRegressor(),
+            InceptionTimeRegressor(),
             LSTMRegressor(),
+            MLSTMFCNRegressor(),
             MCDCNNRegressor(),
             MLPRegressor(),
             ResNetRegressor(),
-            TLENETRegressor(),
-            InceptionTimeRegressor(),
             SimpleRNNRegressor(),
+            TLENETRegressor(),
         ]

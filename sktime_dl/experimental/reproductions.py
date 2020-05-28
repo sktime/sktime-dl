@@ -45,6 +45,7 @@ from sktime_dl.deeplearning import ResNetClassifier
 from sktime_dl.deeplearning import TLENETClassifier
 from sktime_dl.deeplearning import TWIESNClassifier
 from sktime_dl.deeplearning import InceptionTimeClassifier
+from sktime_dl.deeplearning import MLSTMFCNClassifier
 from sktime_dl.meta import EnsembleFromFileClassifier
 
 import sktime.contrib.experiments as exp
@@ -211,6 +212,8 @@ def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
             network_name="inception",
             nb_iterations=5,
         )
+    elif cls.lower() == 'mlstmfcn':
+        return MLSTMFCNClassifier(random_seed=fold)
     else:
         raise Exception("UNKNOWN CLASSIFIER: " + cls)
 
