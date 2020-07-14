@@ -42,7 +42,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
             base_model=InceptionTimeClassifier(),
             nb_iterations=5,
             keep_in_memory=False,
-            random_state=0,
+            random_seed=0,
             verbose=False,
             model_name=None,
             model_save_directory=None,
@@ -92,11 +92,15 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         self.skdl_models = []
         self.keras_models = []
 
-        self.random_state = check_random_state(random_state)
+        self.random_seed = random_seed
+        self.random_state = random_seed
 
     def construct_model(self, itr):
         model = clone(self.base_model)
-        model.random_state = self.random_state + itr
+
+        self.random_state = check_random_state(self.random_seed)
+
+        model.random_state = self.random_seed + itr
 
         if self.model_save_directory is not None:
             model.model_save_directory = self.model_save_directory
@@ -120,6 +124,8 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         -------
         self : object
         """
+
+        self.random_state = check_random_state(self.random_state)
 
         self.skdl_models = []
         self.keras_models = []

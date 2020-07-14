@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from sklearn.exceptions import NotFittedError
+from sktime.exceptions import NotFittedError
 from sktime.datasets import load_italy_power_demand
 from sktime.regression.base import BaseRegressor
 

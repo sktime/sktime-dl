@@ -5,7 +5,7 @@ __author__ = "Withington, James Large"
 from inspect import isclass
 from pathlib import Path
 
-from sklearn.exceptions import NotFittedError
+from sktime.exceptions import NotFittedError
 
 
 def save_trained_model(

@@ -7,6 +7,7 @@ from sktime_dl.utils import check_and_clean_data
 from tensorflow import keras
 from sklearn.utils import check_random_state
 
+
 class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
     """Encoder
 
