@@ -3,7 +3,7 @@
 __author__ = "Withington, James Large"
 
 from sklearn.base import RegressorMixin
-from sktime.regressors.base import BaseRegressor
+from sktime.regression.base import BaseRegressor
 
 from sktime_dl.utils import check_and_clean_data
 from sktime_dl.utils import check_is_fitted

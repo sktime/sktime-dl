@@ -8,6 +8,7 @@ from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.mcdcnn._base import MCDCNNNetwork
 from sktime_dl.utils import check_and_clean_data
 from sktime_dl.utils import check_is_fitted
+from sklearn.utils import check_random_state
 
 
 class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
@@ -40,7 +41,7 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
             filter_sizes=[8, 8],
             dense_units=732,
             callbacks=[],
-            random_seed=0,
+            random_state=0,
             verbose=False,
             model_name="mcdcnn",
             model_save_directory=None,
@@ -55,7 +56,7 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
          conv layer
         :param dense_units: int, number of units in the penultimate dense layer
         :param callbacks: not used
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and
         file writing purposes
@@ -67,7 +68,7 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         )
 
         self.verbose = verbose
-        self.is_fitted = False
+        self._is_fitted = False
 
         # calced in fit
         self.classes_ = None
@@ -85,10 +86,10 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         self.dense_units = dense_units
 
         self.callbacks = callbacks
-        self.random_seed = random_seed
+        self.random_state = random_state
         self.verbose = verbose
 
-        self.is_fitted = False
+        self._is_fitted = False
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -144,8 +145,7 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         -------
         self : object
         """
-        if self.random_state is None:
-            self.random_state = np.random.RandomState(self.random_seed)
+        self.random_state = check_random_state(self.random_state)
 
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
@@ -177,7 +177,7 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         )
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self
 

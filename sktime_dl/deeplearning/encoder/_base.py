@@ -33,11 +33,11 @@ class EncoderNetwork(BaseDeepNetwork):
     }
     """
 
-    def __init__(self, random_seed=0):
+    def __init__(self, random_state=0):
         """
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         """
-        self.random_seed = random_seed
+        self.random_state = random_state
 
     def build_network(self, input_shape, **kwargs):
         """

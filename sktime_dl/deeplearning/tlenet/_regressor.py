@@ -33,7 +33,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
             slice_ratio=0.1,
             callbacks=None,
             verbose=False,
-            random_seed=0,
+            random_state=0,
             model_name="tlenet_regressor",
             model_save_directory=None
     ):
@@ -45,7 +45,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         :param slice_ratio: float, ratio of the time series used to create a
          slice
         :param callbacks: list of tf.keras.callbacks.Callback objects
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and
          file writing purposes
@@ -56,7 +56,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
             model_name=model_name, model_save_directory=model_save_directory)
 
         self.verbose = verbose
-        self.is_fitted = False
+        self._is_fitted = False
 
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
@@ -65,9 +65,9 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
 
         self.callbacks = callbacks
         self.verbose = verbose
-        self.random_seed = random_seed
+        self.random_state = random_state
 
-        self.is_fitted = False
+        self._is_fitted = False
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -140,7 +140,7 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         )
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self
 

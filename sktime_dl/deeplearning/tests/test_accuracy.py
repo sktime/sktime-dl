@@ -38,8 +38,8 @@ def accuracy_test(network, lower=0.94, upper=1.0):
     """
     print("Start accuracy_test:", network.__class__.__name__)
 
-    X_train, y_train = load_italy_power_demand(split="TRAIN", return_X_y=True)
-    X_test, y_test = load_italy_power_demand(split="TEST", return_X_y=True)
+    X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
+    X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
 
     network.fit(X_train, y_train)
 

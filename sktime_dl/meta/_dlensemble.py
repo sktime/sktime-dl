@@ -8,11 +8,13 @@ import numpy as np
 import pandas as pd
 from sklearn.base import clone
 from sklearn.utils.multiclass import class_distribution
-from sktime.classifiers.base import BaseClassifier
-from sktime.utils.validation.supervised import validate_X
+from sktime.classification.base import BaseClassifier
+from sktime.utils.validation.series_as_features import check_X
 from tensorflow import keras
 
 from sktime_dl.deeplearning import InceptionTimeClassifier
+
+from sklearn.utils import check_random_state
 
 
 class DeepLearnerEnsembleClassifier(BaseClassifier):
@@ -40,7 +42,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
             base_model=InceptionTimeClassifier(),
             nb_iterations=5,
             keep_in_memory=False,
-            random_seed=0,
+            random_state=0,
             verbose=False,
             model_name=None,
             model_save_directory=None,
@@ -55,7 +57,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
                 Otherwise, models will be written to/read from file
                 individually while fitting/predicting.
                 model_name and model_save_directory must be set in this case
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and
         file writing purposes. if None, will default
@@ -72,7 +74,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
             self.model_name = model_name
 
         self.model_save_directory = model_save_directory
-        self.is_fitted = False
+        self._is_fitted = False
 
         if base_model.is_fitted:
             raise ValueError(
@@ -90,12 +92,11 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         self.skdl_models = []
         self.keras_models = []
 
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
+        self.random_state = check_random_state(random_state)
 
     def construct_model(self, itr):
         model = clone(self.base_model)
-        model.random_seed = self.random_seed + itr
+        model.random_state = self.random_state + itr
 
         if self.model_save_directory is not None:
             model.model_save_directory = self.model_save_directory
@@ -145,7 +146,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
                 gc.collect()
                 keras.backend.clear_session()
 
-        self.is_fitted = True
+        self._is_fitted = True
         return self
 
     def predict_proba(self, X, input_checks=True, **kwargs):
@@ -168,7 +169,7 @@ class DeepLearnerEnsembleClassifier(BaseClassifier):
         output : array of shape = [n_instances, n_classes] of probabilities
         """
         if input_checks:
-            validate_X(X)
+            check_X(X)
 
         if isinstance(X, pd.DataFrame):
             if X.shape[1] > 1 or not isinstance(X.iloc[0, 0], pd.Series):
@@ -230,13 +231,13 @@ class EnsembleFromFileClassifier(BaseClassifier):
             dataset_name,
             nb_iterations=5,
             network_name="inception",
-            random_seed=0,
+            random_state=0,
             verbose=False,
     ):
         self.network_name = network_name
         self.nb_iterations = nb_iterations
         self.verbose = verbose
-        self.is_fitted = False
+        self._is_fitted = False
 
         self.res_path = res_path
         self.dataset_name = dataset_name
@@ -246,8 +247,8 @@ class EnsembleFromFileClassifier(BaseClassifier):
         self.nb_classes = -1
         self.models = []
 
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
+        self.random_state = random_state
+        self.random_state = np.random.RandomState(self.random_state)
 
     def load_network_probs(
             self, network_name, itr, res_path, dataset_name, fold
@@ -273,7 +274,7 @@ class EnsembleFromFileClassifier(BaseClassifier):
                 itr,
                 self.res_path,
                 self.dataset_name,
-                self.random_seed,
+                self.random_state,
             )
 
             if itr == 0:
@@ -288,7 +289,7 @@ class EnsembleFromFileClassifier(BaseClassifier):
             # first column is probability of class 0 and second is of class 1
             self.y_pred = np.hstack([1 - self.y_pred, self.y_pred])
 
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self
 

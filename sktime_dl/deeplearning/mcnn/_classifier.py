@@ -13,6 +13,7 @@ from tensorflow import keras
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.utils import check_and_clean_data
 from sktime_dl.utils import check_is_fitted
+from sklearn.utils import check_random_state
 
 
 class MCNNClassifier(BaseDeepClassifier):
@@ -42,7 +43,7 @@ class MCNNClassifier(BaseDeepClassifier):
             nb_epochs=200,
             max_train_batch_size=256,
             slice_ratio=0.9,
-            random_seed=0,
+            random_state=0,
             verbose=False,
             model_name="mcnn",
             model_save_directory=None,
@@ -56,7 +57,7 @@ class MCNNClassifier(BaseDeepClassifier):
         :param max_train_batch_size: int,
         :param slice_ratio: int,
 
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and
          file writing purposes
@@ -67,7 +68,7 @@ class MCNNClassifier(BaseDeepClassifier):
             model_save_directory=model_save_directory,
             model_name=model_name
         )
-        self.random_seed = random_seed
+        self.random_state = random_state
         self.verbose = verbose
 
         self.pool_factors = (
@@ -82,7 +83,7 @@ class MCNNClassifier(BaseDeepClassifier):
         self.max_train_batch_size = max_train_batch_size
         self.slice_ratio = slice_ratio
 
-        self.is_fitted = False
+        self._is_fitted = False
 
     def set_hyperparameters(self):
         # *******set up the ma and ds********#
@@ -515,8 +516,7 @@ class MCNNClassifier(BaseDeepClassifier):
         -------
         self : object
         """
-        if self.random_state is None:
-            self.random_state = np.random.RandomState(self.random_seed)
+        self.random_state = check_random_state(self.random_state)
 
         self.set_hyperparameters()
 
@@ -553,7 +553,7 @@ class MCNNClassifier(BaseDeepClassifier):
         _, self.model = self.train(X, y_onehot, pool_factor, filter_size)
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self
 

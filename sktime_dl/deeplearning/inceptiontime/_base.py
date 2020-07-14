@@ -33,7 +33,7 @@ class InceptionTimeNetwork(BaseDeepNetwork):
             bottleneck_size=32,
             depth=6,
             kernel_size=41 - 1,
-            random_seed=0,
+            random_state=0,
     ):
         """
         :param nb_filters: int,
@@ -43,7 +43,7 @@ class InceptionTimeNetwork(BaseDeepNetwork):
         :param kernel_size: int, specifying the length of the 1D convolution
          window
         :param bottleneck_size: int,
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         """
 
         self.nb_filters = nb_filters
@@ -53,7 +53,7 @@ class InceptionTimeNetwork(BaseDeepNetwork):
         self.kernel_size = kernel_size
         self.bottleneck_size = bottleneck_size
 
-        self.random_seed = random_seed
+        self.random_state = random_state
 
     def _inception_module(self, input_tensor, stride=1, activation="linear"):
 

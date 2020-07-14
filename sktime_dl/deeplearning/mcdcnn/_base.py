@@ -27,7 +27,7 @@ class MCDCNNNetwork(BaseDeepNetwork):
             pool_size=2,
             filter_sizes=[8, 8],
             dense_units=732,
-            random_seed=0,
+            random_state=0,
     ):
         """
         :param kernel_size: int, specifying the length of the 1D convolution
@@ -36,10 +36,10 @@ class MCDCNNNetwork(BaseDeepNetwork):
         :param filter_sizes: int, array of shape = 2, size of filter for each
          conv layer
         :param dense_units: int, number of units in the penultimate dense layer
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         """
 
-        self.random_seed = random_seed
+        self.random_state = random_state
 
         self.kernel_size = kernel_size
         self.pool_size = pool_size

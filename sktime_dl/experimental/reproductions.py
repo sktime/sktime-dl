@@ -25,8 +25,8 @@ if len(sys.argv) > 1:
 
         seed(rngseed)
 
-        # from tensorflow import set_random_seed
-        # set_random_seed(rngseed)
+        # from tensorflow import set_random_state
+        # set_random_state(rngseed)
 
         import tensorflow as tf
 
@@ -176,38 +176,38 @@ def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     """
     fold = int(fold)
     if cls.lower() == "dl4tsc_cnn":
-        return CNNClassifier(random_seed=fold)
+        return CNNClassifier(random_state=fold)
     elif cls.lower() == "dl4tsc_encoder":
-        return EncoderClassifier(random_seed=fold)
+        return EncoderClassifier(random_state=fold)
     elif cls.lower() == "dl4tsc_fcn":
-        return FCNClassifier(random_seed=fold)
+        return FCNClassifier(random_state=fold)
     elif cls.lower() == "dl4tsc_mcdcnn":
-        return MCDCNNClassifier(random_seed=fold)
+        return MCDCNNClassifier(random_state=fold)
     elif cls.lower() == "dl4tsc_mcnn":
-        return MCNNClassifier(random_seed=fold)
+        return MCNNClassifier(random_state=fold)
     elif cls.lower() == "dl4tsc_mlp":
-        return MLPClassifier(random_seed=fold)
+        return MLPClassifier(random_state=fold)
     elif cls.lower() == "dl4tsc_resnet":
-        return ResNetClassifier(random_seed=fold)
+        return ResNetClassifier(random_state=fold)
     elif cls.lower() == "dl4tsc_tlenet":
-        return TLENETClassifier(random_seed=fold)
+        return TLENETClassifier(random_state=fold)
     elif cls.lower() == "dl4tsc_twiesn":
-        return TWIESNClassifier(random_seed=fold)
+        return TWIESNClassifier(random_state=fold)
     elif cls.lower() == "inception0":
-        return InceptionTimeClassifier(random_seed=fold)
+        return InceptionTimeClassifier(random_state=fold)
     elif cls.lower() == "inception1":
-        return InceptionTimeClassifier(random_seed=fold)
+        return InceptionTimeClassifier(random_state=fold)
     elif cls.lower() == "inception2":
-        return InceptionTimeClassifier(random_seed=fold)
+        return InceptionTimeClassifier(random_state=fold)
     elif cls.lower() == "inception3":
-        return InceptionTimeClassifier(random_seed=fold)
+        return InceptionTimeClassifier(random_state=fold)
     elif cls.lower() == "inception4":
-        return InceptionTimeClassifier(random_seed=fold)
+        return InceptionTimeClassifier(random_state=fold)
     elif cls.lower() == "inceptiontime":
         return EnsembleFromFileClassifier(
             res_dir,
             dset,
-            random_seed=fold,
+            random_state=fold,
             network_name="inception",
             nb_iterations=5,
         )

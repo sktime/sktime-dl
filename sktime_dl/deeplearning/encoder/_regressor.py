@@ -28,7 +28,7 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
     :param batch_size: int, specifying the length of the 1D convolution
      window
     :param callbacks: list of tf.keras.callbacks.Callback objects
-    :param random_seed: int, seed to any needed random actions
+    :param random_state: int, seed to any needed random actions
     :param verbose: boolean, whether to output extra information
     :param model_name: string, the name of this model for printing and
     file writing purposes
@@ -41,7 +41,7 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
             nb_epochs=2000,
             batch_size=16,
             callbacks=None,
-            random_seed=0,
+            random_state=0,
             verbose=False,
             model_name="encoder_regressor",
             model_save_directory=None,
@@ -51,7 +51,7 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
         )
 
         self.verbose = verbose
-        self.is_fitted = False
+        self._is_fitted = False
 
         # calced in fit
         self.input_shape = None
@@ -62,10 +62,10 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
         self.batch_size = batch_size
 
         self.callbacks = callbacks
-        self.random_seed = random_seed
+        self.random_state = random_state
         self.verbose = verbose
 
-        self.is_fitted = False
+        self._is_fitted = False
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -131,6 +131,6 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
         )
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self

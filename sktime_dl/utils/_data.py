@@ -5,16 +5,15 @@ __author__ = "James Large"
 import numpy as np
 import pandas as pd
 from sktime.utils.data_container import tabularise
-from sktime.utils.validation.supervised import validate_X
-from sktime.utils.validation.supervised import validate_X_y
+from sktime.utils.validation.series_as_features import check_X, check_X_y
 
 
 def check_and_clean_data(X, y=None, input_checks=True):
     if input_checks:
         if y is None:
-            validate_X(X)
+            check_X(X)
         else:
-            validate_X_y(X, y)
+            check_X_y(X, y)
 
     # want data in form: [instances = n][timepoints = m][dimensions = d]
     if isinstance(X, pd.DataFrame):

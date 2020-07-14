@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from sklearn.exceptions import NotFittedError
 from sktime.datasets import load_italy_power_demand
-from sktime.regressors.base import BaseRegressor
+from sktime.regression.base import BaseRegressor
 
 from sktime_dl.deeplearning import CNNClassifier
 from sktime_dl.utils.model_lists import SMALL_NB_EPOCHS
@@ -15,7 +15,7 @@ def test_is_fitted(network=CNNClassifier()):
     testing that the networks correctly recognise when they are not fitted
     """
 
-    X_train, y_train = load_italy_power_demand("TRAIN", return_X_y=True)
+    X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
 
     if isinstance(network, BaseRegressor):
         # Create some regression values, taken from test_regressor

@@ -1,11 +1,12 @@
 __author__ = "James Large"
 
 import numpy as np
-from tensorflow import keras
-
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.cnn._base import CNNNetwork
 from sktime_dl.utils import check_and_clean_data
+from sklearn.utils import check_random_state
+from tensorflow import keras
+
 
 
 class CNNClassifier(BaseDeepClassifier, CNNNetwork):
@@ -31,7 +32,7 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
      pooling layers
     :param filter_sizes: int, array of shape = (nb_conv_layers)
     :param callbacks: list of tf.keras.callbacks.Callback objects
-    :param random_seed: int, seed to any needed random actions
+    :param random_state: int, or sklearn Random.state
     :param verbose: boolean, whether to output extra information
     :param model_name: string, the name of this model for printing and
     file writing purposes
@@ -48,7 +49,7 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
             nb_conv_layers=2,
             filter_sizes=[6, 12],
             callbacks=None,
-            random_seed=0,
+            random_state=0,
             verbose=False,
             model_name="cnn",
             model_save_directory=None,
@@ -59,14 +60,14 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
         self.filter_sizes = filter_sizes
         self.nb_conv_layers = nb_conv_layers
         self.avg_pool_size = avg_pool_size
-        self.random_seed = random_seed
+        self.random_state = random_state
         self.kernel_size = kernel_size
         self.verbose = verbose
         self.callbacks = callbacks
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
 
-        self.is_fitted = False
+        self._is_fitted = False
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -112,8 +113,7 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
         -------
         self : object
         """
-        if self.random_state is None:
-            self.random_state = np.random.RandomState(self.random_seed)
+        self.random_state = check_random_state(self.random_state)
 
         if self.callbacks is None:
             self.callbacks = []
@@ -140,6 +140,6 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
         )
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self

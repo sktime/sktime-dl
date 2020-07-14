@@ -33,7 +33,7 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
             filter_sizes=[8, 8],
             dense_units=732,
             callbacks=[],
-            random_seed=0,
+            random_state=0,
             verbose=False,
             model_name="mcdcnn_regressor",
             model_save_directory=None,
@@ -48,7 +48,7 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
          conv layer
         :param dense_units: int, number of units in the penultimate dense layer
         :param callbacks: not used
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and file
          writing purposes
@@ -60,7 +60,7 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
         )
 
         self.verbose = verbose
-        self.is_fitted = False
+        self._is_fitted = False
 
         # calced in fit
         self.input_shape = None
@@ -76,9 +76,9 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
         self.dense_units = dense_units
 
         self.callbacks = callbacks
-        self.random_seed = random_seed
+        self.random_state = random_state
         self.verbose = verbose
-        self.is_fitted = False
+        self._is_fitted = False
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -157,6 +157,6 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
         )
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self
