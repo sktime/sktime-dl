@@ -10,7 +10,7 @@ from sktime.datasets import load_italy_power_demand
 
 from sktime_dl.deeplearning import MLPRegressor
 from sktime_dl.utils.model_lists import SMALL_NB_EPOCHS
-# from sktime_dl.utils.model_lists import construct_all_regressors
+from sktime_dl.utils.model_lists import construct_all_regressors
 
 
 def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
@@ -72,11 +72,11 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
 #     print("End test_regressor_forecasting()")
 
 
-# def test_all_regressors():
-#     for network in construct_all_regressors(SMALL_NB_EPOCHS):
-#         print("\n\t\t" + network.__class__.__name__ + " testing started")
-#         test_regressor(network)
-#         print("\t\t" + network.__class__.__name__ + " testing finished")
+def test_all_regressors():
+    for network in construct_all_regressors(SMALL_NB_EPOCHS):
+        print("\n\t\t" + network.__class__.__name__ + " testing started")
+        test_regressor(network)
+        print("\t\t" + network.__class__.__name__ + " testing finished")
 
 
 # def test_all_forecasters():
@@ -89,7 +89,7 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
 #         )
 #         test_regressor_forecasting(network, window_length=window_length)
 #         print(
-#             "\t\t" + network.__class__.__name__ + " forecast 
+#             "\t\t" + network.__class__.__name__ + " forecast
 # testing finished"
 #         )
 

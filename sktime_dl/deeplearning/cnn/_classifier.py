@@ -1,12 +1,10 @@
 __author__ = "James Large"
 
-import numpy as np
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.cnn._base import CNNNetwork
 from sktime_dl.utils import check_and_clean_data
 from sklearn.utils import check_random_state
 from tensorflow import keras
-
 
 
 class CNNClassifier(BaseDeepClassifier, CNNNetwork):
