@@ -139,7 +139,7 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
             callbacks=self.callbacks,
         )
 
-        self.save_trained_model()
         self._is_fitted = True
+        self.save_trained_model()
 
         return self

@@ -54,7 +54,9 @@ def test_basic_saving(
     print("Start test_basic()")
 
     path = Path(network.model_save_directory)
-    path.mkdir()
+    #if the directory doesn't get cleaned up because of error in testing
+    if not path.exists():
+        path.mkdir()
 
     X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
     X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
