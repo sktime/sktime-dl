@@ -1,6 +1,5 @@
 __author__ = "James Large"
 
-import numpy as np
 from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
@@ -8,10 +7,11 @@ from sktime_dl.deeplearning.fcn._base import FCNNetwork
 from sktime_dl.utils import check_and_clean_data
 from sklearn.utils import check_random_state
 
+
 class FCNClassifier(BaseDeepClassifier, FCNNetwork):
     """Fully convolutional neural network (FCN).
 
-    Adapted from the implementation from Fawaz et. al
+    Adapted from the implementation from Fawaz et. al`
 
     https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/fcn.py
 

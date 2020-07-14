@@ -54,7 +54,7 @@ def test_basic_saving(
     print("Start test_basic()")
 
     path = Path(network.model_save_directory)
-    #if the directory doesn't get cleaned up because of error in testing
+    # if the directory doesn't get cleaned up because of error in testing
     if not path.exists():
         path.mkdir()
 
