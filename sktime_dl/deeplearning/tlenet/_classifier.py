@@ -8,6 +8,7 @@ from sktime_dl.utils import check_and_clean_data, check_is_fitted
 from tensorflow import keras
 from sklearn.utils import check_random_state
 
+
 class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
     """Time Le-Net (TLENET).
 

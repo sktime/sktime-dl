@@ -1,10 +1,10 @@
-import numpy as np
 from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.inceptiontime._base import InceptionTimeNetwork
 from sktime_dl.utils import check_and_clean_data
 from sklearn.utils import check_random_state
+
 
 class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
     """InceptionTime

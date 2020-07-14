@@ -84,11 +84,13 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
 
 #     for network in construct_all_regressors(SMALL_NB_EPOCHS):
 #         print(
-#             "\n\t\t" + network.__class__.__name__ + " forecast testing started"
+#             "\n\t\t" + network.__class__.__name__ + " forecast
+#  testing started"
 #         )
 #         test_regressor_forecasting(network, window_length=window_length)
 #         print(
-#             "\t\t" + network.__class__.__name__ + " forecast testing finished"
+#             "\t\t" + network.__class__.__name__ + " forecast 
+# testing finished"
 #         )
 
 

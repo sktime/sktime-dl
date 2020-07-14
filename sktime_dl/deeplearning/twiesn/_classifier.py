@@ -12,6 +12,7 @@ from sktime_dl.utils import check_and_clean_data
 from sktime_dl.utils import check_is_fitted
 from sklearn.utils import check_random_state
 
+
 class TWIESNClassifier(BaseDeepClassifier):
     """Time Warping Invariant Echo State Network (TWIESN).
 
