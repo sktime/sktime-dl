@@ -1,11 +1,11 @@
 __author__ = "James Large"
 
-import numpy as np
 from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
 from sktime_dl.utils import check_and_clean_data
+from sklearn.utils import check_random_state
 
 
 class MLPClassifier(BaseDeepClassifier, MLPNetwork):
@@ -28,7 +28,7 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
                  nb_epochs=5000,
                  batch_size=16,
                  callbacks=None,
-                 random_seed=0,
+                 random_state=0,
                  verbose=False,
                  model_name="mlp",
                  model_save_directory=None):
@@ -37,7 +37,7 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
         :param batch_size: int, specifying the length of the 1D convolution
          window
         :param callbacks: list of tf.keras.callbacks.Callback objects
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and
          file writing purposes
@@ -51,10 +51,10 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
         self.callbacks = callbacks
-        self.random_seed = random_seed
+        self.random_state = random_state
         self.verbose = verbose
 
-        self.is_fitted = False
+        self._is_fitted = False
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -114,8 +114,7 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
         -------
         self : object
         """
-        if self.random_state is None:
-            self.random_state = np.random.RandomState(self.random_seed)
+        self.random_state = check_random_state(self.random_state)
 
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
@@ -141,6 +140,6 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
         )
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self

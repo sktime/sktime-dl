@@ -33,7 +33,7 @@ class CNNNetwork(BaseDeepNetwork):
             avg_pool_size=3,
             nb_conv_layers=2,
             filter_sizes=[6, 12],
-            random_seed=0,
+            random_state=0,
     ):
         """
         :param kernel_size: int, specifying the length of the 1D convolution
@@ -42,10 +42,10 @@ class CNNNetwork(BaseDeepNetwork):
         :param nb_conv_layers: int, the number of convolutional plus average
          pooling layers
         :param filter_sizes: int, array of shape = (nb_conv_layers)
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         """
 
-        self.random_seed = random_seed
+        self.random_state = random_state
         self.kernel_size = kernel_size
         self.avg_pool_size = avg_pool_size
         self.nb_conv_layers = nb_conv_layers

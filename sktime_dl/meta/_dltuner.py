@@ -26,7 +26,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
             ),
             search_method="grid",
             cv_folds=5,
-            random_seed=0,
+            random_state=0,
             verbose=False,
             model_name=None,
             model_save_directory=None,
@@ -37,7 +37,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
         parameters of the base_model, mapped to values to search over :param
         search_method: string out of ['grid', 'random'], how to search over
         the param_grid :param cv_folds: int, number of cross validation
-        folds to use in evaluation of each parameter set :param random_seed:
+        folds to use in evaluation of each parameter set :param random_state:
         int, seed to any needed random actions :param verbose: boolean,
         whether to output extra information :param model_name: string,
         the name of this model for printing and file writing purposes. if
@@ -55,9 +55,9 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
 
         self.model_save_directory = model_save_directory
 
-        self.random_seed = random_seed
-        self.random_state = np.random.RandomState(self.random_seed)
-        self.is_fitted = False
+        self.random_state = random_state
+        self.random_state = np.random.RandomState(self.random_state)
+        self._is_fitted = False
 
         self.base_model = base_model
 
@@ -117,7 +117,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
                 refit=True,
                 cv=self.cv_folds,
                 n_jobs=self.n_jobs,
-                random_state=self.random_seed,
+                random_state=self.random_state,
             )
         else:
             # todo expand, give options etc
@@ -140,7 +140,7 @@ class TunedDeepLearningClassifier(BaseDeepClassifier):
             self.print_search_summary()
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self
 

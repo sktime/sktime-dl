@@ -31,7 +31,7 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
      pooling layers
     :param filter_sizes: int, array of shape = (nb_conv_layers)
     :param callbacks: list of tf.keras.callbacks.Callback objects
-    :param random_seed: int, seed to any needed random actions
+    :param random_state: int, seed to any needed random actions
     :param verbose: boolean, whether to output extra information
     :param model_name: string, the name of this model for printing and file
      writing purposes
@@ -48,7 +48,7 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
             nb_conv_layers=2,
             filter_sizes=[6, 12],
             callbacks=None,
-            random_seed=0,
+            random_state=0,
             verbose=False,
             model_name="cnn_regressor",
             model_save_directory=None,
@@ -60,14 +60,14 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         self.filter_sizes = filter_sizes
         self.nb_conv_layers = nb_conv_layers
         self.avg_pool_size = avg_pool_size
-        self.random_seed = random_seed
+        self.random_state = random_state
         self.kernel_size = kernel_size
         self.verbose = verbose
         self.callbacks = callbacks
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
 
-        self.is_fitted = False
+        self._is_fitted = False
 
     def build_model(self, input_shape, **kwargs):
         """
@@ -132,6 +132,6 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         )
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self

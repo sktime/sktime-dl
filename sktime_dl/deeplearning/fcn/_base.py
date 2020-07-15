@@ -25,11 +25,11 @@ class FCNNetwork(BaseDeepNetwork):
       organization={IEEE}
     }
 
-    :param random_seed: int, seed to any needed random actions
+    :param random_state: int, seed to any needed random actions
     """
 
-    def __init__(self, random_seed=0):
-        self.random_seed = random_seed
+    def __init__(self, random_state=0):
+        self.random_state = random_state
 
     def build_network(self, input_shape, **kwargs):
         """

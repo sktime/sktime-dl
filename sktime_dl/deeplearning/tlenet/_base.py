@@ -22,13 +22,13 @@ class TLENETNetwork(BaseDeepNetwork):
     year={2016} }
     """
 
-    def __init__(self, random_seed=0):
+    def __init__(self, random_state=0):
         """
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         """
         self.warping_ratios = [0.5, 1, 2]
         self.slice_ratio = 0.1
-        self.random_seed = random_seed
+        self.random_state = random_state
 
     def slice_data(self, X, y=None, length_sliced=1):
         """

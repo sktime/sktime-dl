@@ -1,11 +1,10 @@
 __author__ = "James Large"
 
-import numpy as np
-from tensorflow import keras
-
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.encoder._base import EncoderNetwork
 from sktime_dl.utils import check_and_clean_data
+from tensorflow import keras
+from sklearn.utils import check_random_state
 
 
 class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
@@ -30,7 +29,7 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
     :param batch_size: int, specifying the length of the 1D convolution
      window
     :param callbacks: list of tf.keras.callbacks.Callback objects
-    :param random_seed: int, seed to any needed random actions
+    :param random_state: int, seed to any needed random actions
     :param verbose: boolean, whether to output extra information
     :param model_name: string, the name of this model for printing and
      file writing purposes
@@ -43,7 +42,7 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
             nb_epochs=100,
             batch_size=12,
             callbacks=None,
-            random_seed=0,
+            random_state=0,
             verbose=False,
             model_name="encoder",
             model_save_directory=None,
@@ -56,10 +55,10 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
         self.batch_size = batch_size
 
         self.callbacks = callbacks
-        self.random_seed = random_seed
+        self.random_state = random_state
         self.verbose = verbose
 
-        self.is_fitted = False
+        self._is_fitted = False
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -105,8 +104,7 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
         -------
         self : object
         """
-        if self.random_state is None:
-            self.random_state = np.random.RandomState(self.random_seed)
+        self.random_state = check_random_state(self.random_state)
 
         if self.callbacks is None:
             self.callbacks = []
@@ -133,6 +131,6 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
         )
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self

@@ -30,7 +30,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
             batch_size=1,
             units=6,
             callbacks=None,
-            random_seed=0,
+            random_state=0,
             verbose=0,
             model_name="simple_rnn_regressor",
             model_save_directory=None,
@@ -40,7 +40,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
         self.verbose = verbose
         self.units = units
         self.callbacks = callbacks
-        self.random_seed = random_seed
+        self.random_state = random_state
         super(SimpleRNNRegressor, self).__init__(
             model_name=model_name,
             model_save_directory=model_save_directory
@@ -97,5 +97,5 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
             callbacks=self.callbacks,
         )
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
         return self

@@ -10,6 +10,7 @@ from sklearn.model_selection import train_test_split
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.utils import check_and_clean_data
 from sktime_dl.utils import check_is_fitted
+from sklearn.utils import check_random_state
 
 
 class TWIESNClassifier(BaseDeepClassifier):
@@ -32,7 +33,7 @@ class TWIESNClassifier(BaseDeepClassifier):
             self,
             rho_s=[0.55, 0.9, 2.0, 5.0],
             alpha=0.1,  # leaky rate
-            random_seed=0,
+            random_state=0,
             verbose=False,
             model_name="twiesn",
             model_save_directory=None,
@@ -40,7 +41,7 @@ class TWIESNClassifier(BaseDeepClassifier):
         """
         :param rho_s: array of shape
         :param alpha: float, the leakage rate
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and
          file writing purposes
@@ -53,12 +54,12 @@ class TWIESNClassifier(BaseDeepClassifier):
         self.rho_s = rho_s
         self.alpha = alpha  # leakage rate
 
-        self.random_seed = random_seed
+        self.random_state = random_state
         self.verbose = verbose
         self.model_name = model_name
         self.model_save_directory = model_save_directory
 
-        self.is_fitted = False
+        self._is_fitted = False
 
     def set_hyperparameters(self):
         # hyperparameters
@@ -138,8 +139,7 @@ class TWIESNClassifier(BaseDeepClassifier):
         -------
         self : object
         """
-        if self.random_state is None:
-            self.random_state = np.random.RandomState(self.random_seed)
+        self.random_state = check_random_state(self.random_state)
 
         self.set_hyperparameters()
 
@@ -207,7 +207,7 @@ class TWIESNClassifier(BaseDeepClassifier):
         self.model.fit(X_transformed, y_new)
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self
 

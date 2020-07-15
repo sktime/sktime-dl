@@ -1,12 +1,12 @@
 __author__ = "Aaron Bostrom, James Large"
 
 import numpy as np
-from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
-from sktime_dl.utils import check_and_clean_data
-from sktime_dl.utils import check_is_fitted
+from sktime_dl.utils import check_and_clean_data, check_is_fitted
+from tensorflow import keras
+from sklearn.utils import check_random_state
 
 
 class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
@@ -36,7 +36,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
             slice_ratio=0.1,
             callbacks=None,
             verbose=False,
-            random_seed=0,
+            random_state=0,
             model_name="tlenet",
             model_save_directory=None,
     ):
@@ -48,7 +48,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         :param slice_ratio: float, ratio of the time series used to create a
          slice
         :param callbacks: list of tf.keras.callbacks.Callback objects
-        :param random_seed: int, seed to any needed random actions
+        :param random_state: int, seed to any needed random actions
         :param verbose: boolean, whether to output extra information
         :param model_name: string, the name of this model for printing and
          file writing purposes
@@ -65,9 +65,9 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         self.callbacks = callbacks
         self.verbose = verbose
-        self.random_seed = random_seed
+        self.random_state = random_state
 
-        self.is_fitted = False
+        self._is_fitted = False
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -116,8 +116,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         if self.callbacks is None:
             self.callbacks = []
 
-        if self.random_state is None:
-            self.random_state = np.random.RandomState(self.random_seed)
+        self.random_state = check_random_state(self.random_state)
 
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
@@ -146,7 +145,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         )
 
         self.save_trained_model()
-        self.is_fitted = True
+        self._is_fitted = True
 
         return self
 
@@ -177,18 +176,11 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         preds = self.model.predict(X, batch_size=self.batch_size)
 
-        y_predicted = []
         test_num_batch = int(X.shape[0] / tot_increase_num)
 
-        # TODO: could fix this to be an array literal.
-        for i in range(test_num_batch):
-            y_predicted.append(
-                np.average(
-                    preds[i * tot_increase_num:((i + 1) *
-                                                tot_increase_num) - 1],
-                    axis=0,
-                )
-            )
+        y_predicted = [np.average(preds[i * tot_increase_num:(
+            (i + 1) * tot_increase_num) - 1], axis=0)
+            for i in range(test_num_batch)]
 
         y_pred = np.array(y_predicted)
 

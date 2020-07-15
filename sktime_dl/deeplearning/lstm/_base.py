@@ -14,7 +14,7 @@ class LSTMNetwork(BaseDeepNetwork):
     """
 
     def __init__(self):
-        self.random_seed = None
+        self.random_state = None
         self.units = None
 
     def build_network(self, input_shape, **kwargs):

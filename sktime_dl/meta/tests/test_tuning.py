@@ -17,8 +17,8 @@ def test_basic_tuning(
 
     print("Start test_basic_tuning()")
 
-    X_train, y_train = load_italy_power_demand(split="TRAIN", return_X_y=True)
-    X_test, y_test = load_italy_power_demand(split="TEST", return_X_y=True)
+    X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
+    X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
 
     network.fit(X_train[:10], y_train[:10])
 

@@ -17,8 +17,8 @@ def test_basic_univariate(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
 
     print("Start test_basic()")
 
-    X_train, y_train = load_italy_power_demand(split="TRAIN", return_X_y=True)
-    X_test, y_test = load_italy_power_demand(split="TEST", return_X_y=True)
+    X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
+    X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
 
     network.fit(X_train[:10], y_train[:10])
 
@@ -37,15 +37,15 @@ def test_pipeline(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
 
     print("Start test_pipeline()")
 
-    from sktime.pipeline import Pipeline
+    from sklearn.pipeline import Pipeline
 
     # just a simple (useless) pipeline for the purposes of testing
     # that the keras network is compatible with that system
     steps = [("clf", network)]
     clf = Pipeline(steps)
 
-    X_train, y_train = load_italy_power_demand(split="TRAIN", return_X_y=True)
-    X_test, y_test = load_italy_power_demand(split="TEST", return_X_y=True)
+    X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
+    X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
 
     clf.fit(X_train[:10], y_train[:10])
 
@@ -64,12 +64,12 @@ def test_highLevelsktime(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
 
     print("start test_highLevelsktime()")
 
-    from sktime.highlevel.tasks import TSCTask
-    from sktime.highlevel.strategies import TSCStrategy
+    from sktime.benchmarking.tasks import TSCTask
+    from sktime.benchmarking.strategies import TSCStrategy
     from sklearn.metrics import accuracy_score
 
-    train = load_italy_power_demand(split="TRAIN")
-    test = load_italy_power_demand(split="TEST")
+    train = load_italy_power_demand(split="train")
+    test = load_italy_power_demand(split="test")
     task = TSCTask(target="class_val", metadata=train)
 
     strategy = TSCStrategy(network)
@@ -91,8 +91,8 @@ def test_basic_multivariate(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
         score
     """
     print("Start test_multivariate()")
-    X_train, y_train = load_basic_motions(split="TRAIN", return_X_y=True)
-    X_test, y_test = load_basic_motions(split="TEST", return_X_y=True)
+    X_train, y_train = load_basic_motions(split="train", return_X_y=True)
+    X_test, y_test = load_basic_motions(split="test", return_X_y=True)
 
     network.fit(X_train, y_train)
 
