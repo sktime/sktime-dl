@@ -75,16 +75,24 @@ class BaseDeepClassifier(BaseClassifier):
             self.model, self.model_save_directory, self.model_name
         )
 
-    def convert_y(self, y):
-        self.label_encoder = LabelEncoder()
-        self.onehot_encoder = OneHotEncoder(sparse=False, categories="auto")
-        # categories='auto' to get rid of FutureWarning
+    def convert_y(self, y, label_encoder=None, onehot_encoder=None):
+        if (label_encoder is None) and (onehot_encoder is None):
+            # make the encoders and store in self
+            self.label_encoder = LabelEncoder()
+            self.onehot_encoder = OneHotEncoder(sparse=False, categories="auto")
+            # categories='auto' to get rid of FutureWarning
 
-        y = self.label_encoder.fit_transform(y)
-        self.classes_ = self.label_encoder.classes_
-        self.nb_classes = len(self.classes_)
+            y = self.label_encoder.fit_transform(y)
+            self.classes_ = self.label_encoder.classes_
+            self.nb_classes = len(self.classes_)
 
-        y = y.reshape(len(y), 1)
-        y = self.onehot_encoder.fit_transform(y)
+            y = y.reshape(len(y), 1)
+            y = self.onehot_encoder.fit_transform(y)
+        else:
+            # encoders given, just transform using those. used for e.g.
+            # validation data, where the train data has already been converted
+            y = label_encoder.fit_transform(y)
+            y = y.reshape(len(y), 1)
+            y = onehot_encoder.fit_transform(y)
 
         return y

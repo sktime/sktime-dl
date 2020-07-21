@@ -4,7 +4,8 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, \
+    check_and_clean_validation_data
 from sklearn.utils import check_random_state
 
 
@@ -99,17 +100,24 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
 
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, input_checks=True, validation_X=None,
+            validation_y=None, **kwargs):
         """
         Build the classifier on the training set (X, y)
         ----------
         X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame is passed,
-            column 0 is extracted.
+            The training input samples.
         y : array-like, shape = [n_instances]
             The class labels.
-        input_checks: boolean
+        input_checks : boolean
             whether to check the X and y parameters
+        validation_X : array-like or sparse matrix of shape = [n_val_instances,
+            n_val_columns]
+            The validation samples, predicted at each training epoch. This data
+            is not used for training in any way.
+        validation_y : array-like, shape = [n_val_instances]
+            The validation class labels. This data is not used for training in
+            any way.
         Returns
         -------
         self : object
@@ -118,6 +126,11 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
 
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
+
+        validation_data = \
+            check_and_clean_validation_data(validation_X, validation_y,
+                                            self.label_encoder,
+                                            self.onehot_encoder)
 
         # ignore the number of instances, X.shape[0], just want the shape of
         # each instance
@@ -137,6 +150,7 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
             epochs=self.nb_epochs,
             verbose=self.verbose,
             callbacks=self.callbacks,
+            validation_data=validation_data,
         )
 
         self.save_trained_model()

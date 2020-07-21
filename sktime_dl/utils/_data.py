@@ -39,6 +39,33 @@ def check_and_clean_data(X, y=None, input_checks=True):
     return X
 
 
+def check_and_clean_validation_data(validation_X, validation_y, label_encoder,
+                                    onehot_encoder, input_checks=True):
+    x = validation_X is not None
+    y = validation_y is not None
+
+    if x and y:  # both present
+        validation_X = check_and_clean_data(validation_X, validation_y,
+                                            input_checks=input_checks)
+
+        validation_y_onehot = label_encoder.transform(validation_y)
+        validation_y_onehot = validation_y_onehot.reshape(len(validation_y_onehot), 1)
+        validation_y_onehot = onehot_encoder.fit_transform(
+            validation_y_onehot)
+
+        validation_data = (validation_X, validation_y_onehot)
+    elif not x and not y:  # both missing
+        validation_data = None
+    elif x and not y:  # y missing
+        raise ValueError(
+            'Given X data for validation, but y labels are missing')
+    else:  # x missing
+        raise ValueError(
+            'Given y labels for validation, but x data are missing')
+
+    return validation_data
+
+
 def _is_nested_dataframe(X):
     return isinstance(X.iloc[0, 0], pd.Series)
 
