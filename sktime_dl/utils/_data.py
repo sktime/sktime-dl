@@ -2,9 +2,8 @@
 
 __author__ = "James Large"
 
-import numpy as np
 import pandas as pd
-from sktime.utils.data_container import tabularise
+from sktime.utils.data_container import tabularise, nested_to_3d_numpy
 from sktime.utils.validation.series_as_features import check_X, check_X_y
 
 
@@ -53,16 +52,7 @@ def _univariate_df_to_array(X):
 
 
 def _multivariate_nested_df_to_array(X):
-    # tabularise at time of writing will not keep multivariate dimensions
-    # separate, e.g. [n][m][d] becomes [n][m*d]
-    # todo investigate incorporating the reshaping into the data extraction
-    #  instead of this 2-stage process
-    X = np.array(
-        [
-            [X.iloc[r, c].values for c in range(len(X.columns))]
-            for r in range(len(X))
-        ]
-    )
-    return X.reshape(
-        X.shape[0], X.shape[2], X.shape[1]
-    )  # go from [n][d][m] to [n][m][d]
+    X = nested_to_3d_numpy(X)
+
+    # go from [n][d][m] to [n][m][d]
+    return X.transpose(0, 2, 1)
