@@ -2,7 +2,8 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.inceptiontime._base import InceptionTimeNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, \
+    check_and_clean_validation_data
 from sklearn.utils import check_random_state
 
 
@@ -123,7 +124,8 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
 
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, input_checks=True, validation_X=None,
+            validation_y=None, **kwargs):
         """
         Build the classifier on the training set (X, y)
         ----------
@@ -142,6 +144,11 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
 
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
+
+        validation_data = \
+            check_and_clean_validation_data(validation_X, validation_y,
+                                            self.label_encoder,
+                                            self.onehot_encoder)
 
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
@@ -164,6 +171,7 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
             epochs=self.nb_epochs,
             verbose=self.verbose,
             callbacks=self.callbacks,
+            validation_data=validation_data,
         )
 
         self.save_trained_model()
