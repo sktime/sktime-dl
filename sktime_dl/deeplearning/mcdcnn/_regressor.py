@@ -5,7 +5,8 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mcdcnn._base import MCDCNNNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, \
+    check_and_clean_validation_data
 
 
 class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
@@ -115,7 +116,8 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
 
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, input_checks=True, validation_X=None,
+            validation_y=None, **kwargs):
         """
         Build the regressor on the training set (X, y)
         ----------
@@ -132,14 +134,18 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
         """
         X = check_and_clean_data(X, y, input_checks=input_checks)
 
+        validation_data = \
+            check_and_clean_validation_data(validation_X, validation_y,
+                                            self.label_encoder,
+                                            self.onehot_encoder)
+
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
         self.input_shape = X.shape[1:]
 
-        x_train, x_val, y_train, y_val = train_test_split(X, y, test_size=0.33)
-
-        x_train = self.prepare_input(x_train)
-        x_val = self.prepare_input(x_val)
+        X = self.prepare_input(X)
+        if validation_data[0] is not None:
+            validation_data[0] = self.prepare_input(validation_data[0])
 
         self.model = self.build_model(self.input_shape)
 
@@ -147,12 +153,12 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
             self.model.summary()
 
         self.history = self.model.fit(
-            x_train,
-            y_train,
+            X,
+            y,
             batch_size=self.batch_size,
             epochs=self.nb_epochs,
             verbose=self.verbose,
-            validation_data=(x_val, y_val),
+            validation_data=validation_data,
             callbacks=self.callbacks,
         )
 

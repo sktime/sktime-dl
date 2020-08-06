@@ -4,7 +4,8 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.mlp._base import MLPNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, \
+    check_and_clean_validation_data
 
 
 class MLPRegressor(BaseDeepRegressor, MLPNetwork):
@@ -104,7 +105,8 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
 
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, input_checks=True, validation_X=None,
+            validation_y=None, **kwargs):
         """
         Build the regressor on the training set (X, y) ---------- X :
         array-like or sparse matrix of shape = [n_instances, n_columns] The
@@ -114,6 +116,11 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
         and y parameters Returns ------- self : object
         """
         X = check_and_clean_data(X, y, input_checks=input_checks)
+
+        validation_data = \
+            check_and_clean_validation_data(validation_X, validation_y,
+                                            self.label_encoder,
+                                            self.onehot_encoder)
 
         # ignore the number of instances, X.shape[0], just want the shape of
         # each instance
@@ -133,6 +140,7 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
             epochs=self.nb_epochs,
             verbose=self.verbose,
             callbacks=self.callbacks,
+            validation_data=validation_data,
         )
 
         self.save_trained_model()

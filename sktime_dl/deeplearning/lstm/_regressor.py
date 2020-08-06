@@ -4,7 +4,8 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.lstm._base import LSTMNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, \
+    check_and_clean_validation_data
 
 
 class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
@@ -63,7 +64,8 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
             metrics=['mean_squared_error'])
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, input_checks=True, validation_X=None,
+            validation_y=None, **kwargs):
         """
         Build the regressor on the training set (X, y)
         ----------
@@ -80,6 +82,11 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
         """
         X = check_and_clean_data(X, y, input_checks=input_checks)
 
+        validation_data = \
+            check_and_clean_validation_data(validation_X, validation_y,
+                                            self.label_encoder,
+                                            self.onehot_encoder)
+
         self.input_shape = X.shape[1:]
 
         self.model = self.build_model(self.input_shape)
@@ -88,8 +95,13 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
             self.model.summary()
 
         self.history = self.model.fit(
-            X, y, batch_size=self.batch_size,
-            epochs=self.nb_epochs, verbose=self.verbose)
+            X,
+            y,
+            batch_size=self.batch_size,
+            epochs=self.nb_epochs,
+            verbose=self.verbose,
+            validation_data=validation_data,
+        )
 
         self.save_trained_model()
         self._is_fitted = True

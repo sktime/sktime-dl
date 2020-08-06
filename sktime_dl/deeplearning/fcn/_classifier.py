@@ -4,7 +4,8 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.fcn._base import FCNNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, \
+    check_and_clean_validation_data
 from sklearn.utils import check_random_state
 
 
@@ -102,7 +103,8 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
 
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, input_checks=True, validation_X=None,
+            validation_y=None, **kwargs):
         """
         Build the classifier on the training set (X, y)
         ----------
@@ -122,6 +124,11 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
+        validation_data = \
+            check_and_clean_validation_data(validation_X, validation_y,
+                                            self.label_encoder,
+                                            self.onehot_encoder)
+
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
         self.input_shape = X.shape[1:]
@@ -140,6 +147,7 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
             epochs=self.nb_epochs,
             verbose=self.verbose,
             callbacks=self.callbacks,
+            validation_data=validation_data,
         )
 
         self.save_trained_model()

@@ -41,27 +41,24 @@ def check_and_clean_data(X, y=None, input_checks=True):
 
 def check_and_clean_validation_data(validation_X, validation_y, label_encoder,
                                     onehot_encoder, input_checks=True):
-    x = validation_X is not None
-    y = validation_y is not None
-
-    if x and y:  # both present
+    if validation_X is not None:
         validation_X = check_and_clean_data(validation_X, validation_y,
                                             input_checks=input_checks)
+    else:
+        raise ValueError(
+            'No validation data given to check')
 
+    validation_data = (validation_X, None)
+
+    if validation_y is not None:
         validation_y_onehot = label_encoder.transform(validation_y)
-        validation_y_onehot = validation_y_onehot.reshape(len(validation_y_onehot), 1)
+        validation_y_onehot = validation_y_onehot.reshape(
+            len(validation_y_onehot), 1)
         validation_y_onehot = onehot_encoder.fit_transform(
             validation_y_onehot)
 
         validation_data = (validation_X, validation_y_onehot)
-    elif not x and not y:  # both missing
-        validation_data = None
-    elif x and not y:  # y missing
-        raise ValueError(
-            'Given X data for validation, but y labels are missing')
-    else:  # x missing
-        raise ValueError(
-            'Given y labels for validation, but x data are missing')
+    # validation_y may genuinely be None for some tasks
 
     return validation_data
 

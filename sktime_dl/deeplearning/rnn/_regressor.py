@@ -12,7 +12,8 @@ from tensorflow.keras.optimizers import RMSprop
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, \
+    check_and_clean_validation_data
 
 
 class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
@@ -78,8 +79,15 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
             self.callbacks.append(reduce_lr)
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, input_checks=True, validation_X=None,
+            validation_y=None, **kwargs):
         X = check_and_clean_data(X, y, input_checks=input_checks)
+
+        validation_data = \
+            check_and_clean_validation_data(validation_X, validation_y,
+                                            self.label_encoder,
+                                            self.onehot_encoder)
+
         self.input_shape = X.shape[1:]
         self.batch_size = int(max(1, min(X.shape[0] / 10, self.batch_size)))
 
@@ -95,6 +103,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
             epochs=self.nb_epochs,
             verbose=self.verbose,
             callbacks=self.callbacks,
+            validation_data=validation_data,
         )
         self.save_trained_model()
         self._is_fitted = True
