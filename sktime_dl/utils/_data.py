@@ -70,8 +70,7 @@ def check_and_clean_validation_data(validation_X, validation_y=None,
         validation_X = check_and_clean_data(validation_X, validation_y,
                                             input_checks=input_checks)
     else:
-        raise ValueError(
-            'No validation data given to check')
+        return (None, None)
 
     validation_data = (validation_X, None)
 
