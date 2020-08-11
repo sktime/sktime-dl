@@ -70,7 +70,7 @@ def check_and_clean_validation_data(validation_X, validation_y=None,
         validation_X = check_and_clean_data(validation_X, validation_y,
                                             input_checks=input_checks)
     else:
-        return (None, None)
+        return None
 
     validation_data = (validation_X, None)
 

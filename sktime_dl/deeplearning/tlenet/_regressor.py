@@ -139,9 +139,10 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
 
         validation_data = \
             check_and_clean_validation_data(validation_X)
-        val_X, val_y, _ = self.pre_processing(validation_data[0],
-                                              validation_data[1])
-        validation_data = (val_X, val_y)
+        if validation_data is not None:
+            vX, vy, _ = self.pre_processing(validation_data[0],
+                                            validation_data[1])
+            validation_data = (vX, vy)
 
         input_shape = X.shape[1:]
         self.model = self.build_model(input_shape)
