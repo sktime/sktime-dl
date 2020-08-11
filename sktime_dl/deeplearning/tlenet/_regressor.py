@@ -137,7 +137,6 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         self.adjust_parameters(X)
         X, y, __ = self.pre_processing(X, y)
 
-
         validation_data = \
             check_and_clean_validation_data(validation_X)
         val_X, val_y, _ = self.pre_processing(validation_data[0],

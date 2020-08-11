@@ -48,7 +48,8 @@ def check_and_clean_data(X, y=None, input_checks=True):
     return X
 
 
-def check_and_clean_validation_data(validation_X, validation_y=None, label_encoder=None,
+def check_and_clean_validation_data(validation_X, validation_y=None,
+                                    label_encoder=None,
                                     onehot_encoder=None, input_checks=True):
     '''
     Performs basic sktime data checks and prepares the validation data for

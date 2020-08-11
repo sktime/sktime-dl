@@ -134,7 +134,6 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
-
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
         self.input_shape = X.shape[1:]
@@ -142,7 +141,6 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         self.adjust_parameters(X)
         X, y_onehot, _ = self.pre_processing(X, y_onehot)
-
 
         validation_data = \
             check_and_clean_validation_data(validation_X, validation_y,
@@ -197,7 +195,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         y_predicted = [np.average(preds[i * tot_increase_num:(
                                                                      (
-                                                                                 i + 1) * tot_increase_num) - 1],
+                                                                             i + 1) * tot_increase_num) - 1],
                                   axis=0)
                        for i in range(test_num_batch)]
 
