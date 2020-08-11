@@ -108,12 +108,29 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
     def fit(self, X, y, input_checks=True, validation_X=None,
             validation_y=None, **kwargs):
         """
-        Build the regressor on the training set (X, y) ---------- X :
-        array-like or sparse matrix of shape = [n_instances, n_columns] The
-        training input samples.  If a Pandas data frame of Series objects is
-        passed, column 0 is extracted. y : array-like, shape = [n_instances]
-        The regression values. input_checks: boolean whether to check the X
-        and y parameters Returns ------- self : object
+        Fit the regressor on the training set (X, y)
+        ----------
+        X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
+        y : array-like, shape = [n_instances]
+            The training data class labels.
+        input_checks : boolean
+            whether to check the X and y parameters
+        validation_X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The validation samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
+            Unless strictly defined by the user via callbacks (such as
+            EarlyStopping), the presence or state of the validation
+            data does not alter training in any way. Predictions at each epoch
+            are stored in the model's fit history.
+        validation_y : array-like, shape = [n_instances]
+            The validation class labels.
+        Returns
+        -------
+        self : object
         """
         X = check_and_clean_data(X, y, input_checks=input_checks)
 

@@ -19,6 +19,7 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
     def build_model(self, input_shape, **kwargs):
         """
         Construct a compiled, un-trained, keras model that is ready for
+        training
 
         Parameters
         ----------
@@ -36,12 +37,10 @@ class BaseDeepRegressor(BaseRegressor, RegressorMixin):
         Find regression estimate for all cases in X.
         Parameters
         ----------
-        X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.
-            If a Pandas data frame of Series objects is passed (sktime
-            format), a check is performed that it only has one column.
-            If not, an exception is thrown, since this regressor does not yet
-            have multivariate capability.
+        X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
         input_checks: boolean
             whether to check the X parameter
         Returns

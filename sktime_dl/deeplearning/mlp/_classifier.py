@@ -103,21 +103,26 @@ class MLPClassifier(BaseDeepClassifier, MLPNetwork):
     def fit(self, X, y, input_checks=True, validation_X=None,
             validation_y=None, **kwargs):
         """
-        Build the classifier on the training set (X, y)
+        Fit the classifier on the training set (X, y)
         ----------
-        X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.
+        X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
         y : array-like, shape = [n_instances]
-            The class labels.
+            The training data class labels.
         input_checks : boolean
             whether to check the X and y parameters
-        validation_X : array-like or sparse matrix of shape = [n_val_instances,
-            n_val_columns]
-            The validation samples, predicted at each training epoch. This data
-            is not used for training in any way.
-        validation_y : array-like, shape = [n_val_instances]
-            The validation class labels. This data is not used for training in
-            any way.
+        validation_X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The validation samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
+            Unless strictly defined by the user via callbacks (such as
+            EarlyStopping), the presence or state of the validation
+            data does not alter training in any way. Predictions at each epoch
+            are stored in the model's fit history.
+        validation_y : array-like, shape = [n_instances]
+            The validation class labels.
         Returns
         -------
         self : object
