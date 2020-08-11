@@ -29,9 +29,10 @@ def test_is_fitted(network=CNNClassifier()):
 
 
 def test_all_networks():
-    networks = construct_all_classifiers(
-        SMALL_NB_EPOCHS
-    ) + construct_all_regressors(SMALL_NB_EPOCHS)
+    networks = {
+        **construct_all_classifiers(SMALL_NB_EPOCHS),
+        **construct_all_regressors(SMALL_NB_EPOCHS),
+    }
 
     for name, network in networks.items():
         print("\n\t\t" + name + " is_fitted testing started")
