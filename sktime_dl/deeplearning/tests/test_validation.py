@@ -41,13 +41,13 @@ def test_validation(network=MLPClassifier()):
 
 def test_all_networks():
     networks = {
-        # **construct_all_classifiers(SMALL_NB_EPOCHS),
+        **construct_all_classifiers(SMALL_NB_EPOCHS),
         **construct_all_regressors(SMALL_NB_EPOCHS),
     }
 
     # these networks do not support validation data as yet
-    # networks.pop('MCNNClassifier_quick')
-    # networks.pop('TWIESNClassifier_quick')
+    networks.pop('MCNNClassifier_quick')
+    networks.pop('TWIESNClassifier_quick')
 
     # networks = [
     #     MLPClassifier(nb_epochs=SMALL_NB_EPOCHS),
