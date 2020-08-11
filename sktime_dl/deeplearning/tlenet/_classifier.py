@@ -148,7 +148,7 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
                                             self.onehot_encoder)
         if validation_data is not None:
             vX, vy, _ = self.pre_processing(validation_data[0],
-                                                  validation_data[1])
+                                            validation_data[1])
             validation_data = (vX, vy)
 
         input_shape = X.shape[1:]
