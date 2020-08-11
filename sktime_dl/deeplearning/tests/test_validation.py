@@ -15,17 +15,21 @@ def test_validation(network=MLPClassifier()):
 
     X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
 
-    X_test = X_train[10:20]
-    y_test = y_train[10:20]
+    X_test = X_train[5:10]
+    y_test = y_train[5:10]
 
-    X_train = X_train[:10]
-    y_train = y_train[:10]
+    X_train = X_train[:5]
+    y_train = y_train[:5]
 
     if isinstance(network, BaseRegressor):
         # Create some regression values, taken from test_regressor
         y_train = np.zeros(len(y_train))
         for i in range(len(X_train)):
             y_train[i] = X_train.iloc[i].iloc[0].iloc[0]
+
+        y_test = np.zeros(len(y_test))
+        for i in range(len(X_test)):
+            y_test[i] = X_test.iloc[i].iloc[0].iloc[0]
 
     network.fit(X_train, y_train, validation_X=X_test, validation_y=y_test)
     hist = network.history.history
@@ -37,13 +41,13 @@ def test_validation(network=MLPClassifier()):
 
 def test_all_networks():
     networks = {
-        **construct_all_classifiers(SMALL_NB_EPOCHS),
+        # **construct_all_classifiers(SMALL_NB_EPOCHS),
         **construct_all_regressors(SMALL_NB_EPOCHS),
     }
 
     # these networks do not support validation data as yet
-    networks.pop('MCNNClassifier_quick')
-    networks.pop('TWIESNClassifier_quick')
+    # networks.pop('MCNNClassifier_quick')
+    # networks.pop('TWIESNClassifier_quick')
 
     # networks = [
     #     MLPClassifier(nb_epochs=SMALL_NB_EPOCHS),

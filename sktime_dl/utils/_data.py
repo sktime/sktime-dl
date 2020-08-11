@@ -48,7 +48,7 @@ def check_and_clean_data(X, y=None, input_checks=True):
     return X
 
 
-def check_and_clean_validation_data(validation_X, validation_y=None,
+def check_and_clean_validation_data(validation_X, validation_y,
                                     label_encoder=None,
                                     onehot_encoder=None, input_checks=True):
     '''
@@ -64,7 +64,7 @@ def check_and_clean_validation_data(validation_X, validation_y=None,
     :param onehot_encoder: if validation_y has been given,
             the encoder that has already been fit to the train data
     :param input_checks: whether to perform the basic input structure checks
-    :return: ( validation_X, validation_y ), ready for use
+    :return: ( validation_X, validation_y ), or None if no data given
     '''
     if validation_X is not None:
         validation_X = check_and_clean_data(validation_X, validation_y,
@@ -72,19 +72,14 @@ def check_and_clean_validation_data(validation_X, validation_y=None,
     else:
         return None
 
-    validation_data = (validation_X, None)
+    if label_encoder is not None and onehot_encoder is not None:
+        validation_y = label_encoder.transform(validation_y)
+        validation_y = validation_y.reshape(
+            len(validation_y), 1)
+        validation_y = onehot_encoder.fit_transform(
+            validation_y)
 
-    if validation_y is not None:
-        validation_y_onehot = label_encoder.transform(validation_y)
-        validation_y_onehot = validation_y_onehot.reshape(
-            len(validation_y_onehot), 1)
-        validation_y_onehot = onehot_encoder.fit_transform(
-            validation_y_onehot)
-
-        validation_data = (validation_X, validation_y_onehot)
-    # validation_y may genuinely be None for some tasks
-
-    return validation_data
+    return (validation_X, validation_y)
 
 
 def _is_nested_dataframe(X):
