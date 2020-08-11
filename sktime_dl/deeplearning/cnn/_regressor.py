@@ -127,9 +127,7 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         X = check_and_clean_data(X, y, input_checks=input_checks)
 
         validation_data = \
-            check_and_clean_validation_data(validation_X, validation_y,
-                                            self.label_encoder,
-                                            self.onehot_encoder)
+            check_and_clean_validation_data(validation_X)
 
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance

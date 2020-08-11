@@ -174,7 +174,10 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
 
         X = self.prepare_input(X)
         if validation_data[0] is not None:
-            validation_data[0] = self.prepare_input(validation_data[0])
+            validation_data = (
+                self.prepare_input(validation_data[0]),
+                validation_data[1]
+            )
 
         self.model = self.build_model(self.input_shape, self.nb_classes)
 

@@ -109,9 +109,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
         X = check_and_clean_data(X, y, input_checks=input_checks)
 
         validation_data = \
-            check_and_clean_validation_data(validation_X, validation_y,
-                                            self.label_encoder,
-                                            self.onehot_encoder)
+            check_and_clean_validation_data(validation_X)
 
         self.input_shape = X.shape[1:]
         self.batch_size = int(max(1, min(X.shape[0] / 10, self.batch_size)))

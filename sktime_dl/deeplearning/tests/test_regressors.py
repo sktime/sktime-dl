@@ -70,10 +70,10 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
 
 
 def test_all_regressors():
-    for network in construct_all_regressors(SMALL_NB_EPOCHS):
-        print("\n\t\t" + network.__class__.__name__ + " testing started")
+    for name, network in construct_all_regressors(SMALL_NB_EPOCHS).items():
+        print("\n\t\t" + name + " testing started")
         test_regressor(network)
-        print("\t\t" + network.__class__.__name__ + " testing finished")
+        print("\t\t" + name + " testing finished")
 
 # def test_all_forecasters():
 #     window_length = 8

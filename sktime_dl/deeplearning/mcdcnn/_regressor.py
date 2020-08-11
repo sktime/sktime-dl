@@ -146,9 +146,7 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
         X = check_and_clean_data(X, y, input_checks=input_checks)
 
         validation_data = \
-            check_and_clean_validation_data(validation_X, validation_y,
-                                            self.label_encoder,
-                                            self.onehot_encoder)
+            check_and_clean_validation_data(validation_X)
 
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
@@ -156,7 +154,10 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
 
         X = self.prepare_input(X)
         if validation_data[0] is not None:
-            validation_data[0] = self.prepare_input(validation_data[0])
+            validation_data = (
+                self.prepare_input(validation_data[0]),
+                validation_data[1]
+            )
 
         self.model = self.build_model(self.input_shape)
 

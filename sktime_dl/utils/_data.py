@@ -8,6 +8,15 @@ from sktime.utils.validation.series_as_features import check_X, check_X_y
 
 
 def check_and_clean_data(X, y=None, input_checks=True):
+    '''
+    Performs basic sktime data checks and prepares the train data for input to
+    Keras models.
+
+    :param X: the train data
+    :param y: teh train labels
+    :param input_checks: whether to perform the basic sktime checks
+    :return: X
+    '''
     if input_checks:
         if y is None:
             check_X(X)
@@ -39,8 +48,23 @@ def check_and_clean_data(X, y=None, input_checks=True):
     return X
 
 
-def check_and_clean_validation_data(validation_X, validation_y, label_encoder,
-                                    onehot_encoder, input_checks=True):
+def check_and_clean_validation_data(validation_X, validation_y=None, label_encoder=None,
+                                    onehot_encoder=None, input_checks=True):
+    '''
+    Performs basic sktime data checks and prepares the validation data for
+    input to Keras models. Also provides functionality to encode the y labels
+    using label encoders that should have already been fit to the train data.
+
+    :param validation_X: required, validation data
+    :param validation_y: optional, y labels for categorical conversion if
+            needed
+    :param label_encoder: if validation_y has been given,
+            the encoder that has already been fit to the train data
+    :param onehot_encoder: if validation_y has been given,
+            the encoder that has already been fit to the train data
+    :param input_checks: whether to perform the basic input structure checks
+    :return: ( validation_X, validation_y ), ready for use
+    '''
     if validation_X is not None:
         validation_X = check_and_clean_data(validation_X, validation_y,
                                             input_checks=input_checks)

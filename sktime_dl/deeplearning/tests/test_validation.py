@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 from sktime.datasets import load_italy_power_demand
 from sktime.regression.base import BaseRegressor
 
@@ -8,8 +7,6 @@ from sktime_dl.utils.model_lists import SMALL_NB_EPOCHS
 from sktime_dl.utils.model_lists import construct_all_classifiers
 from sktime_dl.utils.model_lists import construct_all_regressors
 
-from sktime_dl.deeplearning import InceptionTimeClassifier
-from sktime_dl.deeplearning import ResNetClassifier
 
 
 def test_validation(network=MLPClassifier()):
@@ -34,30 +31,32 @@ def test_validation(network=MLPClassifier()):
     network.fit(X_train, y_train, validation_X=X_test, validation_y=y_test)
     hist = network.history.history
 
-    assert ('val_loss' in hist) and ('val_accuracy' in hist)
+    assert ('val_loss' in hist)
+    assert (isinstance(hist['val_loss'][0],
+                       (float, np.single, np.double, np.float32, np.float64)))
 
 
 def test_all_networks():
-    # expand to all once implemented in all
-    # networks = construct_all_classifiers(
-    #     SMALL_NB_EPOCHS
-    # ) + construct_all_regressors(SMALL_NB_EPOCHS)
-    networks = [
-        MLPClassifier(nb_epochs=SMALL_NB_EPOCHS),
-        ResNetClassifier(nb_epochs=SMALL_NB_EPOCHS),
-        InceptionTimeClassifier(nb_epochs=SMALL_NB_EPOCHS),
-    ]
+    # expand to all once implemented in all. currently 'difficult' networks, mcnn, twiesn,
+    networks = {
+        **construct_all_classifiers(SMALL_NB_EPOCHS),
+        **construct_all_regressors(SMALL_NB_EPOCHS),
+    }
 
-    for network in networks:
-        print(
-            "\n\t\t"
-            + network.__class__.__name__
-            + " is_fitted testing started"
-        )
+    # these networks do not support validation data as yet
+    networks.pop('MCNNClassifier_quick')
+    networks.pop('TWIESNClassifier_quick')
+
+    # networks = [
+    #     MLPClassifier(nb_epochs=SMALL_NB_EPOCHS),
+    #     ResNetClassifier(nb_epochs=SMALL_NB_EPOCHS),
+    #     InceptionTimeClassifier(nb_epochs=SMALL_NB_EPOCHS),
+    # ]
+
+    for name, network in networks.items():
+        print("\n\t\t" + name + " validation testing started")
         test_validation(network)
-        print(
-            "\t\t" + network.__class__.__name__ + " is_fitted testing finished"
-        )
+        print("\t\t" + name + " validation testing finished")
 
 
 if __name__ == "__main__":

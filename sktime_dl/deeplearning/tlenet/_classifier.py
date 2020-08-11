@@ -134,26 +134,28 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
-        validation_data = \
-            check_and_clean_validation_data(validation_X, validation_y,
-                                            self.label_encoder,
-                                            self.onehot_encoder)
 
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
         self.input_shape = X.shape[1:]
-
         self.nb_classes = y_onehot.shape[1]
 
         self.adjust_parameters(X)
-        X, y_onehot, tot_increase_num = self.pre_processing(X, y_onehot)
+        X, y_onehot, _ = self.pre_processing(X, y_onehot)
 
-        input_shape = X.shape[
-                      1:
-                      ]  # pylint: disable=E1136  # pylint/issues/3139
+
+        validation_data = \
+            check_and_clean_validation_data(validation_X, validation_y,
+                                            self.label_encoder,
+                                            self.onehot_encoder)
+        val_X, val_y, _ = self.pre_processing(validation_data[0],
+                                              validation_data[1])
+        validation_data = (val_X, val_y)
+
+        input_shape = X.shape[1:]
         self.model = self.build_model(input_shape, self.nb_classes)
 
-        self.hist = self.model.fit(
+        self.history = self.model.fit(
             X,
             y_onehot,
             batch_size=self.batch_size,
@@ -194,8 +196,10 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
         test_num_batch = int(X.shape[0] / tot_increase_num)
 
         y_predicted = [np.average(preds[i * tot_increase_num:(
-            (i + 1) * tot_increase_num) - 1], axis=0)
-            for i in range(test_num_batch)]
+                                                                     (
+                                                                                 i + 1) * tot_increase_num) - 1],
+                                  axis=0)
+                       for i in range(test_num_batch)]
 
         y_pred = np.array(y_predicted)
 

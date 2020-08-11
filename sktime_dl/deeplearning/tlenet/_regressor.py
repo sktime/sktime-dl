@@ -134,20 +134,20 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         """
         X = check_and_clean_data(X, y, input_checks=input_checks)
 
-        validation_data = \
-            check_and_clean_validation_data(validation_X, validation_y,
-                                            self.label_encoder,
-                                            self.onehot_encoder)
-
         self.adjust_parameters(X)
         X, y, __ = self.pre_processing(X, y)
 
-        input_shape = X.shape[
-                      1:
-                      ]  # pylint: disable=E1136  # pylint/issues/3139
+
+        validation_data = \
+            check_and_clean_validation_data(validation_X)
+        val_X, val_y, _ = self.pre_processing(validation_data[0],
+                                              validation_data[1])
+        validation_data = (val_X, val_y)
+
+        input_shape = X.shape[1:]
         self.model = self.build_model(input_shape)
 
-        self.hist = self.model.fit(
+        self.history = self.model.fit(
             X,
             y,
             batch_size=self.batch_size,

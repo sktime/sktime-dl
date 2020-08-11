@@ -33,16 +33,10 @@ def test_all_networks():
         SMALL_NB_EPOCHS
     ) + construct_all_regressors(SMALL_NB_EPOCHS)
 
-    for network in networks:
-        print(
-            "\n\t\t"
-            + network.__class__.__name__
-            + " is_fitted testing started"
-        )
+    for name, network in networks.items():
+        print("\n\t\t" + name + " is_fitted testing started")
         test_is_fitted(network)
-        print(
-            "\t\t" + network.__class__.__name__ + " is_fitted testing finished"
-        )
+        print("\t\t" + name + " is_fitted testing finished")
 
 
 if __name__ == "__main__":
