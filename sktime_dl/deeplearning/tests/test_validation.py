@@ -8,7 +8,6 @@ from sktime_dl.utils.model_lists import construct_all_classifiers
 from sktime_dl.utils.model_lists import construct_all_regressors
 
 
-
 def test_validation(network=MLPClassifier()):
     """
     testing that the networks correctly recognise when they are not fitted
@@ -37,7 +36,6 @@ def test_validation(network=MLPClassifier()):
 
 
 def test_all_networks():
-    # expand to all once implemented in all. currently 'difficult' networks, mcnn, twiesn,
     networks = {
         **construct_all_classifiers(SMALL_NB_EPOCHS),
         **construct_all_regressors(SMALL_NB_EPOCHS),

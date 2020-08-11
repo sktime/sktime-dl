@@ -193,11 +193,12 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
 
         test_num_batch = int(X.shape[0] / tot_increase_num)
 
-        y_predicted = [np.average(preds[i * tot_increase_num:(
-                                                                     (
-                                                                             i + 1) * tot_increase_num) - 1],
-                                  axis=0)
-                       for i in range(test_num_batch)]
+        y_predicted = [
+            np.average(
+                preds[i * tot_increase_num:((i + 1) * tot_increase_num) - 1],
+                axis=0)
+            for i in range(test_num_batch)
+        ]
 
         y_pred = np.array(y_predicted)
 

@@ -77,7 +77,8 @@ class BaseDeepClassifier(BaseClassifier):
         if (label_encoder is None) and (onehot_encoder is None):
             # make the encoders and store in self
             self.label_encoder = LabelEncoder()
-            self.onehot_encoder = OneHotEncoder(sparse=False, categories="auto")
+            self.onehot_encoder = OneHotEncoder(sparse=False,
+                                                categories="auto")
             # categories='auto' to get rid of FutureWarning
 
             y = self.label_encoder.fit_transform(y)

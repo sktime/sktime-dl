@@ -1,6 +1,5 @@
 __author__ = "James Large, Withington"
 
-from sklearn.model_selection import train_test_split
 from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
