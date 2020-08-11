@@ -10,7 +10,7 @@ from sktime_dl.utils.model_lists import construct_all_regressors
 
 def test_validation(network=MLPClassifier()):
     """
-    testing that the networks correctly recognise when they are not fitted
+    testing that the networks log validation predictions in the history object
     """
 
     X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
