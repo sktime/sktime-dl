@@ -126,14 +126,15 @@ class TWIESNClassifier(BaseDeepClassifier):
 
     def fit(self, X, y, input_checks=True, **kwargs):
         """
-        Build the classifier on the training set (X, y)
+        Fit the classifier on the training set (X, y)
         ----------
-        X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame is passed,
-             column 0 is extracted.
+        X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
         y : array-like, shape = [n_instances]
-            The class labels.
-        input_checks: boolean
+            The training data class labels.
+        input_checks : boolean
             whether to check the X and y parameters
         Returns
         -------
@@ -216,14 +217,10 @@ class TWIESNClassifier(BaseDeepClassifier):
         Find probability estimates for each class for all cases in X.
         Parameters
         ----------
-        X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.
-            If a Pandas data frame is passed (sktime format)
-            If a Pandas data frame is passed, a check is performed that it
-             only has one column.
-            If not, an exception is thrown, since this classifier does not
-             yet have
-            multivariate capability.
+        X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
         input_checks: boolean
             whether to check the X parameter
         Returns

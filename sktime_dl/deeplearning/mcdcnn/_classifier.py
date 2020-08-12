@@ -1,12 +1,12 @@
 __author__ = "James Large"
 
 import numpy as np
-from sklearn.model_selection import train_test_split
 from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
 from sktime_dl.deeplearning.mcdcnn._base import MCDCNNNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, \
+    check_and_clean_validation_data
 from sktime_dl.utils import check_is_fitted
 from sklearn.utils import check_random_state
 
@@ -130,17 +130,29 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
 
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, input_checks=True, validation_X=None,
+            validation_y=None, **kwargs):
         """
-        Build the classifier on the training set (X, y)
+        Fit the classifier on the training set (X, y)
         ----------
-        X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame is passed,
-             column 0 is extracted.
+        X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
         y : array-like, shape = [n_instances]
-            The class labels.
-        input_checks: boolean
+            The training data class labels.
+        input_checks : boolean
             whether to check the X and y parameters
+        validation_X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The validation samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
+            Unless strictly defined by the user via callbacks (such as
+            EarlyStopping), the presence or state of the validation
+            data does not alter training in any way. Predictions at each epoch
+            are stored in the model's fit history.
+        validation_y : array-like, shape = [n_instances]
+            The validation class labels.
         Returns
         -------
         self : object
@@ -150,16 +162,21 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
+        validation_data = \
+            check_and_clean_validation_data(validation_X, validation_y,
+                                            self.label_encoder,
+                                            self.onehot_encoder)
+
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
         self.input_shape = X.shape[1:]
 
-        x_train, x_val, y_train_onehot, y_val_onehot = train_test_split(
-            X, y_onehot, test_size=0.33
-        )
-
-        x_train = self.prepare_input(x_train)
-        x_val = self.prepare_input(x_val)
+        X = self.prepare_input(X)
+        if validation_data is not None:
+            validation_data = (
+                self.prepare_input(validation_data[0]),
+                validation_data[1]
+            )
 
         self.model = self.build_model(self.input_shape, self.nb_classes)
 
@@ -167,12 +184,12 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
             self.model.summary()
 
         self.history = self.model.fit(
-            x_train,
-            y_train_onehot,
+            X,
+            y_onehot,
             batch_size=self.batch_size,
             epochs=self.nb_epochs,
             verbose=self.verbose,
-            validation_data=(x_val, y_val_onehot),
+            validation_data=(validation_data),
             callbacks=self.callbacks,
         )
 
@@ -186,14 +203,10 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         Find probability estimates for each class for all cases in X.
         Parameters
         ----------
-        X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.
-            If a Pandas data frame is passed (sktime format)
-            If a Pandas data frame is passed, a check is performed that it
-            only has one column.
-            If not, an exception is thrown, since this classifier does not
-            yet have
-            multivariate capability.
+        X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
         input_checks: boolean
             whether to check the X parameter
         Returns

@@ -26,6 +26,8 @@ class BaseDeepClassifier(BaseClassifier):
         """
         Construct a compiled, un-trained, keras model that is ready for
         training
+
+        Parameters
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
@@ -43,14 +45,10 @@ class BaseDeepClassifier(BaseClassifier):
         Find probability estimates for each class for all cases in X.
         Parameters
         ----------
-        X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.
-            If a Pandas data frame is passed (sktime format)
-            If a Pandas data frame is passed, a check is performed that it
-            only has one column.
-            If not, an exception is thrown, since this classifier does not
-            yet have
-            multivariate capability.
+        X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
         input_checks: boolean
             whether to check the X parameter
         Returns
@@ -75,16 +73,25 @@ class BaseDeepClassifier(BaseClassifier):
             self.model, self.model_save_directory, self.model_name
         )
 
-    def convert_y(self, y):
-        self.label_encoder = LabelEncoder()
-        self.onehot_encoder = OneHotEncoder(sparse=False, categories="auto")
-        # categories='auto' to get rid of FutureWarning
+    def convert_y(self, y, label_encoder=None, onehot_encoder=None):
+        if (label_encoder is None) and (onehot_encoder is None):
+            # make the encoders and store in self
+            self.label_encoder = LabelEncoder()
+            self.onehot_encoder = OneHotEncoder(sparse=False,
+                                                categories="auto")
+            # categories='auto' to get rid of FutureWarning
 
-        y = self.label_encoder.fit_transform(y)
-        self.classes_ = self.label_encoder.classes_
-        self.nb_classes = len(self.classes_)
+            y = self.label_encoder.fit_transform(y)
+            self.classes_ = self.label_encoder.classes_
+            self.nb_classes = len(self.classes_)
 
-        y = y.reshape(len(y), 1)
-        y = self.onehot_encoder.fit_transform(y)
+            y = y.reshape(len(y), 1)
+            y = self.onehot_encoder.fit_transform(y)
+        else:
+            # encoders given, just transform using those. used for e.g.
+            # validation data, where the train data has already been converted
+            y = label_encoder.fit_transform(y)
+            y = y.reshape(len(y), 1)
+            y = onehot_encoder.fit_transform(y)
 
         return y

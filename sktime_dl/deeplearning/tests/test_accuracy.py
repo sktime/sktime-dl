@@ -27,9 +27,11 @@ def is_not_value_error(err, *args):
     return not issubclass(err[0], ValueError)
 
 
-ACCURACY_DEVIATION_THRESHOLD = (
-    3  # times the std deviation of reported results, if available
-)
+# times the std deviation of reported results, if available
+ACCURACY_DEVIATION_THRESHOLD = 3
+
+# number of times to retry the test in case of catastrophic initialisation
+MAX_RUNS = 5
 
 
 def accuracy_test(network, lower=0.94, upper=1.0):
@@ -49,7 +51,7 @@ def accuracy_test(network, lower=0.94, upper=1.0):
 
 
 @pytest.mark.slow
-@flaky(max_runs=3, rerun_filter=is_not_value_error)
+@flaky(max_runs=MAX_RUNS, rerun_filter=is_not_value_error)
 def test_cnn_accuracy():
     accuracy_test(
         network=CNNClassifier(),
@@ -58,7 +60,7 @@ def test_cnn_accuracy():
 
 
 @pytest.mark.slow
-@flaky(max_runs=3, rerun_filter=is_not_value_error)
+@flaky(max_runs=MAX_RUNS, rerun_filter=is_not_value_error)
 def test_encoder_accuracy():
     accuracy_test(
         network=EncoderClassifier(),
@@ -67,7 +69,7 @@ def test_encoder_accuracy():
 
 
 @pytest.mark.slow
-@flaky(max_runs=3, rerun_filter=is_not_value_error)
+@flaky(max_runs=MAX_RUNS, rerun_filter=is_not_value_error)
 def test_fcn_accuracy():
     accuracy_test(
         network=FCNClassifier(),
@@ -76,7 +78,7 @@ def test_fcn_accuracy():
 
 
 @pytest.mark.slow
-@flaky(max_runs=3, rerun_filter=is_not_value_error)
+@flaky(max_runs=MAX_RUNS, rerun_filter=is_not_value_error)
 def test_mcdcnn_accuracy():
     accuracy_test(
         network=MCDCNNClassifier(),
@@ -87,7 +89,7 @@ def test_mcdcnn_accuracy():
 @pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
                     reason="Very slow running, causes Travis to time out.")
 @pytest.mark.slow
-@flaky(max_runs=3, rerun_filter=is_not_value_error)
+@flaky(max_runs=MAX_RUNS, rerun_filter=is_not_value_error)
 def test_mcnn_accuracy():
     # Low accuracy is consistent with published results
     # https://github.com/hfawaz/dl-4-tsc/blob/master/README.md
@@ -105,7 +107,7 @@ def test_mcnn_accuracy():
     os.environ["PYTHON_VERSION"] == "3.6",
     reason="Very slow running, causes Travis to time out."
 )
-@flaky(max_runs=3, rerun_filter=is_not_value_error)
+@flaky(max_runs=MAX_RUNS, rerun_filter=is_not_value_error)
 def test_mlp_accuracy():
     accuracy_test(
         network=MLPClassifier(),
@@ -114,7 +116,7 @@ def test_mlp_accuracy():
 
 
 @pytest.mark.slow
-@flaky(max_runs=3, rerun_filter=is_not_value_error)
+@flaky(max_runs=MAX_RUNS, rerun_filter=is_not_value_error)
 def test_resnet_accuracy():
     accuracy_test(
         network=ResNetClassifier(),
@@ -123,7 +125,7 @@ def test_resnet_accuracy():
 
 
 @pytest.mark.slow
-@flaky(max_runs=3, rerun_filter=is_not_value_error)
+@flaky(max_runs=MAX_RUNS, rerun_filter=is_not_value_error)
 def test_tlenet_accuracy():
     # Accuracy is higher than the 0.490 in the published results
     # https://github.com/hfawaz/dl-4-tsc/blob/master/README.md
@@ -131,7 +133,7 @@ def test_tlenet_accuracy():
 
 
 @pytest.mark.slow
-@flaky(max_runs=3, rerun_filter=is_not_value_error)
+@flaky(max_runs=MAX_RUNS, rerun_filter=is_not_value_error)
 def test_twiesn_accuracy():
     accuracy_test(
         network=TWIESNClassifier(),
@@ -140,7 +142,7 @@ def test_twiesn_accuracy():
 
 
 @pytest.mark.slow
-@flaky(max_runs=3, rerun_filter=is_not_value_error)
+@flaky(max_runs=MAX_RUNS, rerun_filter=is_not_value_error)
 def test_inception_accuracy():
     accuracy_test(network=InceptionTimeClassifier(), lower=0.96)
 

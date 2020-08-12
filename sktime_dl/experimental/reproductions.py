@@ -16,7 +16,7 @@ To run a dl experiment:
 
 import sys
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 6:
     setseed = bool(sys.argv[6])
     if setseed:
         # rngseed = int(sys.argv[5])

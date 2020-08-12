@@ -4,7 +4,8 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.encoder._base import EncoderNetwork
-from sktime_dl.utils import check_and_clean_data
+from sktime_dl.utils import check_and_clean_data, \
+    check_and_clean_validation_data
 
 
 class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
@@ -92,17 +93,29 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
 
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, input_checks=True, validation_X=None,
+            validation_y=None, **kwargs):
         """
-        Build the regressor on the training set (X, y)
+        Fit the regressor on the training set (X, y)
         ----------
-        X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame of Series
-             objects is passed, column 0 is extracted.
+        X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
         y : array-like, shape = [n_instances]
-            The regression values.
-        input_checks: boolean
+            The training data class labels.
+        input_checks : boolean
             whether to check the X and y parameters
+        validation_X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The validation samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
+            Unless strictly defined by the user via callbacks (such as
+            EarlyStopping), the presence or state of the validation
+            data does not alter training in any way. Predictions at each epoch
+            are stored in the model's fit history.
+        validation_y : array-like, shape = [n_instances]
+            The validation class labels.
         Returns
         -------
         self : object
@@ -111,6 +124,9 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
             self.callbacks = []
 
         X = check_and_clean_data(X, y, input_checks=input_checks)
+
+        validation_data = \
+            check_and_clean_validation_data(validation_X, validation_y)
 
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
@@ -128,6 +144,7 @@ class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
             epochs=self.nb_epochs,
             verbose=self.verbose,
             callbacks=self.callbacks,
+            validation_data=validation_data,
         )
 
         self.save_trained_model()

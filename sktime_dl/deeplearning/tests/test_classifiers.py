@@ -101,13 +101,13 @@ def test_basic_multivariate(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
 
 
 def test_all_networks():
-    for network in construct_all_classifiers(SMALL_NB_EPOCHS):
-        print("\n\t\t" + network.__class__.__name__ + " testing started")
+    for name, network in construct_all_classifiers(SMALL_NB_EPOCHS).items():
+        print("\n\t\t" + name + " testing started")
         # test_basic_univariate(network)
         test_basic_multivariate(network)
         # test_pipeline(network)
         test_highLevelsktime(network)
-        print("\t\t" + network.__class__.__name__ + " testing finished")
+        print("\t\t" + name + " testing finished")
 
 
 if __name__ == "__main__":

@@ -5,8 +5,8 @@ from tensorflow import keras
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
 from sktime_dl.deeplearning.tlenet._base import TLENETNetwork
-from sktime_dl.utils import check_and_clean_data
-from sktime_dl.utils import check_is_fitted
+from sktime_dl.utils import check_and_clean_data, \
+    check_and_clean_validation_data, check_is_fitted
 
 
 class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
@@ -105,17 +105,29 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
 
         return model
 
-    def fit(self, X, y, input_checks=True, **kwargs):
+    def fit(self, X, y, input_checks=True, validation_X=None,
+            validation_y=None, **kwargs):
         """
-        Build the regressor on the training set (X, y)
+        Fit the regressor on the training set (X, y)
         ----------
-        X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.  If a Pandas data frame of Series
-             objects is passed, column 0 is extracted.
+        X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
         y : array-like, shape = [n_instances]
-            The regression values.
-        input_checks: boolean
+            The training data class labels.
+        input_checks : boolean
             whether to check the X and y parameters
+        validation_X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The validation samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
+            Unless strictly defined by the user via callbacks (such as
+            EarlyStopping), the presence or state of the validation
+            data does not alter training in any way. Predictions at each epoch
+            are stored in the model's fit history.
+        validation_y : array-like, shape = [n_instances]
+            The validation class labels.
         Returns
         -------
         self : object
@@ -125,18 +137,24 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         self.adjust_parameters(X)
         X, y, __ = self.pre_processing(X, y)
 
-        input_shape = X.shape[
-                      1:
-                      ]  # pylint: disable=E1136  # pylint/issues/3139
+        validation_data = \
+            check_and_clean_validation_data(validation_X, validation_y)
+        if validation_data is not None:
+            vX, vy, _ = self.pre_processing(validation_data[0],
+                                            validation_data[1])
+            validation_data = (vX, vy)
+
+        input_shape = X.shape[1:]
         self.model = self.build_model(input_shape)
 
-        self.hist = self.model.fit(
+        self.history = self.model.fit(
             X,
             y,
             batch_size=self.batch_size,
             epochs=self.nb_epochs,
             verbose=self.verbose,
             callbacks=self.callbacks,
+            validation_data=validation_data,
         )
 
         self.save_trained_model()
@@ -149,12 +167,10 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         Find regression estimate for all cases in X.
         Parameters
         ----------
-        X : array-like or sparse matrix of shape = [n_instances, n_columns]
-            The training input samples.
-            If a Pandas data frame of Series objects is passed (sktime format),
-            a check is performed that it only has one column.
-            If not, an exception is thrown, since this regressor does not yet
-             have multivariate capability.
+        X : a nested pd.Dataframe, or array-like of shape =
+        (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
         input_checks: boolean
             whether to check the X parameter
         Returns

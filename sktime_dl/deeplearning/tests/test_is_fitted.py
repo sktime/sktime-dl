@@ -23,26 +23,21 @@ def test_is_fitted(network=CNNClassifier()):
         for i in range(len(X_train)):
             y_train[i] = X_train.iloc[i].iloc[0].iloc[0]
 
-    # first try to predict without fitting: SHOULD fail
+    # try to predict without fitting: SHOULD fail
     with pytest.raises(NotFittedError):
         network.predict(X_train[:10])
 
 
 def test_all_networks():
-    networks = construct_all_classifiers(
-        SMALL_NB_EPOCHS
-    ) + construct_all_regressors(SMALL_NB_EPOCHS)
+    networks = {
+        **construct_all_classifiers(SMALL_NB_EPOCHS),
+        **construct_all_regressors(SMALL_NB_EPOCHS),
+    }
 
-    for network in networks:
-        print(
-            "\n\t\t"
-            + network.__class__.__name__
-            + " is_fitted testing started"
-        )
+    for name, network in networks.items():
+        print("\n\t\t" + name + " is_fitted testing started")
         test_is_fitted(network)
-        print(
-            "\t\t" + network.__class__.__name__ + " is_fitted testing finished"
-        )
+        print("\t\t" + name + " is_fitted testing finished")
 
 
 if __name__ == "__main__":
