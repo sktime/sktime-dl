@@ -25,6 +25,7 @@ matrix:
     - env: PYTHON_VERSION="3.6" TF_VERSION="1.9"
     - env: PYTHON_VERSION="3.6" TF_VERSION="1.15"
     - env: PYTHON_VERSION="3.7" TF_VERSION="2.1"
+    - env: PYTHON_VERSION="3.7" TF_VERSION="2.3"
 
 install:
   # Download and install miniconda
