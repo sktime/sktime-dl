@@ -71,6 +71,8 @@ def construct_all_regressors(nb_epochs=None):
     """
     if nb_epochs is not None:
         # potentially quicker versions for tests
+        # 'MCDCNNRegressor_quick': MCDCNNRegressor(nb_epochs=nb_epochs,
+        #                                             dense_units=1),
         return {
             'CNNRegressor_quick': CNNRegressor(nb_epochs=nb_epochs,
                                                kernel_size=3,
@@ -78,8 +80,6 @@ def construct_all_regressors(nb_epochs=None):
             'EncoderRegressor_quick': EncoderRegressor(nb_epochs=nb_epochs),
             'FCNRegressor_quick': FCNRegressor(nb_epochs=nb_epochs),
             'LSTMRegressor_quick': LSTMRegressor(nb_epochs=nb_epochs),
-            'MCDCNNRegressor_quick': MCDCNNRegressor(nb_epochs=nb_epochs,
-                                                     dense_units=1),
             'MLPRegressor_quick': MLPRegressor(nb_epochs=nb_epochs),
             'ResNetRegressor_quick': ResNetRegressor(nb_epochs=nb_epochs),
             'TLENETRegressor_quick': TLENETRegressor(nb_epochs=nb_epochs),
