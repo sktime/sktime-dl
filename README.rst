@@ -111,9 +111,9 @@ Currently, we interface with a number of networks for time series classification
 - Multi channel deep convolutional neural network (MCDCNN)
 - Multi-scale convolutional neural network (MCNN)
 - Multi layer perceptron (MLP)
-- Residual network (resnet)
-- Time Le-Net (tlenet)
-- Time warping invariant echo state network (twiesn)
+- Residual network (ResNet)
+- Time Le-Net (TLeNet)
+- Time warping invariant echo state network (TWIESN)
 
 We also interface with `InceptionTime <https://github.com/hfawaz/InceptionTime>`__, as of writing the strongest deep learning approach to general time series classification. 
 
@@ -122,15 +122,15 @@ We also interface with `InceptionTime <https://github.com/hfawaz/InceptionTime>`
 Regression
 ~~~~~~~~~~
 
-Most of the classifier architectures have been adapted to provide regressors. These are:
+Most of the classifier architectures have been adapted to also provide regressors. These are:
 
 - Time convolutional neural network (CNN)
 - Encoder (Encoder)
 - Fully convolutional neural network (FCNN)
 - Multi layer perceptron (MLP)
-- Residual network (resnet)
-- Time Le-Net (tlenet)
-- InceptionTime (inception)
+- Residual network (ResNet)
+- Time Le-Net (TLeNet)
+- InceptionTime (Inception)
 
 Forecasting
 ~~~~~~~~~~~
@@ -152,6 +152,8 @@ Documentation
 sktime-dl is an extension package to sktime, primarily introducing different learning algorithms. All `examples <https://github.com/alan-turing-institute/sktime/tree/master/examples>`__ and `documentation <https://alan-turing-institute.github.io/sktime/>`__ on higher level funtionality and usage from the base sktime apply to this package. 
 
 Documentation specifically for sktime-dl shall be produced in due course.
+
+Example notebooks for sktime-dl usage can be found under the examples folder.
 
 Contributors
 ------------
