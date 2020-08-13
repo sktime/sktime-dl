@@ -36,7 +36,7 @@ The simplest installation method is to install in a new environment via pip:
 	
 sktime-dl is under development. To ensure that you're using the most up to date code, you can instead install the development version in your environment: 
 ::
-	git clone https://github.com/sktime-dl/sktime-dl.git
+	git clone https://github.com/sktime/sktime-dl.git
 	cd sktime-dl
 	git checkout dev
 	git pull origin dev
