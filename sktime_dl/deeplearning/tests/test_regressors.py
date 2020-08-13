@@ -42,6 +42,9 @@ def test_regressor_forecasting(
     """
     print("Start test_regressor_forecasting()")
 
+    if isinstance(regressor, MCDCNNRegressor):
+        regressor.nb_epochs = regressor.nb_epochs * 2
+    
     # load univariate time series data
     y = load_airline()
     y_train, y_test = temporal_train_test_split(y, test_size=36)
