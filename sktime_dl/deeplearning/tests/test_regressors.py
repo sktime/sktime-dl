@@ -5,7 +5,7 @@ from sktime.datasets import load_italy_power_demand
 from sktime.forecasting.compose import RecursiveTimeSeriesRegressionForecaster
 from sktime.forecasting.model_selection import temporal_train_test_split
 
-from sktime_dl.deeplearning import MLPRegressor
+from sktime_dl.deeplearning import MLPRegressor, MCDCNNRegressor
 from sktime_dl.utils.model_lists import (SMALL_NB_EPOCHS,
                                          construct_all_regressors)
 
@@ -44,7 +44,7 @@ def test_regressor_forecasting(
 
     if isinstance(regressor, MCDCNNRegressor):
         regressor.nb_epochs = regressor.nb_epochs * 2
-    
+
     # load univariate time series data
     y = load_airline()
     y_train, y_test = temporal_train_test_split(y, test_size=36)
