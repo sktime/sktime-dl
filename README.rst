@@ -76,7 +76,7 @@ Build the sktime-dl Docker image:
 
 Run a container with GPU support using the image:
 ::
-	docker run --gpus all --rm -it -u $(id -u):$(id -g) sktime_dl:latest
+	docker run --gpus all --rm -it sktime_dl:latest
 
 Run all the tests with:
 ::
