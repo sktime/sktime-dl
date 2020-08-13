@@ -47,7 +47,8 @@ def test_regressor_forecasting(
 
     # load univariate time series data
     y = load_airline()
-    y_train, y_test = temporal_train_test_split(y, test_size=36)
+    y_train, y_test = temporal_train_test_split(y, test_size=5)
+    y_train = y_train[:5]
 
     # specify forecasting horizon
     fh = np.arange(len(y_test)) + 1
