@@ -1,16 +1,13 @@
 import numpy as np
-# from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error
+from sktime.datasets import load_airline
 from sktime.datasets import load_italy_power_demand
-# from sktime.datasets import load_airline
-# from sktime.forecasting.compose import ReducedRegressionForecaster
-# from sktime.forecasting.model_selection import temporal_train_test_split
-# from sktime.forecasting.compose import ReducedTimeSeriesRegressionForecaster
-from sktime_dl.deeplearning import MLPRegressor
+from sktime.forecasting.compose import RecursiveTimeSeriesRegressionForecaster
+from sktime.forecasting.model_selection import temporal_train_test_split
+
+from sktime_dl.deeplearning import MLPRegressor, MCDCNNRegressor
 from sktime_dl.utils.model_lists import (SMALL_NB_EPOCHS,
                                          construct_all_regressors)
-# from sktime.utils.data_container import tabularize
-
-#
 
 
 def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
@@ -37,36 +34,35 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
     print("End test_regressor()")
 
 
-# def test_regressor_forecasting(
-#         regressor=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS), window_length=4
-# ):
-#     """
-#     test a regressor used for forecasting
-#     """
-#     print("Start test_regressor_forecasting()")
+def test_regressor_forecasting(
+        regressor=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS), window_length=4
+):
+    """
+    test a regressor used for forecasting
+    """
+    print("Start test_regressor_forecasting()")
 
-#     # get data into expected nested format
-#     y = load_airline()
-#     y_train, y_test = temporal_train_test_split(y, test_size=36)
+    if isinstance(regressor, MCDCNNRegressor):
+        regressor.nb_epochs = regressor.nb_epochs * 2
 
-#     # y_train = tabularize(y_train, return_array=True)
-#     # y_test = tabularize(y_test, return_array=True)
+    # load univariate time series data
+    y = load_airline()
+    y_train, y_test = temporal_train_test_split(y, test_size=36)
 
-#     # from sklearn.neighbors import KNeighborsRegressor
-#     # regressor = KNeighborsRegressor(n_neighbors=1)
+    # specify forecasting horizon
+    fh = np.arange(len(y_test)) + 1
 
-#     # define simple time-series regressor using time-series as features
-#     forecaster = ReducedRegressionForecaster(
-#         regressor=regressor, window_length=window_length
-#     )
-#     forecaster.fit(y_train)
-#     fh = np.arange(len(y_test)) + 1
-#     y_pred = forecaster.predict(fh)
+    # solve forecasting task via reduction to time series regression
+    forecaster = RecursiveTimeSeriesRegressionForecaster(
+        regressor=regressor, window_length=window_length
+    )
+    forecaster.fit(y_train)
+    y_pred = forecaster.predict(fh)
 
-#     # Compare the prediction to the test data
-#     mse = np.sqrt(mean_squared_error(y_test, y_pred))
-#     print("Error:", mse)
-#     print("End test_regressor_forecasting()")
+    # Compare the prediction to the test data
+    mse = np.sqrt(mean_squared_error(y_test, y_pred))
+    print("Error:", mse)
+    print("End test_regressor_forecasting()")
 
 
 def test_all_regressors():
@@ -75,12 +71,13 @@ def test_all_regressors():
         test_regressor(network)
         print("\t\t" + name + " testing finished")
 
-# def test_all_forecasters():
-#     window_length = 8
 
-#     for network in construct_all_regressors(SMALL_NB_EPOCHS):
-#         print("\n\t\t" + network.__class__.__name__ + " forecasttesting \
-#          started")
-#         test_regressor_forecasting(network, window_length=window_length)
-#         print("\t\t" + network.__class__.__name__ + " forecasttesting \
-#             finished")
+def test_all_forecasters():
+    window_length = 8
+
+    for name, network in construct_all_regressors(SMALL_NB_EPOCHS).items():
+        print("\n\t\t" + name + " forecasttesting \
+         started")
+        test_regressor_forecasting(network, window_length=window_length)
+        print("\t\t" + name + " forecasttesting \
+            finished")

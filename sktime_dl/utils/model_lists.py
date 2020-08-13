@@ -78,9 +78,9 @@ def construct_all_regressors(nb_epochs=None):
             'EncoderRegressor_quick': EncoderRegressor(nb_epochs=nb_epochs),
             'FCNRegressor_quick': FCNRegressor(nb_epochs=nb_epochs),
             'LSTMRegressor_quick': LSTMRegressor(nb_epochs=nb_epochs),
+            'MLPRegressor_quick': MLPRegressor(nb_epochs=nb_epochs),
             'MCDCNNRegressor_quick': MCDCNNRegressor(nb_epochs=nb_epochs,
                                                      dense_units=1),
-            'MLPRegressor_quick': MLPRegressor(nb_epochs=nb_epochs),
             'ResNetRegressor_quick': ResNetRegressor(nb_epochs=nb_epochs),
             'TLENETRegressor_quick': TLENETRegressor(nb_epochs=nb_epochs),
             'InceptionTimeRegressor_quick': InceptionTimeRegressor(
