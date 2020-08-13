@@ -72,9 +72,9 @@ def test_all_regressors():
 def test_all_forecasters():
     window_length = 8
 
-    for network in construct_all_regressors(SMALL_NB_EPOCHS):
-        print("\n\t\t" + network.__class__.__name__ + " forecasttesting \
+    for name, network in construct_all_regressors(SMALL_NB_EPOCHS).items():
+        print("\n\t\t" + name + " forecasttesting \
          started")
         test_regressor_forecasting(network, window_length=window_length)
-        print("\t\t" + network.__class__.__name__ + " forecasttesting \
+        print("\t\t" + name + " forecasttesting \
             finished")
