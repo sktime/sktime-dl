@@ -59,11 +59,14 @@ stages:
             py36_tf115:
               PYTHON_VERSION: 3.6
               TF_VERSION: 1.15
-            # runs all checks, including slow ones, to check if we can still
-            # reproduce published results
             py37_tf21:
               PYTHON_VERSION: 3.7
               TF_VERSION: 2.1
+            # runs all checks, including slow ones, to check if we can still
+            # reproduce published results
+            py37_tf23:
+              PYTHON_VERSION: 3.7
+              TF_VERSION: 2.3
               TEST_SLOW: true
       - job: 'Linux_xenial'
         pool:
@@ -96,6 +99,9 @@ stages:
             py37_tf21:
               PYTHON_VERSION: 3.7
               TF_VERSION: 2.1
+            py37_tf23:
+              PYTHON_VERSION: 3.7
+              TF_VERSION: 2.3
       - job: 'macOS_latest'
         pool:
           vmImage: 'macOS-latest'
