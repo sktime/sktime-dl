@@ -87,7 +87,7 @@ def find_install_requires():
         # tensorflow-addons, the replacement for keras-contrib
         install_requires.append('tensorflow-addons')
     else:
-        # fall back to keras-contrib, not on pypi so need to instal it
+        # fall back to keras-contrib, not on pypi so need to install it
         # separately not printing. TODO
         print(
             'Existing version of tensorflow older than version 2.1.0 '
