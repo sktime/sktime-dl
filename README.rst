@@ -36,7 +36,7 @@ The simplest installation method is to install in a new environment via pip:
 	
 sktime-dl is under development. To ensure that you're using the most up to date code, you can instead install the development version in your environment: 
 ::
-	git clone https://github.com/sktime-dl/sktime-dl.git
+	git clone https://github.com/sktime/sktime-dl.git
 	cd sktime-dl
 	git checkout dev
 	git pull origin dev
@@ -76,7 +76,7 @@ Build the sktime-dl Docker image:
 
 Run a container with GPU support using the image:
 ::
-	docker run --gpus all --rm -it sktime_dl:latest
+	docker run --gpus all --rm -it -u $(id -u):$(id -g) sktime_dl:latest
 
 Run all the tests with:
 ::
