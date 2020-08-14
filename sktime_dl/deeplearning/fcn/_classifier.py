@@ -108,8 +108,8 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
         """
         Fit the classifier on the training set (X, y)
         ----------
-        X : a nested pd.Dataframe, or array-like of shape =
-        (n_instances, series_length, n_dimensions)
+        X : a nested pd.Dataframe, or (if input_checks=False) array-like of
+        shape = (n_instances, series_length, n_dimensions)
             The training input samples. If a 2D array-like is passed,
             n_dimensions is assumed to be 1.
         y : array-like, shape = [n_instances]
