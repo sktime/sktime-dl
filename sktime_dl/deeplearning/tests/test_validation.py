@@ -1,4 +1,6 @@
 import numpy as np
+import pytest
+
 from sktime.datasets import load_italy_power_demand
 from sktime.regression.base import BaseRegressor
 
