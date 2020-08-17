@@ -15,11 +15,8 @@ def test_validation(network=MLPClassifier()):
 
     X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
 
-    X_test = X_train[:1]
-    y_test = y_train[:1]
-
-    X_train = X_train[:10]
-    y_train = y_train[:10]
+    X_train = X_train[:5]
+    y_train = y_train[:5]
 
     if isinstance(network, BaseRegressor):
         # Create some regression values, taken from test_regressor
@@ -31,7 +28,7 @@ def test_validation(network=MLPClassifier()):
         for i in range(len(X_test)):
             y_test[i] = X_test.iloc[i].iloc[0].iloc[0]
 
-    network.fit(X_train, y_train, validation_X=X_test, validation_y=y_test)
+    network.fit(X_train, y_train, validation_X=X_train, validation_y=y_train)
     hist = network.history.history
 
     assert ('val_loss' in hist)
