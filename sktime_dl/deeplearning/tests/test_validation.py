@@ -7,7 +7,9 @@ from sktime_dl.utils.model_lists import SMALL_NB_EPOCHS
 from sktime_dl.utils.model_lists import construct_all_classifiers
 from sktime_dl.utils.model_lists import construct_all_regressors
 
-
+@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+                    reason="Frequently causes travis to time out")
+@pytest.mark.slow
 def test_validation(network=MLPClassifier()):
     """
     testing that the networks log validation predictions in the history object
@@ -31,7 +33,9 @@ def test_validation(network=MLPClassifier()):
     assert (isinstance(hist['val_loss'][0],
                        (float, np.single, np.double, np.float32, np.float64)))
 
-
+@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+                    reason="Frequently causes travis to time out")
+@pytest.mark.slow
 def test_all_networks():
     networks = {
         **construct_all_classifiers(SMALL_NB_EPOCHS),
