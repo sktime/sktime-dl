@@ -1,7 +1,7 @@
 import os
+
 import numpy as np
 import pytest
-
 from sktime.datasets import load_italy_power_demand
 from sktime.regression.base import BaseRegressor
 
@@ -9,6 +9,7 @@ from sktime_dl.deeplearning import MLPClassifier
 from sktime_dl.utils.model_lists import SMALL_NB_EPOCHS
 from sktime_dl.utils.model_lists import construct_all_classifiers
 from sktime_dl.utils.model_lists import construct_all_regressors
+
 
 @pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
                     reason="Frequently causes travis to time out")
@@ -35,6 +36,7 @@ def test_validation(network=MLPClassifier()):
     assert ('val_loss' in hist)
     assert (isinstance(hist['val_loss'][0],
                        (float, np.single, np.double, np.float32, np.float64)))
+
 
 @pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
                     reason="Frequently causes travis to time out")

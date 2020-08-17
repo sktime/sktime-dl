@@ -15,6 +15,7 @@ To run a dl experiment:
 """
 
 import sys
+import os
 
 if len(sys.argv) > 6:
     setseed = bool(sys.argv[6])
@@ -47,7 +48,8 @@ from sktime_dl.deeplearning import TWIESNClassifier
 from sktime_dl.deeplearning import InceptionTimeClassifier
 from sktime_dl.meta import EnsembleFromFileClassifier
 
-import sktime.contrib.experiments as exp
+#import sktime.contrib.experiments as exp
+import sktime_dl.experimental.dlexp as dlexp
 
 ucr112dsets = [
     "ACSF1",
@@ -164,6 +166,34 @@ ucr112dsets = [
     "Yoga",
 ]
 
+ueamv26dsets = [
+    "ArticularyWordRecognition",
+    "AtrialFibrillation",
+    "BasicMotions",
+    "Cricket",
+    "DuckDuckGeese",
+    "EigenWorms",
+    "Epilepsy",
+    "EthanolConcentration",
+    "ERing",
+    "FaceDetection",
+    "FingerMovements",
+    "HandMovementDirection",
+    "Handwriting",
+    "Heartbeat",
+    "Libras",
+    "LSST",
+    "MotorImagery",
+    "NATOPS",
+    "PenDigits",
+    "PEMS-SF",
+    "PhonemeSpectra",
+    "RacketSports",
+    "SelfRegulationSCP1",
+    "SelfRegulationSCP2",
+    "StandWalkJump",
+    "UWaveGestureLibrary",
+]
 
 def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     """
@@ -174,33 +204,42 @@ def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     :return: A classifier.
 
     """
+
+    model_save_dir = res_dir + cls + "/Models/" + dset + "/"
+    model_name = cls + "_" + dset + "_" + str(fold)
+
+    try:
+        os.makedirs(model_save_dir)
+    except os.error:
+        pass  # raises os.error if path already exists
+
     fold = int(fold)
-    if cls.lower() == "dl4tsc_cnn":
-        return CNNClassifier(random_state=fold)
-    elif cls.lower() == "dl4tsc_encoder":
-        return EncoderClassifier(random_state=fold)
-    elif cls.lower() == "dl4tsc_fcn":
-        return FCNClassifier(random_state=fold)
-    elif cls.lower() == "dl4tsc_mcdcnn":
-        return MCDCNNClassifier(random_state=fold)
-    elif cls.lower() == "dl4tsc_mcnn":
-        return MCNNClassifier(random_state=fold)
-    elif cls.lower() == "dl4tsc_mlp":
-        return MLPClassifier(random_state=fold)
-    elif cls.lower() == "dl4tsc_resnet":
-        return ResNetClassifier(random_state=fold)
-    elif cls.lower() == "dl4tsc_tlenet":
-        return TLENETClassifier(random_state=fold)
-    elif cls.lower() == "dl4tsc_twiesn":
-        return TWIESNClassifier(random_state=fold)
+    if cls.lower() == "cnn":
+        return CNNClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower() == "encoder":
+        return EncoderClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower() == "fcn":
+        return FCNClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower() == "mcdcnn":
+        return MCDCNNClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower() == "mcnn":
+        return MCNNClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower() == "mlp":
+        return MLPClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower() == "resnet":
+        return ResNetClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower() == "tlenet":
+        return TLENETClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower() == "twiesn":
+        return TWIESNClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
     elif cls.lower() == "inception0":
-        return InceptionTimeClassifier(random_state=fold)
+        return InceptionTimeClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
     elif cls.lower() == "inception1":
-        return InceptionTimeClassifier(random_state=fold)
+        return InceptionTimeClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
     elif cls.lower() == "inception2":
-        return InceptionTimeClassifier(random_state=fold)
+        return InceptionTimeClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
     elif cls.lower() == "inception3":
-        return InceptionTimeClassifier(random_state=fold)
+        return InceptionTimeClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
     elif cls.lower() == "inception4":
         return InceptionTimeClassifier(random_state=fold)
     elif cls.lower() == "inceptiontime":
@@ -223,7 +262,7 @@ def dlExperiment(
             data_dir, res_dir, classifier_name, dset, fold, classifier=None
         )
 
-    exp.run_experiment(
+    dlexp.run_experiment(
         data_dir,
         res_dir,
         classifier_name,
@@ -283,25 +322,27 @@ def allComparisonExperiments():
                     print("\n\n FAILED: ", sys.exc_info()[0], "\n\n")
 
 
-def ensembleInception(data_dir, res_dir, classifier_name, fold):
+def ensembleInception(data_dir, res_dir, classifier_name, dsets, folds, overwrite=False):
     missingdsets = []
 
-    for dset in ucr112dsets:
-        try:
-            classifier = setNetwork(
-                data_dir, res_dir, classifier_name, dset, fold, classifier=None
-            )
-            exp.run_experiment(
-                data_dir,
-                res_dir,
-                classifier_name,
-                dset,
-                classifier=classifier,
-                resampleID=fold,
-            )
-        except:
-            missingdsets.append(dset)
-            print(dset, " missing")
+    for dset in dsets:
+        for fold in folds:
+            try:
+                classifier = setNetwork(
+                    data_dir, res_dir, classifier_name, dset, fold, classifier=None
+                )
+                dlexp.run_experiment(
+                    data_dir,
+                    res_dir,
+                    classifier_name,
+                    dset,
+                    classifier=classifier,
+                    resampleID=fold,
+                    overwrite=overwrite,
+                )
+            except FileNotFoundError:
+                missingdsets.append(dset+str(fold))
+                print(dset+str(fold), " missing")
 
     print("\n\n\n", missingdsets)
 
@@ -319,4 +360,4 @@ if __name__ == "__main__":
         sys.argv[1], sys.argv[2], classifier, sys.argv[4], int(sys.argv[5])
     )
 
-    # ensembleInception("Z:/ArchiveData/Univariate_ts/", "C:/JamesLPHD/sktimeStuff/InceptionRedo/", "inceptiontime", 0)
+    # ensembleInception("Z:/ArchiveData/Multivariate_ts/", "E:/MultivariateArchive/", "inceptiontime", ueamv26dsets, range(0,30), overwrite=False)

@@ -253,8 +253,8 @@ class EnsembleFromFileClassifier(BaseClassifier):
         self.nb_classes = -1
         self.models = []
 
-        self.random_state = random_state
-        self.random_state = np.random.RandomState(self.random_state)
+        self.random_seed = random_state
+        self.random_state = np.random.RandomState(self.random_seed)
 
     def load_network_probs(
             self, network_name, itr, res_path, dataset_name, fold
@@ -266,8 +266,18 @@ class EnsembleFromFileClassifier(BaseClassifier):
             dataset_name,
             "testFold" + str(fold) + ".csv",
         )
-        probs = pd.read_csv(path, engine="python", skiprows=3, header=None)
-        return np.asarray(probs)[:, 3:]
+        predlines = pd.read_csv(path, engine="python", skiprows=3, header=None)
+        probs = np.asarray(predlines)[:, 3:]
+
+        with open(path, 'r') as f:
+            f.readline()
+            f.readline()
+            line3 = f.readline()
+
+        fit_time = int(line3.split(',')[1])
+        predict_time = int(line3.split(',')[2])
+
+        return probs, fit_time, predict_time
 
     def fit(self, X, y, **kwargs):
         self.nb_classes = np.unique(y).shape[0]
@@ -275,18 +285,22 @@ class EnsembleFromFileClassifier(BaseClassifier):
 
         for itr in range(self.nb_iterations):
             # each construction shall have a different random initialisation
-            y_cur = self.load_network_probs(
+            y_cur, fit_time_cur, predict_time_cur = self.load_network_probs(
                 self.network_name,
                 itr,
                 self.res_path,
                 self.dataset_name,
-                self.random_state,
+                self.random_seed,
             )
 
             if itr == 0:
                 self.y_pred = y_cur
+                self.fit_time = fit_time_cur
+                self.predict_time = predict_time_cur
             else:
                 self.y_pred = self.y_pred + y_cur
+                self.fit_time = self.fit_time + fit_time_cur
+                self.predict_time = self.predict_time + predict_time_cur
 
         self.y_pred = self.y_pred / self.nb_iterations
 
