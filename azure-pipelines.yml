@@ -1,0 +1,169 @@
+# author: Markus Löning
+# runs continuous integration checks for commits and PRs
+
+# adapted from
+# - https://iscinumpy.gitlab.io/post/azure-devops-python-wheels/
+# - https://iscinumpy.gitlab.io/post/azure-devops-releases/
+
+name: CI.$(Date:yyyyMMdd).$(Rev:r)
+
+variables:
+  REQUIREMENTS: build_tools/requirements.txt
+  TEST_DIR: tmp/
+  TEST_SLOW: false # whether or not to run slow tests
+
+trigger:
+  branches:
+    include:
+      - master
+      - dev
+  tags:
+    include:
+      - '*'
+pr:
+  # Cancel if new commits are pushed to the same PR
+  autoCancel: true
+
+stages:
+  - stage: 'Linting'
+    jobs:
+      - job: 'Linting'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            displayName: 'Use Python version'
+            inputs:
+              versionSpec: 3.x
+          - script: pip install flake8
+            displayName: 'Installing flake8'
+          - bash: maint_tools/linting.sh
+            displayName: 'Linting'
+
+  - stage: 'Build'
+    dependsOn: 'Linting'
+    condition: succeeded('Linting')
+    jobs:
+      - job: 'Linux_latest'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - bash: echo "##vso[task.prependpath]$CONDA/bin"
+            displayName: 'Add conda to PATH'
+          - template: build_tools/azure/build_and_test.yml
+        strategy:
+          matrix:
+            py36_tf19:
+              PYTHON_VERSION: 3.6
+              TF_VERSION: 1.9
+            py36_tf115:
+              PYTHON_VERSION: 3.6
+              TF_VERSION: 1.15
+            py37_tf21:
+              PYTHON_VERSION: 3.7
+              TF_VERSION: 2.1
+            # runs all checks, including slow ones, to check if we can still
+            # reproduce published results
+            py37_tf23:
+              PYTHON_VERSION: 3.7
+              TF_VERSION: 2.3
+              TEST_SLOW: true
+      - job: 'Linux_xenial'
+        pool:
+          vmImage: 'ubuntu-16.04'
+        steps:
+          - bash: echo "##vso[task.prependpath]$CONDA/bin"
+            displayName: 'Add conda to PATH'
+          - template: build_tools/azure/build_and_test.yml
+        strategy:
+          matrix:
+            py36_tf19:
+              PYTHON_VERSION: 3.6
+              TF_VERSION: 1.9
+      - job: 'Windows'
+        timeoutInMinutes: 120  # use 0 set to time out to maximum
+        pool:
+          vmImage: 'vs2017-win2016'
+        steps:
+          - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+            displayName: 'Add conda to PATH'
+          - template: build_tools/azure/build_and_test.yml
+        strategy:
+          matrix:
+            py36_tf19:
+              PYTHON_VERSION: 3.6
+              TF_VERSION: 1.9
+            py36_tf115:
+              PYTHON_VERSION: 3.6
+              TF_VERSION: 1.15
+            py37_tf21:
+              PYTHON_VERSION: 3.7
+              TF_VERSION: 2.1
+            py37_tf23:
+              PYTHON_VERSION: 3.7
+              TF_VERSION: 2.3
+      - job: 'macOS_latest'
+        pool:
+          vmImage: 'macOS-latest'
+        steps:
+          - bash: echo "##vso[task.prependpath]$CONDA/bin"
+            displayName: 'Add conda to PATH'
+          - bash: sudo chown -R $USER $CONDA
+            displayName: 'Take ownership of conda installation'
+          - template: build_tools/azure/build_and_test.yml
+        strategy:
+          matrix:
+            py36_tf115:
+              PYTHON_VERSION: 3.6
+              TF_VERSION: 1.15
+      - job: 'macOS_mojave'
+        pool:
+          vmImage: 'macOS-10.14'
+        steps:
+          - bash: echo "##vso[task.prependpath]$CONDA/bin"
+            displayName: 'Add conda to PATH'
+          - bash: sudo chown -R $USER $CONDA
+            displayName: 'Take ownership of conda installation'
+          - template: build_tools/azure/build_and_test.yml
+        strategy:
+          matrix:
+            py36_tf19:
+              PYTHON_VERSION: 3.6
+              TF_VERSION: 1.9
+
+  - stage: 'Deploy'
+    dependsOn: 'Build'
+    condition: and(succeeded('Build'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+    jobs:
+      - job: 'deploy_to_pypi'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: 'Collect wheels'
+            inputs:
+              source: 'specific'
+              project: 'sktime-dl'
+              pipeline: 'alan-turing-institute.sktime-dl'
+              runVersion: 'latestFromBranch'
+              runBranch: 'refs/heads/master'
+              tags: '^v[0-9]\.[0-9]\.[0-9]$'
+              patterns: 'wheels_*/*.whl'
+              path: 'download/'
+          - script: |
+              mkdir dist
+              cp download/wheels_*/*.whl dist/
+              ls -lh dist/
+            displayName: 'Select and list wheels'
+          - script: |
+              pip install --upgrade twine
+            displayName: 'Install twine'
+#          - task: TwineAuthenticate@1
+#            displayName: 'Twine Authenticate'
+#            inputs:
+#              # configured in https://dev.azure.com/<user>/<project>/_settings/adminservices
+#              pythonUploadServiceConnection: PyPI
+#          - script: |
+#              ls -lh dist/*.whl
+#            # twine upload -r pypi --config-file $(PYPIRC_PATH) --skip-existing --verbose dist/*.whl
+#            displayName: 'Upload wheels to PyPI'

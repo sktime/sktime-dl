@@ -1,27 +1,23 @@
 #! /usr/bin/env python
 """Install script for sktime-dl"""
 
-from setuptools import find_packages
-from setuptools import setup
 import codecs
 import os
+import platform
 import re
 import sys
-import platform
 
-try:
-    import numpy as np
-except ModuleNotFoundError:
-    raise ModuleNotFoundError("No module named 'numpy'. Please install "
-                              "numpy first using `pip install numpy`.")
+from pkg_resources import Requirement
+from pkg_resources import working_set
+from setuptools import find_packages
+from setuptools import setup
 
-
-# raise warning for Python versions not equal to 3.6
-# TODO find fix for tensorflow interacting with python 3.7, some particular factor of the environment does not work
-if sys.version_info < (3, 6) or sys.version_info >= (3, 7):
-    raise RuntimeError("sktime-dl requires Python 3.6. The current"
-                       " Python version is %s installed in %s."
-                       % (platform.python_version(), sys.executable))
+# raise early warning for incompatible Python versions
+if sys.version_info < (3, 6) or sys.version_info >= (3, 8):
+    raise RuntimeError(
+        "sktime-dl requires Python 3.6 or 3.7 (only with tensorflow>=1.13.1). "
+        "The current Python version is %s installed in %s."
+        % (platform.python_version(), sys.executable))
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -35,36 +31,90 @@ def read(*parts):
 
 def find_version(*file_paths):
     version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
     if version_match:
         return version_match.group(1)
     else:
         raise RuntimeError("Unable to find version string.")
 
 
+def find_install_requires():
+    """Return a list of dependencies and non-pypi dependency links.
+
+    A supported version of tensorflow and/or tensorflow-gpu is required. If not
+    found, then tensorflow is added to the install_requires list.
+
+    Depending on the version of tensorflow found or installed, either
+    keras-contrib or tensorflow-addons needs to be installed as well.
+    """
+
+    install_requires = [
+        'sktime>=0.4.1',
+        'h5py>=2.8.0',
+    ]
+
+    # tensorflow version requirements
+    # by default, make sure anything already installed is above 1.8.0,
+    # or if installing from new get the most recent stable (i.e. not
+    # nightly) version
+    MINIMUM_TF_VERSION = '1.9.0'
+    tf_requires = 'tensorflow>=' + MINIMUM_TF_VERSION
+
+    has_tf_gpu = False
+    has_tf = False
+    tf = working_set.find(Requirement.parse('tensorflow'))
+    tf_gpu = working_set.find(Requirement.parse('tensorflow-gpu'))
+
+    if tf is not None:
+        has_tf = True
+        tf_version = tf._version
+
+    if tf_gpu is not None:
+        has_tf_gpu = True
+        tf_gpu_version = tf_gpu._version
+
+    if has_tf_gpu and not has_tf:
+        # have -gpu only (1.x), make sure it's above 1.9.0
+        # Specify tensorflow-gpu version if it is already installed.
+        tf_requires = 'tensorflow-gpu>=' + MINIMUM_TF_VERSION
+
+    install_requires.append(tf_requires)
+
+    # tensorflow itself handled, now find out what add-on package to use
+    if (not has_tf and not has_tf_gpu) or (has_tf and tf_version >= '2.1.0'):
+        # tensorflow will be up-to-date enough to use most recent
+        # tensorflow-addons, the replacement for keras-contrib
+        install_requires.append('tensorflow-addons')
+    else:
+        # fall back to keras-contrib, not on pypi so need to install it
+        # separately not printing. TODO
+        print(
+            'Existing version of tensorflow older than version 2.1.0 '
+            'detected. You shall need to install keras-contrib (for tf.keras) '
+            'in order to use all the features of sktime-dl. '
+            'See https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras')
+
+    return install_requires
+
+
 DISTNAME = 'sktime-dl'  # package name is sktime-dl, to have a valid module path, module name is sktime_dl
-DESCRIPTION = 'Deep learning extension package for sktime, a scikit-learn compatible toolbox for ' \
-              'learning with time series data'
+DESCRIPTION = 'Deep learning extension package for sktime, a scikit-learn ' \
+              'compatible toolbox for learning with time series data'
 with codecs.open('README.rst', encoding='utf-8-sig') as f:
     LONG_DESCRIPTION = f.read()
 MAINTAINER = 'F. Király'
-MAINTAINER_EMAIL = 'fkiraly@turing.ac.uk'
-URL = 'https://github.com/uea-machine-learning/sktime-dl'
+MAINTAINER_EMAIL = 'f.kiraly@ucl.ac.uk'
+URL = 'https://github.com/sktime/sktime-dl'
 LICENSE = 'BSD-3-Clause'
 DOWNLOAD_URL = 'https://pypi.org/project/sktime-dl/#files'
 PROJECT_URLS = {
-    'Issue Tracker': 'https://github.com/uea-machine-learning/sktime-dl/issues',
-    'Documentation': 'https://uea-machine-learning.github.io/sktime-dl/',
-    'Source Code': 'https://github.com/uea-machine-learning/sktime-dl'
+    'Issue Tracker': 'https://github.com/sktime/sktime-dl/issues',
+    'Documentation': 'https://sktime.github.io/sktime-dl/',
+    'Source Code': 'https://github.com/sktime/sktime-dl'
 }
 VERSION = find_version('sktime_dl', '__init__.py')
-INSTALL_REQUIRES = [
-    # 'keras_contrib @ git+https://github.com/keras-team/keras-contrib.git@master', # doesn't work with pypi
-    # 'keras_contrib', # use once keras_contrib is available on pypi
-    'sktime>=0.3.0',
-    'keras>=2.2.4',
-    'tensorflow>=1.8.0'  # and/or tensorflow-gpu 1.8.0
-]
+INSTALL_REQUIRES = find_install_requires()
 CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Intended Audience :: Developers',
                'License :: OSI Approved',
@@ -75,11 +125,14 @@ CLASSIFIERS = ['Intended Audience :: Science/Research',
                'Operating System :: POSIX',
                'Operating System :: Unix',
                'Operating System :: MacOS',
-               'Programming Language :: Python :: 3.6']
+               'Programming Language :: Python :: 3.6',
+               'Programming Language :: Python :: 3.7']
+
 EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
-        'pytest-cov'],
+        'pytest-cov'
+        'flaky'],
     'docs': [
         'sphinx',
         'sphinx-gallery',
@@ -104,5 +157,4 @@ setup(name=DISTNAME,
       include_package_data=True,
       install_requires=INSTALL_REQUIRES,
       extras_require=EXTRAS_REQUIRE,
-      include_dirs=[np.get_include()]
       )
