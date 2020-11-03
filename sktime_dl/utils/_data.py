@@ -3,7 +3,7 @@
 __author__ = "James Large"
 
 import pandas as pd
-from sktime.utils.data_container import tabularise, nested_to_3d_numpy
+from sktime.utils.data_container import tabularize, from_nested_to_3d_numpy
 from sktime.utils.validation.series_as_features import check_X, check_X_y
 
 
@@ -87,7 +87,7 @@ def _is_nested_dataframe(X):
 
 
 def _univariate_nested_df_to_array(X):
-    return tabularise(X, return_array=True)
+    return tabularize(X, return_array=True)
 
 
 def _univariate_df_to_array(X):
@@ -95,7 +95,7 @@ def _univariate_df_to_array(X):
 
 
 def _multivariate_nested_df_to_array(X):
-    X = nested_to_3d_numpy(X)
+    X = from_nested_to_3d_numpy(X)
 
     # go from [n][d][m] to [n][m][d]
     return X.transpose(0, 2, 1)
