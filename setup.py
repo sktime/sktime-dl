@@ -13,7 +13,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 # raise early warning for incompatible Python versions
-if sys.version_info < (3, 6) or sys.version_info >= (3, 8):
+if sys.version_info < (3, 6) or sys.version_info >= (3, 9):
     raise RuntimeError(
         "sktime-dl requires Python 3.6 or 3.7 (only with tensorflow>=1.13.1). "
         "The current Python version is %s installed in %s."
@@ -131,8 +131,9 @@ CLASSIFIERS = ['Intended Audience :: Science/Research',
 EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
-        'pytest-cov'
-        'flaky'],
+        'pytest-cov',
+        'flaky',
+        'tsfresh'],
     'docs': [
         'sphinx',
         'sphinx-gallery',
