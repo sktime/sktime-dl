@@ -50,6 +50,7 @@ def find_install_requires():
     """
 
     install_requires = [
+        'tsfresh',    
         'sktime>=0.4.1',
         'h5py>=2.8.0',
     ]
