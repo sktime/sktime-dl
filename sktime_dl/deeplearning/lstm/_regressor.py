@@ -21,6 +21,8 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
             nb_epochs=200,
             batch_size=16,
             units=[50, 50],
+            loss="mean_squared_error",
+            optimizer=keras.optimizers.Adam(),
             random_state=0,
             verbose=False,
             model_name="lstm_regressor",
@@ -34,7 +36,9 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
         """
         super(LSTMRegressor, self).__init__(
             model_save_directory=model_save_directory,
-            model_name=model_name
+            model_name=model_name,
+            loss=loss,
+            optimizer=optimizer,
         )
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
@@ -59,8 +63,8 @@ class LSTMRegressor(BaseDeepRegressor, LSTMNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
         model.compile(
-            loss='mean_squared_error',
-            optimizer=keras.optimizers.Adam(),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=['mean_squared_error'])
         return model
 

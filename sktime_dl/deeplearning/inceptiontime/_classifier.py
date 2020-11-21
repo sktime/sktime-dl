@@ -53,6 +53,8 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
             kernel_size=41 - 1,
             batch_size=64,
             nb_epochs=1500,
+            loss="categorical_crossentropy",
+            optimizer=keras.optimizers.Adam(),
             callbacks=None,
             random_state=0,
             verbose=False,
@@ -60,7 +62,10 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
             model_save_directory=None,
     ):
         super(InceptionTimeClassifier, self).__init__(
-            model_name=model_name, model_save_directory=model_save_directory
+            model_name=model_name,
+            model_save_directory=model_save_directory,
+            loss=loss,
+            optimizer=optimizer,
         )
 
         self.verbose = verbose
@@ -103,8 +108,8 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
         model.compile(
-            loss="categorical_crossentropy",
-            optimizer=keras.optimizers.Adam(),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=["accuracy"],
         )
 

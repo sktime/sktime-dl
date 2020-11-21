@@ -39,6 +39,8 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
             self,
             nb_epochs=2000,
             batch_size=16,
+            loss="mean_squared_error",
+            optimizer=keras.optimizers.Adam(),
             callbacks=None,
             random_state=0,
             verbose=False,
@@ -46,7 +48,10 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
             model_save_directory=None,
     ):
         super(FCNRegressor, self).__init__(
-            model_name=model_name, model_save_directory=model_save_directory
+            model_name=model_name,
+            model_save_directory=model_save_directory,
+            loss=loss,
+            optimizer=optimizer,
         )
 
         self.verbose = verbose
@@ -83,8 +88,8 @@ class FCNRegressor(BaseDeepRegressor, FCNNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
         model.compile(
-            loss="mean_squared_error",
-            optimizer=keras.optimizers.Adam(),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=["mean_squared_error"],
         )
 

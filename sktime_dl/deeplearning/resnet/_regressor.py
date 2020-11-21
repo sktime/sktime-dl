@@ -27,6 +27,8 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
     def __init__(self,
                  nb_epochs=1500,
                  batch_size=16,
+                 loss="mean_squared_error",
+                 optimizer=keras.optimizers.Adam(),
                  callbacks=None,
                  random_state=0,
                  verbose=False,
@@ -46,7 +48,10 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
         """
 
         super(ResNetRegressor, self).__init__(
-            model_name=model_name, model_save_directory=model_save_directory
+            model_name=model_name,
+            model_save_directory=model_save_directory,
+            loss=loss,
+            optimizer=optimizer,
         )
 
         self.nb_epochs = nb_epochs
@@ -78,8 +83,8 @@ class ResNetRegressor(BaseDeepRegressor, ResNetNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
         model.compile(
-            loss="mean_squared_error",
-            optimizer=keras.optimizers.Adam(),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=["mean_squared_error"],
         )
 

@@ -40,6 +40,8 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
             self,
             nb_epochs=2000,
             batch_size=16,
+            loss="categorical_crossentropy",
+            optimizer=keras.optimizers.Adam(),
             callbacks=None,
             random_state=0,
             verbose=False,
@@ -47,7 +49,10 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
             model_save_directory=None,
     ):
         super(FCNClassifier, self).__init__(
-            model_name=model_name, model_save_directory=model_save_directory
+            model_name=model_name,
+            model_save_directory=model_save_directory,
+            loss=loss,
+            optimizer=optimizer,
         )
 
         self.nb_epochs = nb_epochs
@@ -82,8 +87,8 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
         model.compile(
-            loss="categorical_crossentropy",
-            optimizer=keras.optimizers.Adam(),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=["accuracy"],
         )
 

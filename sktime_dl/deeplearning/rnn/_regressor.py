@@ -30,6 +30,8 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
             nb_epochs=100,
             batch_size=1,
             units=6,
+            loss="mean_squared_error",
+            optimizer=RMSprop(lr=0.001),
             callbacks=None,
             random_state=0,
             verbose=0,
@@ -44,7 +46,9 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
         self.random_state = random_state
         super(SimpleRNNRegressor, self).__init__(
             model_name=model_name,
-            model_save_directory=model_save_directory
+            model_save_directory=model_save_directory,
+            loss=loss,
+            optimizer=optimizer,
         )
 
     def build_model(self, input_shape, **kwargs):
@@ -64,7 +68,7 @@ class SimpleRNNRegressor(BaseDeepRegressor, BaseDeepNetwork):
                 Dense(1, use_bias=True, activation="linear"),
             ]
         )
-        model.compile(loss="mean_squared_error", optimizer=RMSprop(lr=0.001))
+        model.compile(loss=self.loss, optimizer=self.optimizer)
 
         if self.callbacks is None:
             self.callbacks = []

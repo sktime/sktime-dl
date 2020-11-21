@@ -31,6 +31,8 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
             batch_size=256,
             warping_ratios=[0.5, 1, 2],
             slice_ratio=0.1,
+            loss="mean_squared_error",
+            optimizer=keras.optimizers.Adam(lr=0.01, decay=0.005),
             callbacks=None,
             verbose=False,
             random_state=0,
@@ -53,7 +55,11 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
          the trained keras model in hdf5 format
         """
         super(TLENETRegressor, self).__init__(
-            model_name=model_name, model_save_directory=model_save_directory)
+            model_name=model_name,
+            model_save_directory=model_save_directory,
+            loss=loss,
+            optimizer=optimizer,
+        )
 
         self.verbose = verbose
         self._is_fitted = False
@@ -88,8 +94,8 @@ class TLENETRegressor(BaseDeepRegressor, TLENETNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
         model.compile(
-            optimizer=keras.optimizers.Adam(lr=0.01, decay=0.005),
-            loss="mean_squared_error",
+            optimizer=self.optimizer,
+            loss=self.loss,
             metrics=["mean_squared_error"],
         )
 

@@ -47,6 +47,8 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
             avg_pool_size=3,
             nb_conv_layers=2,
             filter_sizes=[6, 12],
+            loss="categorical_crossentropy",
+            optimizer=keras.optimizers.Adam(),
             callbacks=None,
             random_state=0,
             verbose=False,
@@ -55,7 +57,10 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
     ):
         super(CNNClassifier, self).__init__(
             model_save_directory=model_save_directory,
-            model_name=model_name)
+            model_name=model_name,
+            loss=loss,
+            optimizer=optimizer,
+        )
         self.filter_sizes = filter_sizes
         self.nb_conv_layers = nb_conv_layers
         self.avg_pool_size = avg_pool_size
@@ -90,8 +95,8 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(
-            loss="mean_squared_error",
-            optimizer=keras.optimizers.Adam(),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=["accuracy"],
         )
 

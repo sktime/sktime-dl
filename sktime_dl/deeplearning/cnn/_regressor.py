@@ -48,6 +48,8 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
             avg_pool_size=3,
             nb_conv_layers=2,
             filter_sizes=[6, 12],
+            loss="mean_squared_error",
+            optimizer=keras.optimizers.Adam(),
             callbacks=None,
             random_state=0,
             verbose=False,
@@ -57,6 +59,8 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         super(CNNRegressor, self).__init__(
             model_save_directory=model_save_directory,
             model_name=model_name,
+            loss=loss,
+            optimizer=optimizer,
         )
         self.filter_sizes = filter_sizes
         self.nb_conv_layers = nb_conv_layers
@@ -87,8 +91,8 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(
-            loss="mean_squared_error",
-            optimizer=keras.optimizers.Adam(),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=["mean_squared_error"],
         )
 

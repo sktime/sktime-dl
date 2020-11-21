@@ -40,6 +40,10 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
             pool_size=2,
             filter_sizes=[8, 8],
             dense_units=732,
+            loss="categorical_crossentropy",
+            optimizer=keras.optimizers.SGD(
+                lr=0.01, momentum=0.9, decay=0.0005
+            ),
             callbacks=[],
             random_state=0,
             verbose=False,
@@ -64,7 +68,10 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         the trained keras model in hdf5 format
         """
         super(MCDCNNClassifier, self).__init__(
-            model_name=model_name, model_save_directory=model_save_directory
+            model_name=model_name,
+            model_save_directory=model_save_directory,
+            loss=loss,
+            optimizer=optimizer,
         )
 
         self.verbose = verbose
@@ -114,10 +121,8 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
         model = keras.models.Model(inputs=input_layers, outputs=output_layer)
 
         model.compile(
-            loss="categorical_crossentropy",
-            optimizer=keras.optimizers.SGD(
-                lr=0.01, momentum=0.9, decay=0.0005
-            ),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=["accuracy"],
         )
 

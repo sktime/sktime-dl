@@ -32,6 +32,10 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
             pool_size=2,
             filter_sizes=[8, 8],
             dense_units=732,
+            loss="mean_squared_error",
+            optimizer=keras.optimizers.SGD(
+                lr=0.01, momentum=0.9, decay=0.0005
+            ),
             callbacks=[],
             random_state=0,
             verbose=False,
@@ -56,7 +60,10 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
          trained keras model in hdf5 format
         """
         super(MCDCNNRegressor, self).__init__(
-            model_name=model_name, model_save_directory=model_save_directory
+            model_name=model_name,
+            model_save_directory=model_save_directory,
+            loss=loss,
+            optimizer=optimizer,
         )
 
         self.verbose = verbose
@@ -98,10 +105,8 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
         model = keras.models.Model(inputs=input_layers, outputs=output_layer)
 
         model.compile(
-            loss="mean_squared_error",
-            optimizer=keras.optimizers.SGD(
-                lr=0.01, momentum=0.9, decay=0.0005
-            ),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=["mean_squared_error"],
         )
 

@@ -42,6 +42,8 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
             self,
             nb_epochs=100,
             batch_size=12,
+            loss="categorical_crossentropy",
+            optimizer=keras.optimizers.Adam(0.00001),
             callbacks=None,
             random_state=0,
             verbose=False,
@@ -49,7 +51,10 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
             model_save_directory=None,
     ):
         super(EncoderClassifier, self).__init__(
-            model_name=model_name, model_save_directory=model_save_directory
+            model_name=model_name,
+            model_save_directory=model_save_directory,
+            loss=loss,
+            optimizer=optimizer,
         )
 
         self.nb_epochs = nb_epochs
@@ -83,8 +88,8 @@ class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
 
         model.compile(
-            loss="categorical_crossentropy",
-            optimizer=keras.optimizers.Adam(0.00001),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=["accuracy"],
         )
 

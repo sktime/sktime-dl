@@ -32,6 +32,8 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
     def __init__(self,
                  nb_epochs=2000,
                  batch_size=16,
+                 loss="mean_squared_error",
+                 optimizer=keras.optimizers.Adadelta(),
                  callbacks=None,
                  random_state=0,
                  verbose=False,
@@ -50,7 +52,9 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
         """
         super(MLPRegressor, self).__init__(
             model_save_directory=model_save_directory,
-            model_name=model_name
+            model_name=model_name,
+            loss=loss,
+            optimizer=optimizer,
         )
         self.verbose = verbose
         self._is_fitted = False
@@ -84,8 +88,8 @@ class MLPRegressor(BaseDeepRegressor, MLPNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(
-            loss="mean_squared_error",
-            optimizer=keras.optimizers.Adadelta(),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=["mean_squared_error"],
         )
 

@@ -43,6 +43,8 @@ class MCNNClassifier(BaseDeepClassifier):
             nb_epochs=200,
             max_train_batch_size=256,
             slice_ratio=0.9,
+            loss="categorical_crossentropy",
+            optimizer=keras.optimizers.Adam(lr=0.1),
             random_state=0,
             verbose=False,
             model_name="mcnn",
@@ -66,7 +68,9 @@ class MCNNClassifier(BaseDeepClassifier):
         """
         super(MCNNClassifier, self).__init__(
             model_save_directory=model_save_directory,
-            model_name=model_name
+            model_name=model_name,
+            loss=loss,
+            optimizer=optimizer,
         )
         self.random_state = random_state
         self.verbose = verbose
@@ -494,8 +498,8 @@ class MCNNClassifier(BaseDeepClassifier):
         model = keras.models.Model(inputs=input_layers, outputs=output_layer)
 
         model.compile(
-            loss="categorical_crossentropy",
-            optimizer=keras.optimizers.Adam(lr=0.1),
+            loss=self.loss,
+            optimizer=self.optimizer,
             metrics=["accuracy"],
         )
 
