@@ -38,8 +38,6 @@ sktime-dl is under development. To ensure that you're using the most up to date 
 ::
 	git clone https://github.com/sktime/sktime-dl.git
 	cd sktime-dl
-	git checkout dev
-	git pull origin dev
 	pip install . 
 	
 When installing sktime-dl from scratch, the latest stable version of 
