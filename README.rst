@@ -1,3 +1,6 @@
+NOTE: sktime-dl is currenlty not maintained and replies to issues and PRs may be slow. We're looking for a new maintainer to help us maintain sktime-dl. 
+
+
 |travis|_ |pypi|_ |gitter|_ |Binder|_
 
 .. |travis| image:: https://img.shields.io/travis/com/sktime/sktime-dl/master?logo=travis
@@ -14,6 +17,7 @@
 
 sktime-dl
 =========
+
 An extension package for deep learning with Tensorflow/Keras for `sktime <https://github.com/alan-turing-institute/sktime>`__, a `scikit-learn <https://github.com/scikit-learn/scikit-learn>`__ compatible Python toolbox for learning with time series and panel data. 
 
 sktime-dl is under development and we welcome new contributors.
