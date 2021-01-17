@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import pytest
 from sktime.datasets import load_italy_power_demand
 
 from sktime_dl.deeplearning import CNNClassifier
@@ -33,7 +33,7 @@ def test_basic_inmem(
     print(network.score(X_test[:10], y_test[:10]))
     print("End test_basic()")
 
-
+@pytest.mark.skip
 def test_basic_saving(
         network=DeepLearnerEnsembleClassifier(
             base_model=CNNClassifier(nb_epochs=50),
