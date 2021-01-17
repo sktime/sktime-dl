@@ -33,6 +33,7 @@ def test_basic_inmem(
     print(network.score(X_test[:10], y_test[:10]))
     print("End test_basic()")
 
+
 @pytest.mark.skip
 def test_basic_saving(
         network=DeepLearnerEnsembleClassifier(
