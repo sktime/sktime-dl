@@ -116,20 +116,6 @@ stages:
             py36_tf115:
               PYTHON_VERSION: 3.6
               TF_VERSION: 1.15
-      - job: 'macOS_mojave'
-        pool:
-          vmImage: 'macOS-10.14'
-        steps:
-          - bash: echo "##vso[task.prependpath]$CONDA/bin"
-            displayName: 'Add conda to PATH'
-          - bash: sudo chown -R $USER $CONDA
-            displayName: 'Take ownership of conda installation'
-          - template: build_tools/azure/build_and_test.yml
-        strategy:
-          matrix:
-            py36_tf19:
-              PYTHON_VERSION: 3.6
-              TF_VERSION: 1.9
 
   - stage: 'Deploy'
     dependsOn: 'Build'
