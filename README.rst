@@ -34,13 +34,13 @@ The simplest installation method is to install in a new environment via pip:
 	
 	pip install sktime-dl
 	
-sktime-dl is under development. To ensure that you're using the most up to date code, you can instead install the development version in your environment: 
+sktime-dl is under development. To ensure that you're using the most up to date code, you can instead install the latest version in your environment: 
 ::
 	git clone https://github.com/sktime/sktime-dl.git
 	cd sktime-dl
-	git checkout dev
-	git pull origin dev
-	pip install . 
+	git checkout master
+	git pull origin master
+	pip install --editable .
 	
 When installing sktime-dl from scratch, the latest stable version of 
 `Tensorflow <https://www.tensorflow.org/install/>`__ 2.x will be installed. 
