@@ -88,7 +88,7 @@ def _is_nested_dataframe(X):
 
 
 def _univariate_nested_df_to_array(X):
-    return from_nested_to_2d_array(X, return_array=True)
+    return from_nested_to_2d_array(X, return_numpy=True)
 
 
 def _univariate_df_to_array(X):
