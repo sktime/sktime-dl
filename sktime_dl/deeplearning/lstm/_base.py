@@ -1,4 +1,4 @@
-__author__ = "Withington"
+__author__ = "Mahak Kothari"
 
 from tensorflow import keras
 
@@ -6,11 +6,9 @@ from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
 
 
 class LSTMNetwork(BaseDeepNetwork):
-    """ Long Short-Term Memory (LSTM)
+    """ 
+    Long Short-Term Memory (LSTM)
 
-    Adapted from the implementation of Brownlee, J. (2018)
-
-    https://machinelearningmastery.com/how-to-develop-lstm-models-for-time-series-forecasting/
     """
 
     def __init__(self):
@@ -30,10 +28,34 @@ class LSTMNetwork(BaseDeepNetwork):
         """
         input_layer = keras.layers.Input(input_shape)
         output_layer = keras.layers.LSTM(
-            units=self.units[0],
-            activation='relu',
-            return_sequences=True)(input_layer)
+                units=self.units[0],  
+                dropout=0.2, recurrent_dropout=0.2,              
+                return_sequences=True)(input_layer)
+
+        for i in range(len(units)-2):            
+            output_layer = keras.layers.LSTM(
+                units=self.units[i+1],
+                dropout=0.2, recurrent_dropout=0.2,
+                return_sequences = True)(output_layer)
+
         output_layer = keras.layers.LSTM(
-            units=self.units[1],
-            activation='relu')(output_layer)
+                units=self.units[len(units)-1],
+                dropout=0.2, recurrent_dropout=0.2,
+                return_sequences = False)(output_layer)
         return input_layer, output_layer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
