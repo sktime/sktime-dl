@@ -20,7 +20,7 @@ import keras
 import numpy as np
 import pandas as pd
 
-from sktime.utils.validation import check_X_y
+from sktime.utils.validation.series_as_features import check_X_y  # from the sktime v0.4.x
 from sktime_dl.classifiers.deeplearning._base import BaseDeepClassifier
 
 
