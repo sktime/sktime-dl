@@ -18,6 +18,34 @@ An extension package for deep learning with Tensorflow/Keras for `sktime <https:
 
 sktime-dl is under development and we welcome new contributors.
 
+Onboarding Instructions
+-----------------------
+
+I make use of the Anaconda prompt, of course you can use the equivalent venv/equivelent commands if you prefer. In the Anaconda prompt: 
+::
+	cd [parent directory for the codebase]
+
+Create the env, installing the basics and jupyter to run the examples
+::
+	conda create -n sktimedl_2021_onboarding_env python=3.7 jupyter
+	conda activate sktimedl_2021_onboarding_env
+
+Clone the codebase, move onto the onboarding branch, and install sktime-dl into the environment from here
+::
+	git clone https://github.com/sktime/sktime-dl.git
+	cd sktime-dl
+	git checkout -b sktime2021onboarding
+	git pull origin sktime2021onboarding
+	pip install .
+
+Spin up a Jupyter notebook instance, and you can navigate to examples in the browser window that's spawned and play around with those. Or, open up the sktime-dl project in your preferred IDE and make use of some networks in your own code 
+jupyter notebook 
+
+The examples can by default run using CPUs on any system (I hope!) using the inputs above. All the example notebooks can be run in short timeframes on CPU, the package installation process will probably be longer. If you have existing environments with tensorflow/keras setup to work with your CUDA/CUDNN installations, feel free to install copy the installations in that env, and install sktime-dl there. sktime-dl's setup will look for existing installations above tf 1.9 and leave them alone if it's already there. 
+
+You can also build and use an sktime-dl Docker image on Linux systems. Be sure to build from the sktime2021onboarding branch though, as this has temporary changes to ensure the requirements are fixed and compatible for one-off installation. See the instructions below for more
+
+
 Installation
 ------------
 
