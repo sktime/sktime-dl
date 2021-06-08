@@ -1,7 +1,7 @@
 sktime>=0.4.1
 tensorflow>=1.9
 tensorflow_addons==0.9.*
-h5py==3.1.0
+h5py==2.10.0
 pytest
 pytest-cov
 flaky
