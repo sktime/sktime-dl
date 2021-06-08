@@ -9,7 +9,7 @@ import pandas as pd
 from sklearn.base import clone
 from sklearn.utils.multiclass import class_distribution
 from sktime.classification.base import BaseClassifier
-from sktime.utils.validation.series_as_features import check_X
+from sktime.utils.validation.forecasting import check_X
 from tensorflow import keras
 
 from sktime_dl.deeplearning import InceptionTimeClassifier

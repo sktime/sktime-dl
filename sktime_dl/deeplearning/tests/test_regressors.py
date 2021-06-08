@@ -55,7 +55,7 @@ def test_regressor_forecasting(
 
     # solve forecasting task via reduction to time series regression
     forecaster = RecursiveTimeSeriesRegressionForecaster(
-        regressor=regressor, window_length=window_length
+        estimator=regressor, window_length=window_length
     )
     forecaster.fit(y_train)
     y_pred = forecaster.predict(fh)
