@@ -3,7 +3,8 @@
 __author__ = "James Large"
 
 import pandas as pd
-from sktime.utils.data_processing import from_nested_to_2d_array, from_nested_to_3d_numpy
+from sktime.utils.data_processing import from_nested_to_2d_array
+from sktime.utils.data_processing import from_nested_to_3d_numpy
 from sktime.utils.validation.panel import check_X, check_X_y
 
 
@@ -21,7 +22,7 @@ def check_and_clean_data(X, y=None, input_checks=True):
         if y is None:
             check_X(X)
         else:
-            check_X_y(X,y)
+            check_X_y(X, y)
 
     # want data in form: [instances = n][timepoints = m][dimensions = d]
     if isinstance(X, pd.DataFrame):
