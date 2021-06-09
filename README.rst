@@ -1,4 +1,11 @@
-NOTE: sktime-dl is currenlty not maintained and replies to issues and PRs may be slow. We're looking for a new maintainer to help us maintain sktime-dl. 
+NOTE: sktime-dl is currenlty being updated to work correctly with sktime 0.6, and wwill be fully relaunched over the summer. The plan is
+
+1. Update it to be compliant with sktime 0.6 (currently works with sktime 0.4)
+2. Update classifiers (documentation etc)
+3. Import pytorch, add a pytorch classifier
+4. Add a forecasting module
+5. Review literature on the latest dl classifiers, assimilate and evaluate any worth including
+6. Update devops so it exactly mirror sktime
 
 
 |travis|_ |pypi|_ |gitter|_ |Binder|_
