@@ -149,6 +149,7 @@ class MCDCNNRegressor(BaseDeepRegressor, MCDCNNNetwork):
 
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
+        print(X)
         self.input_shape = X.shape[1:]
 
         X = self.prepare_input(X)
