@@ -46,7 +46,7 @@ def check_and_clean_data(X, y=None, input_checks=True):
         X = X.values.reshape(
             X.shape[0], X.shape[1], 1
         )  # go from [n][m] to [n][m][d=1]
-
+    # return transposed data to conform with current model formats
     return X.transpose(0,2,1)
 
 
@@ -98,6 +98,3 @@ def _univariate_df_to_array(X):
 
 def _multivariate_nested_df_to_array(X):
     return from_nested_to_3d_numpy(X)
-
-    # go from [n][d][m] to [n][m][d]
-
