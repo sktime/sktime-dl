@@ -3,8 +3,6 @@
 __author__ = "James Large"
 
 import pandas as pd
-import numpy as np
-from sktime.utils.data_processing import from_nested_to_2d_array
 from sktime.utils.data_processing import from_nested_to_3d_numpy
 from sktime.utils.validation.panel import check_X, check_X_y
 
@@ -47,7 +45,7 @@ def check_and_clean_data(X, y=None, input_checks=True):
             X.shape[0], X.shape[1], 1
         )  # go from [n][m] to [n][m][d=1]
     # return transposed data to conform with current model formats
-    return X.transpose(0,2,1)
+    return X.transpose(0, 2, 1)
 
 
 def check_and_clean_validation_data(validation_X, validation_y,
