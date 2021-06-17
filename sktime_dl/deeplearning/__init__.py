@@ -21,7 +21,6 @@ __all__ = [
     "TWIESNClassifier"
 ]
 
-from sktime_dl.deeplearning.cnn._classifier import CNNClassifier
 from sktime_dl.deeplearning.cnn._regressor import CNNRegressor
 from sktime_dl.deeplearning.encoder._classifier import EncoderClassifier
 from sktime_dl.deeplearning.encoder._regressor import EncoderRegressor

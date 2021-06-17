@@ -30,8 +30,8 @@ from sktime.utils.data_io import load_from_tsfile_to_dataframe as load_ts
 
 #from sktime.utils.load_data import load_from_tsfile_to_dataframe as load_ts
 
+from sktime_dl.classification import CNNClassifier
 from sktime_dl.deeplearning import (
-    CNNClassifier,
     CNNRegressor,
     EncoderClassifier,
     EncoderRegressor,
@@ -87,7 +87,8 @@ estimator_list = [
     "TWIESNClassifier",
 ]
 
-classifier_list = ["cnn", "encode", "fcn", "inceptiontime", "lstm", "mcdcnn", "mcnn", "mlp", "resnet", "tlenet", "twiesn"]
+#classifier_list = ["cnn", "encode", "fcn", "lstm", "mcdcnn", "mcnn", "mlp", "resnet", "tlenet", "twiesn"]
+classifier_list = ["cnn"]
 
 
 
@@ -110,15 +111,13 @@ def set_classifier(cls, resampleId=None):
     name = cls.lower()
     # Convolutional
     if name == "cnn" or name == "cnnclassifier":
-        return CNNClassifier()
+        return CNNClassifier(random_state=resampleId)
     elif name == "encode":
         return EncoderClassifier()
     elif name == "fcn":
         return FCNClassifier()
     elif name == "inceptiontime":
         return InceptionTimeClassifier()
-    elif name == "lstm":
-        return InceptionTimeRegressor()
     elif name == "mcdcnn":
         return MCDCNNClassifier()
     elif name == "mcnn":
@@ -677,7 +676,7 @@ if __name__ == "__main__":
     else:  # Local run
         print(" Local Run")
         data_dir = "Z:/ArchiveData/Univariate_ts/"
-        results_dir = "C:/temp/sktime-dl/"
+        results_dir = "C:/temp/sktime-dl/refactor/"
         dataset = "Chinatown"
         trainX, trainY = load_ts(data_dir + dataset + "/" + dataset + "_TRAIN.ts")
         testX, testY = load_ts(data_dir + dataset + "/" + dataset + "_TEST.ts")
