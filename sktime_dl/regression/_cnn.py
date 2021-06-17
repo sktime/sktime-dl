@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+"""Time Convolutional Neural Network (CNN) for regression"""
+
 __author__ = "James Large, Withington"
 
 from tensorflow import keras

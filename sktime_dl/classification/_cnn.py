@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""Time Convolutional Neural Network (CNN) for classification"""
+
+
 __author__ = "James Large"
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
