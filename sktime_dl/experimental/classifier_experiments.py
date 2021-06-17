@@ -26,7 +26,9 @@ import pandas as pd
 from sklearn import preprocessing
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_predict
-from sktime.utils.load_data import load_from_tsfile_to_dataframe as load_ts
+from sktime.utils.data_io import load_from_tsfile_to_dataframe as load_ts
+
+#from sktime.utils.load_data import load_from_tsfile_to_dataframe as load_ts
 
 from sktime_dl.deeplearning import (
     CNNClassifier,
@@ -675,7 +677,7 @@ if __name__ == "__main__":
     else:  # Local run
         print(" Local Run")
         data_dir = "Z:/ArchiveData/Univariate_ts/"
-        results_dir = "C:/temp/"
+        results_dir = "C:/temp/sktime-dl/"
         dataset = "Chinatown"
         trainX, trainY = load_ts(data_dir + dataset + "/" + dataset + "_TRAIN.ts")
         testX, testY = load_ts(data_dir + dataset + "/" + dataset + "_TEST.ts")
