@@ -59,7 +59,7 @@ class EncoderNetwork(BaseDeepNetwork):
         conv1 = ADDONS.layers.InstanceNormalization()(conv1)
         conv1 = keras.layers.PReLU(shared_axes=[1])(conv1)
         conv1 = keras.layers.Dropout(rate=0.2)(conv1)
-        conv1 = keras.layers.MaxPooling1D(pool_size=2)(conv1)
+        conv1 = keras.layers.MaxPooling1D(pool_size=2, padding='same')(conv1)
         # conv block -2
         conv2 = keras.layers.Conv1D(
             filters=256, kernel_size=11, strides=1, padding="same"
@@ -67,7 +67,7 @@ class EncoderNetwork(BaseDeepNetwork):
         conv2 = ADDONS.layers.InstanceNormalization()(conv2)
         conv2 = keras.layers.PReLU(shared_axes=[1])(conv2)
         conv2 = keras.layers.Dropout(rate=0.2)(conv2)
-        conv2 = keras.layers.MaxPooling1D(pool_size=2)(conv2)
+        conv2 = keras.layers.MaxPooling1D(pool_size=2, padding='same')(conv2)
         # conv block -3
         conv3 = keras.layers.Conv1D(
             filters=512, kernel_size=21, strides=1, padding="same"

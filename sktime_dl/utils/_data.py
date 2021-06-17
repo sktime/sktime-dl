@@ -3,8 +3,8 @@
 __author__ = "James Large"
 
 import pandas as pd
-from sktime.utils.data_container import tabularise, nested_to_3d_numpy
-from sktime.utils.validation.series_as_features import check_X, check_X_y
+from sktime.utils.data_processing import from_nested_to_3d_numpy
+from sktime.utils.validation.panel import check_X, check_X_y
 
 
 def check_and_clean_data(X, y=None, input_checks=True):
@@ -13,7 +13,7 @@ def check_and_clean_data(X, y=None, input_checks=True):
     Keras models.
 
     :param X: the train data
-    :param y: teh train labels
+    :param y: the train labels
     :param input_checks: whether to perform the basic sktime checks
     :return: X
     '''
@@ -41,11 +41,11 @@ def check_and_clean_data(X, y=None, input_checks=True):
 
     if len(X.shape) == 2:
         # add a dimension to make it multivariate with one dimension
-        X = X.reshape(
+        X = X.values.reshape(
             X.shape[0], X.shape[1], 1
         )  # go from [n][m] to [n][m][d=1]
-
-    return X
+    # return transposed data to conform with current model formats
+    return X.transpose(0, 2, 1)
 
 
 def check_and_clean_validation_data(validation_X, validation_y,
@@ -87,7 +87,7 @@ def _is_nested_dataframe(X):
 
 
 def _univariate_nested_df_to_array(X):
-    return tabularise(X, return_array=True)
+    return from_nested_to_3d_numpy(X)
 
 
 def _univariate_df_to_array(X):
@@ -95,7 +95,4 @@ def _univariate_df_to_array(X):
 
 
 def _multivariate_nested_df_to_array(X):
-    X = nested_to_3d_numpy(X)
-
-    # go from [n][d][m] to [n][m][d]
-    return X.transpose(0, 2, 1)
+    return from_nested_to_3d_numpy(X)

@@ -78,9 +78,10 @@ class MCDCNNNetwork(BaseDeepNetwork):
                 activation="relu",
                 padding=padding,
             )(input_layer)
-            conv1_layer = keras.layers.MaxPooling1D(pool_size=self.pool_size)(
-                conv1_layer
-            )
+            conv1_layer = keras.layers.MaxPooling1D(
+                pool_size=self.pool_size,
+                padding='same',
+            )(conv1_layer)
 
             conv2_layer = keras.layers.Conv1D(
                 self.filter_sizes[1],
@@ -88,9 +89,10 @@ class MCDCNNNetwork(BaseDeepNetwork):
                 activation="relu",
                 padding=padding,
             )(conv1_layer)
-            conv2_layer = keras.layers.MaxPooling1D(pool_size=self.pool_size)(
-                conv2_layer
-            )
+            conv2_layer = keras.layers.MaxPooling1D(
+                pool_size=self.pool_size,
+                padding='same',
+            )(conv2_layer)
             conv2_layer = keras.layers.Flatten()(conv2_layer)
 
             conv2_layers.append(conv2_layer)

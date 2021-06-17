@@ -1,10 +1,12 @@
 sktime==0.4.1
 tensorflow>=1.9
 tensorflow_addons==0.9.*
-h5py
+h5py==2.10.0
 pytest
 pytest-cov
 flaky
 coveralls
+numpy==1.19.2
 matplotlib
 seaborn
+
