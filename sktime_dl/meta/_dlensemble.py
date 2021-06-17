@@ -223,7 +223,7 @@ class EnsembleFromFileClassifier(BaseClassifier):
     """
     A simple utility for post-hoc ensembling over the results of networks
     that have already been trained and had their results
-    saved via sktime.contrib.experiments.py
+    saved via sktime.contrib.classifier_experiments.py
 
     Note that there will be faulty edge cases with this, e.g. if the build
     process using this is naively timed, only the
