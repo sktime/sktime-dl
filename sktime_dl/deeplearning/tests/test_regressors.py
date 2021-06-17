@@ -86,11 +86,12 @@ def test_all_regressors():
         test_regressor(network)
         print("\t\t" + name + " testing finished")
 
+
 @pytest.mark.parametrize(
-    "name, network", 
+    "name, network",
     construct_all_regressors(SMALL_NB_EPOCHS).items()
 )
-def test_all_forecasters(name,network):
+def test_all_forecasters(name, network):
     window_length = 8
     print("\n\t\t" + name + " forecasttesting \
         started")
