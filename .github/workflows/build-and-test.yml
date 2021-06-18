@@ -27,7 +27,7 @@ jobs:
             tf-version: 1.9
     env:
       PYTHON_VERSION: ${{ matrix.python-version }}
-      TF_VERSION: ${{ matrix.tf-version
+      TF_VERSION: ${{ matrix.tf-version }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
