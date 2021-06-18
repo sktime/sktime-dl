@@ -4,8 +4,8 @@ __all__ = [
     "BaseDeepClassifier"
 ]
 
-from sktime_dl.deeplearning.base.estimators._classifier import (
+from classification._classifier import (
     BaseDeepClassifier,
 )
-from sktime_dl.deeplearning.base.estimators._network import BaseDeepNetwork
-from sktime_dl.deeplearning.base.estimators._regressor import BaseDeepRegressor
+from networks._network import BaseDeepNetwork
+from regression._regressor import BaseDeepRegressor
