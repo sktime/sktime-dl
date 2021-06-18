@@ -1,4 +1,7 @@
-__author__ = "James Large, Withington"
+# -*- coding: utf-8 -*-
+"""Time Convolutional Neural Network (CNN) (minus the final output layer)."""
+
+__author__ = "James Large, Withington, Tony Bagnall"
 
 from tensorflow import keras
 
@@ -6,12 +9,10 @@ from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
 
 
 class CNNNetwork(BaseDeepNetwork):
-    """Time Convolutional Neural Network (CNN) (minus the final output layer).
-
+    """
     Adapted from the implementation from Fawaz et. al
 
     https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/cnn.py
-
     Network originally defined in:
 
     @article{zhao2017convolutional,
@@ -54,9 +55,12 @@ class CNNNetwork(BaseDeepNetwork):
     def build_network(self, input_shape, **kwargs):
         """
         Construct a network and return its input and output layers
-        ----------
+
+        Arguments
+        ---------
         input_shape : tuple
             The shape of the data fed into the input layer
+
         Returns
         -------
         input_layer : a keras layer
