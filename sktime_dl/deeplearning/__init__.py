@@ -1,6 +1,8 @@
 __all__ = [
     "CNNClassifier",
     "CNNRegressor",
+    "CNTCClassifier",
+    "CNTCRegressor",
     "EncoderClassifier",
     "EncoderRegressor",
     "FCNClassifier",
@@ -23,6 +25,8 @@ __all__ = [
 
 from sktime_dl.deeplearning.cnn._classifier import CNNClassifier
 from sktime_dl.deeplearning.cnn._regressor import CNNRegressor
+from sktime_dl.deeplearning.cntc._classifier import CNTCClassifier
+from sktime_dl.deeplearning.cntc._regressor import CNTCRegressor
 from sktime_dl.deeplearning.encoder._classifier import EncoderClassifier
 from sktime_dl.deeplearning.encoder._regressor import EncoderRegressor
 from sktime_dl.deeplearning.fcn._classifier import FCNClassifier
