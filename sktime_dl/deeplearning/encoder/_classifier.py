@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 __author__ = "James Large"
 
 from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier

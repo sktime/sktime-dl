@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Base class for the Keras neural network classifiers adapted from Fawaz et. al
 # https://github.com/hfawaz/dl-4-tsc
 
