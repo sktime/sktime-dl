@@ -5,7 +5,7 @@ __author__ = "James Large, Withington, Tony Bagnall"
 
 from tensorflow import keras
 
-from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
+from sktime_dl.networks import BaseDeepNetwork
 
 
 class CNNNetwork(BaseDeepNetwork):

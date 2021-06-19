@@ -5,8 +5,8 @@ __author__ = "James Large, Withington"
 
 from tensorflow import keras
 
-from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
-from networks._cnn import CNNNetwork
+from sktime_dl.regression import BaseDeepRegressor
+from sktime_dl.networks._cnn import CNNNetwork
 from sktime_dl.utils import check_and_clean_data, \
     check_and_clean_validation_data
 

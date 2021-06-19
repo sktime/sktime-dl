@@ -32,7 +32,6 @@ from sktime.utils.data_io import load_from_tsfile_to_dataframe as load_ts
 
 from sktime_dl.classification import CNNClassifier
 from sktime_dl.deeplearning import (
-    CNNRegressor,
     EncoderClassifier,
     EncoderRegressor,
     FCNClassifier,
