@@ -3,7 +3,7 @@
 __author__ = "James Large"
 
 import pandas as pd
-from sktime.utils.data_processing import from_nested_to_3d_numpy
+from sktime.utils.data_io import from_nested_to_3d_numpy
 from sktime.utils.validation.panel import check_X, check_X_y
 
 
