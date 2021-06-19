@@ -1,5 +1,5 @@
-from sktime_dl.deeplearning import CNNClassifier
-from sktime_dl.deeplearning import CNNRegressor
+from sktime_dl.classification import CNNClassifier
+from sktime_dl.regression import CNNRegressor
 from sktime_dl.deeplearning import EncoderClassifier
 from sktime_dl.deeplearning import EncoderRegressor
 from sktime_dl.deeplearning import FCNClassifier
