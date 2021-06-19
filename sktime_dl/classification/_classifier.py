@@ -7,7 +7,6 @@ __author__ = "James Large, Aaron Bostrom"
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
-# from sktime.classifiers.base import BaseClassifier
 from sktime.classification.base import BaseClassifier
 
 from sktime_dl.utils import check_and_clean_data
