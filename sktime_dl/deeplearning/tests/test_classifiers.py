@@ -1,13 +1,13 @@
 from sktime.datasets import load_basic_motions
 from sktime.datasets import load_italy_power_demand
 
-from sktime_dl.deeplearning import CNNClassifier
+from sktime_dl.deeplearning import CNNClassifier, LSTMFCNClassifier
 from sktime_dl.deeplearning.cntc._classifier import CNTCClassifier
 from sktime_dl.utils.model_lists import SMALL_NB_EPOCHS
 from sktime_dl.utils.model_lists import construct_all_classifiers
 
 
-def test_basic_univariate(network=CNTCClassifier(nb_epochs=SMALL_NB_EPOCHS)):
+def test_basic_univariate(network=LSTMFCNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     """
     just a super basic test with gunpoint,
         load data,
@@ -54,7 +54,7 @@ def test_pipeline(network=CNTCClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     print("End test_pipeline()")
 
 
-def test_highLevelsktime(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
+def test_highLevelsktime(network=LSTMFCNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     """
     truly generalised test with sktime tasks/strategies
         load data, build task
@@ -83,7 +83,7 @@ def test_highLevelsktime(network=CNNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     print("End test_highLevelsktime()")
 
 
-def test_basic_multivariate(network=CNTCClassifier(nb_epochs=SMALL_NB_EPOCHS)):
+def test_basic_multivariate(network=LSTMFCNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     """
     just a super basic test with basicmotions,
         load data,
