@@ -10,6 +10,16 @@ from sktime_dl.utils import check_and_clean_data, \
 
 class LSTMFCNRegressor(BaseDeepRegressor, LSTMFCNNetwork):
     """
+    MLSTM FCN models, from the paper Multivariate LSTM-FCNs for Time Series Classification
+
+    https://arxiv.org/abs/1801.04503
+
+    @misc{Karim2018,
+    Author = {Fazle Karim and Somshubra Majumdar and Houshang Darabi and Samuel Harford},
+    Title = {Multivariate LSTM-FCNs for Time Series Classification},
+    Year = {2018},
+    Eprint = {arXiv:1801.04503},
+    }
 
     """
 
