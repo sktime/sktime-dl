@@ -83,7 +83,7 @@ def test_highLevelsktime(network=LSTMFCNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     print("End test_highLevelsktime()")
 
 
-def test_basic_multivariate(network=LSTMFCNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
+def test_basic_multivariate(network=CNTCClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     """
     just a super basic test with basicmotions,
         load data,

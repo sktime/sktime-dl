@@ -32,6 +32,11 @@ class CNTCRegressor(BaseDeepRegressor, CNTCNetwork):
 
     :param nb_epochs: int, the number of epochs to train the model
     :param batch_size: int, the number of samples per gradient update.
+    :param rnn_layer: int, filter size for rnn layer
+    :param filter_sizes: int, array of shape 2, filter sizes for two convolutional layers
+    :param kernel_sizes: int,array of shape 2,  kernel size for two convolutional layers
+    :param lstm_size: int, filter size of lstm layer
+    :param dense_size: int, size of dense layer
     :param callbacks: list of tf.keras.callbacks.Callback objects
     :param random_state: int, seed to any needed random actions
     :param verbose: boolean, whether to output extra information
@@ -45,6 +50,11 @@ class CNTCRegressor(BaseDeepRegressor, CNTCNetwork):
             self,
             nb_epochs=120,
             batch_size=64,
+            rnn_layer=64,
+            filter_sizes=[16, 8],
+            kernel_sizes=[1, 1],
+            lstm_size=8,
+            dense_size=64,
             callbacks=None,
             random_state=0,
             verbose=False,
@@ -60,6 +70,12 @@ class CNTCRegressor(BaseDeepRegressor, CNTCNetwork):
         self.callbacks = callbacks
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+        self.random_state = random_state
+        self.rnn_layer = rnn_layer
+        self.filter_sizes = filter_sizes
+        self.kernel_sizes = kernel_sizes
+        self.lstm_size = lstm_size
+        self.dense_size = dense_size
 
         self._is_fitted = False
 

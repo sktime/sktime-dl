@@ -10,7 +10,7 @@ from sktime_dl.utils.model_lists import (SMALL_NB_EPOCHS,
                                          construct_all_regressors)
 
 
-def test_regressor(estimator=LSTMFCNRegressor(nb_epochs=SMALL_NB_EPOCHS)):
+def test_regressor(estimator=CNTCRegressor(nb_epochs=SMALL_NB_EPOCHS)):
     """
     test a regressor
     """
@@ -35,7 +35,7 @@ def test_regressor(estimator=LSTMFCNRegressor(nb_epochs=SMALL_NB_EPOCHS)):
 
 
 def test_regressor_forecasting(
-        regressor=LSTMFCNRegressor(nb_epochs=SMALL_NB_EPOCHS), window_length=4
+        regressor=CNTCRegressor(nb_epochs=SMALL_NB_EPOCHS), window_length=4
 ):
     """
     test a regressor used for forecasting
