@@ -1,7 +1,7 @@
 __author__ = "Jack Russon"
 
 from tensorflow import keras
-from keras_self_attention import SeqSelfAttention
+#from keras_self_attention import SeqSelfAttention
 import pandas as pd
 import numpy as np
 from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
@@ -102,13 +102,13 @@ class CNTCNetwork(BaseDeepNetwork):
 
         avg = keras.layers.MaxPooling1D(pool_size=1, strides=None, padding='valid')(merge)
         avg = keras.layers.Dropout(0.6)(avg)
-        att = SeqSelfAttention(attention_width=10,
-                               attention_activation='sigmoid',
-                               name='Attention',
-                               attention_type='multiplicative'
-                               )(avg)
-        att = keras.layers.Dropout(0.5)(att)
-        mlp1 = keras.layers.Dense(self.dense_size, kernel_initializer='glorot_uniform', activation='relu')(att)
+#       att = SeqSelfAttention(attention_width=10,
+#                              attention_activation='sigmoid',
+#                               name='Attention',
+#                               attention_type='multiplicative'
+#                               )(avg)
+#        att = keras.layers.Dropout(0.5)(att)
+        mlp1 = keras.layers.Dense(self.dense_size, kernel_initializer='glorot_uniform', activation='relu')(avg)
         mlp1 = keras.layers.Dropout(0.8)(mlp1)
         mlp2 = keras.layers.Dense(self.dense_size, kernel_initializer='glorot_uniform', activation='relu')(mlp1)
         mlp2 = keras.layers.Dropout(0.8)(mlp2)
