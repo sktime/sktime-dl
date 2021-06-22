@@ -674,9 +674,9 @@ if __name__ == "__main__":
         )
     else:  # Local run
         print(" Local Run")
-        data_dir = "Z:/ArchiveData/Univariate_ts/"
-        results_dir = "C:/temp/sktime-dl/refactor/"
-        dataset = "Chinatown"
+        data_dir = "../data/"
+        results_dir = "C:/temp/"
+        dataset = "UnitTest"
         trainX, trainY = load_ts(data_dir + dataset + "/" + dataset + "_TRAIN.ts")
         testX, testY = load_ts(data_dir + dataset + "/" + dataset + "_TEST.ts")
         classifier = "cnn"
