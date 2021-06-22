@@ -1,13 +1,13 @@
 from sktime.datasets import load_basic_motions
 from sktime.datasets import load_italy_power_demand
 
-from sktime_dl.deeplearning import CNNClassifier, LSTMFCNClassifier
+from sktime_dl.deeplearning import LSTMFCNClassifier
 from sktime_dl.deeplearning.cntc._classifier import CNTCClassifier
 from sktime_dl.utils.model_lists import SMALL_NB_EPOCHS
 from sktime_dl.utils.model_lists import construct_all_classifiers
 
 
-def test_basic_univariate(network=LSTMFCNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
+def test_basic_univariate(network=CNTCClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     """
     just a super basic test with gunpoint,
         load data,

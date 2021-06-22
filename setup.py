@@ -50,7 +50,7 @@ def find_install_requires():
     """
 
     install_requires = [
-        'sktime==0.4.1',
+        'sktime==0.6.1',
         'h5py>=2.8.0',
         'matplotlib',
         'seaborn',
