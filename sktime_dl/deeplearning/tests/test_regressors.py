@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 from sklearn.metrics import mean_squared_error
 from sktime.datasets import load_airline
 from sktime.datasets import load_italy_power_demand
@@ -86,12 +87,14 @@ def test_all_regressors():
         print("\t\t" + name + " testing finished")
 
 
-def test_all_forecasters():
+@pytest.mark.parametrize(
+    "name, network",
+    construct_all_regressors(SMALL_NB_EPOCHS).items()
+)
+def test_all_forecasters(name, network):
     window_length = 8
-
-    for name, network in construct_all_regressors(SMALL_NB_EPOCHS).items():
-        print("\n\t\t" + name + " forecasttesting \
-         started")
-        test_regressor_forecasting(network, window_length=window_length)
-        print("\t\t" + name + " forecasttesting \
-            finished")
+    print("\n\t\t" + name + " forecasttesting \
+        started")
+    test_regressor_forecasting(network, window_length=window_length)
+    print("\t\t" + name + " forecasttesting \
+        finished")
