@@ -2,7 +2,7 @@ from pathlib import Path
 
 from sktime.datasets import load_italy_power_demand
 
-from sktime_dl.deeplearning import CNNClassifier
+from sktime_dl.classification import CNNClassifier
 from sktime_dl.meta import DeepLearnerEnsembleClassifier
 
 

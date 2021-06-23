@@ -1,6 +1,8 @@
 __all__ = [
     "CNNClassifier",
     "CNNRegressor",
+    "CNTCClassifier",
+    "CNTCRegressor",
     "EncoderClassifier",
     "EncoderRegressor",
     "FCNClassifier",
@@ -8,6 +10,8 @@ __all__ = [
     "InceptionTimeClassifier",
     "InceptionTimeRegressor",
     "LSTMRegressor",
+    "LSTMFCNClassifier",
+    "LSTMFCNRegressor"
     "MCDCNNClassifier",
     "MCDCNNRegressor",
     "MCNNClassifier",
@@ -21,7 +25,9 @@ __all__ = [
     "TWIESNClassifier"
 ]
 
-from regression._cnn import CNNRegressor
+from sktime_dl.regression._cnn import CNNRegressor
+from sktime_dl.deeplearning.cntc._classifier import CNTCClassifier
+from sktime_dl.deeplearning.cntc._regressor import CNTCRegressor
 from sktime_dl.deeplearning.encoder._classifier import EncoderClassifier
 from sktime_dl.deeplearning.encoder._regressor import EncoderRegressor
 from sktime_dl.deeplearning.fcn._classifier import FCNClassifier
@@ -31,6 +37,8 @@ from sktime_dl.deeplearning.inceptiontime._classifier import \
 from sktime_dl.deeplearning.inceptiontime._regressor import \
     InceptionTimeRegressor
 from sktime_dl.deeplearning.lstm._regressor import LSTMRegressor
+from sktime_dl.deeplearning.lstmfcn._classifier import LSTMFCNClassifier
+from sktime_dl.deeplearning.lstmfcn._regressor import LSTMFCNRegressor
 from sktime_dl.deeplearning.mcdcnn._classifier import MCDCNNClassifier
 from sktime_dl.deeplearning.mcdcnn._regressor import MCDCNNRegressor
 from sktime_dl.deeplearning.mcnn._classifier import MCNNClassifier

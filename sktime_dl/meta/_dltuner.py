@@ -4,8 +4,8 @@ import numpy as np
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
 
-from sktime_dl.deeplearning import CNNClassifier
-from sktime_dl.deeplearning.base.estimators import BaseDeepClassifier
+from sktime_dl.classification import CNNClassifier
+from sktime_dl.classification._classifier import BaseDeepClassifier
 
 
 class TunedDeepLearningClassifier(BaseDeepClassifier):

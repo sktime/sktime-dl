@@ -1,76 +1,70 @@
-# -*- coding: utf-8 -*-
-"""Time Convolutional Neural Network (CNN) for regression"""
-
-__author__ = "James Large, Withington"
+__author__ = "Jack Russon"
 
 from tensorflow import keras
 
-from sktime_dl.regression._regressor import BaseDeepRegressor
-from sktime_dl.networks._cnn import CNNNetwork
+from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
+from sktime_dl.deeplearning.lstmfcn._base import LSTMFCNNetwork
 from sktime_dl.utils import check_and_clean_data, \
     check_and_clean_validation_data
 
 
-class CNNRegressor(BaseDeepRegressor, CNNNetwork):
-    """Time Convolutional Neural Network (CNN).
+class LSTMFCNRegressor(BaseDeepRegressor, LSTMFCNNetwork):
+    """
 
-    Adapted from the implementation from Fawaz et. al
-
-    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/cnn.py
-
-    Network originally defined in:
-
-    @article{zhao2017convolutional, title={Convolutional neural networks for
-    time series classification}, author={Zhao, Bendong and Lu, Huanzhang and
-    Chen, Shangfeng and Liu, Junliang and Wu, Dongya}, journal={Journal of
-    Systems Engineering and Electronics}, volume={28}, number={1}, pages={
-    162--169}, year={2017}, publisher={BIAI} }
-
-    :param nb_epochs: int, the number of epochs to train the model
-    :param batch_size: int, the number of samples per gradient update.
-    :param kernel_size: int, specifying the length of the 1D convolution
-     window
-    :param avg_pool_size: int, size of the average pooling windows
-    :param nb_conv_layers: int, the number of convolutional plus average
-     pooling layers
-    :param filter_sizes: int, array of shape = (nb_conv_layers)
-    :param callbacks: list of tf.keras.callbacks.Callback objects
-    :param random_state: int, seed to any needed random actions
-    :param verbose: boolean, whether to output extra information
-    :param model_name: string, the name of this model for printing and file
-     writing purposes
-    :param model_save_directory: string, if not None; location to save the
-     trained keras model in hdf5 format
     """
 
     def __init__(
             self,
-            nb_epochs=2000,
+            nb_epochs=120,
             batch_size=16,
-            kernel_size=7,
-            avg_pool_size=3,
-            nb_conv_layers=2,
-            filter_sizes=[6, 12],
-            callbacks=None,
+            kernel_sizes=[8, 5, 3],
+            filter_sizes=[128, 256, 128],
+            NUM_CELLS=8,
+            dropout=0.8,
+            callbacks=[],
             random_state=0,
             verbose=False,
-            model_name="cnn_regressor",
+            model_name="mcdcnn_regressor",
             model_save_directory=None,
     ):
-        super(CNNRegressor, self).__init__(
-            model_save_directory=model_save_directory,
-            model_name=model_name,
+        """
+        :param nb_epochs: int, the number of epochs to train the model
+        :param batch_size: int, the number of samples per gradient update
+        :param kernel_sizes: list of ints, specifying the length of the 1D convolution
+         windows
+        :param filter_sizes: int, array of shape = 3, size of filter for each
+         conv layer
+        :param callbacks: not used
+        :param random_state: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and file
+         writing purposes
+        :param model_save_directory: string, if not None; location to save the
+         trained keras model in hdf5 format
+        """
+        super(LSTMFCNRegressor, self).__init__(
+            model_name=model_name, model_save_directory=model_save_directory
         )
-        self.filter_sizes = filter_sizes
-        self.nb_conv_layers = nb_conv_layers
-        self.avg_pool_size = avg_pool_size
-        self.random_state = random_state
-        self.kernel_size = kernel_size
+
         self.verbose = verbose
-        self.callbacks = callbacks
+        self._is_fitted = False
+
+        # calced in fit
+        self.input_shape = None
+        self.model = None
+        self.history = None
+
+        # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+        self.kernel_sizes = kernel_sizes
+        self.filter_sizes = filter_sizes
+        self.NUM_CELLS = NUM_CELLS
+        self.dropout=dropout
 
+        self.callbacks = callbacks
+        self.random_state = random_state
+        self.verbose = verbose
         self._is_fitted = False
 
     def build_model(self, input_shape, **kwargs):
@@ -84,16 +78,27 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         -------
         output : a compiled Keras Model
         """
-        input_layer, output_layer = self.build_network(input_shape, **kwargs)
+        input_layers, output_layer = self.build_network(input_shape, **kwargs)
 
         output_layer = keras.layers.Dense(units=1)(output_layer)
 
-        model = keras.models.Model(inputs=input_layer, outputs=output_layer)
+        model = keras.models.Model(inputs=input_layers, outputs=output_layer)
+
         model.compile(
             loss="mean_squared_error",
-            optimizer=keras.optimizers.Adam(),
+            optimizer=keras.optimizers.SGD(
+                lr=0.01, momentum=0.9, decay=0.0005
+            ),
             metrics=["mean_squared_error"],
         )
+
+        # file_path = self.output_directory + 'best_model.hdf5'
+        # model_checkpoint = keras.callbacks.ModelCheckpoint(
+        #     filepath=file_path,
+        #     monitor='val_loss',
+        #     save_best_only=True)
+        # self.callbacks = [model_checkpoint]
+        self.callbacks = []
 
         return model
 
@@ -124,9 +129,6 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         -------
         self : object
         """
-        if self.callbacks is None:
-            self.callbacks = []
-
         X = check_and_clean_data(X, y, input_checks=input_checks)
 
         validation_data = \
@@ -135,6 +137,13 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
         self.input_shape = X.shape[1:]
+
+
+        if validation_data is not None:
+            validation_data = (
+                self.prepare_input(validation_data[0]),
+                validation_data[1]
+            )
 
         self.model = self.build_model(self.input_shape)
 
@@ -147,8 +156,8 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
             batch_size=self.batch_size,
             epochs=self.nb_epochs,
             verbose=self.verbose,
-            callbacks=self.callbacks,
             validation_data=validation_data,
+            callbacks=self.callbacks,
         )
 
         self.save_trained_model()

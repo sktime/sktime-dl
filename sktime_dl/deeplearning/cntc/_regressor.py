@@ -1,39 +1,42 @@
-# -*- coding: utf-8 -*-
-"""Time Convolutional Neural Network (CNN) for regression"""
-
 __author__ = "James Large, Withington"
 
 from tensorflow import keras
 
-from sktime_dl.regression._regressor import BaseDeepRegressor
-from sktime_dl.networks._cnn import CNNNetwork
+from sktime_dl.deeplearning.base.estimators import BaseDeepRegressor
+from sktime_dl.deeplearning.cntc._base import CNTCNetwork
 from sktime_dl.utils import check_and_clean_data, \
     check_and_clean_validation_data
 
 
-class CNNRegressor(BaseDeepRegressor, CNNNetwork):
-    """Time Convolutional Neural Network (CNN).
+class CNTCRegressor(BaseDeepRegressor, CNTCNetwork):
+    """Combining contextual neural networks for time series classification
 
-    Adapted from the implementation from Fawaz et. al
+       Adapted from the implementation from Fullah et. al
 
-    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/cnn.py
+      https://github.com/AmaduFullah/CNTC_MODEL/blob/master/cntc.ipynb
 
-    Network originally defined in:
+       Network originally defined in:
 
-    @article{zhao2017convolutional, title={Convolutional neural networks for
-    time series classification}, author={Zhao, Bendong and Lu, Huanzhang and
-    Chen, Shangfeng and Liu, Junliang and Wu, Dongya}, journal={Journal of
-    Systems Engineering and Electronics}, volume={28}, number={1}, pages={
-    162--169}, year={2017}, publisher={BIAI} }
+       @article{FULLAHKAMARA202057,
+       title = {Combining contextual neural networks for time series classification},
+       journal = {Neurocomputing},
+       volume = {384},
+       pages = {57-66},
+       year = {2020},
+       issn = {0925-2312},
+       doi = {https://doi.org/10.1016/j.neucom.2019.10.113},
+       url = {https://www.sciencedirect.com/science/article/pii/S0925231219316364},
+       author = {Amadu {Fullah Kamara} and Enhong Chen and Qi Liu and Zhen Pan},
+       keywords = {Time series classification, Contextual convolutional neural networks, Contextual long short-term memory, Attention, Multilayer perceptron},
+      }
 
     :param nb_epochs: int, the number of epochs to train the model
     :param batch_size: int, the number of samples per gradient update.
-    :param kernel_size: int, specifying the length of the 1D convolution
-     window
-    :param avg_pool_size: int, size of the average pooling windows
-    :param nb_conv_layers: int, the number of convolutional plus average
-     pooling layers
-    :param filter_sizes: int, array of shape = (nb_conv_layers)
+    :param rnn_layer: int, filter size for rnn layer
+    :param filter_sizes: int, array of shape 2, filter sizes for two convolutional layers
+    :param kernel_sizes: int,array of shape 2,  kernel size for two convolutional layers
+    :param lstm_size: int, filter size of lstm layer
+    :param dense_size: int, size of dense layer
     :param callbacks: list of tf.keras.callbacks.Callback objects
     :param random_state: int, seed to any needed random actions
     :param verbose: boolean, whether to output extra information
@@ -45,31 +48,34 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
 
     def __init__(
             self,
-            nb_epochs=2000,
-            batch_size=16,
-            kernel_size=7,
-            avg_pool_size=3,
-            nb_conv_layers=2,
-            filter_sizes=[6, 12],
+            nb_epochs=120,
+            batch_size=64,
+            rnn_layer=64,
+            filter_sizes=[16, 8],
+            kernel_sizes=[1, 1],
+            lstm_size=8,
+            dense_size=64,
             callbacks=None,
             random_state=0,
             verbose=False,
-            model_name="cnn_regressor",
+            model_name="cntc_regressor",
             model_save_directory=None,
     ):
-        super(CNNRegressor, self).__init__(
+        super(CNTCRegressor, self).__init__(
             model_save_directory=model_save_directory,
             model_name=model_name,
         )
-        self.filter_sizes = filter_sizes
-        self.nb_conv_layers = nb_conv_layers
-        self.avg_pool_size = avg_pool_size
         self.random_state = random_state
-        self.kernel_size = kernel_size
         self.verbose = verbose
         self.callbacks = callbacks
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
+        self.random_state = random_state
+        self.rnn_layer = rnn_layer
+        self.filter_sizes = filter_sizes
+        self.kernel_sizes = kernel_sizes
+        self.lstm_size = lstm_size
+        self.dense_size = dense_size
 
         self._is_fitted = False
 
@@ -128,7 +134,7 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
             self.callbacks = []
 
         X = check_and_clean_data(X, y, input_checks=input_checks)
-
+        X_2=self.prepare_input(X)
         validation_data = \
             check_and_clean_validation_data(validation_X, validation_y)
 
@@ -142,7 +148,7 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
             self.model.summary()
 
         self.history = self.model.fit(
-            X,
+            [X_2,X,X],
             y,
             batch_size=self.batch_size,
             epochs=self.nb_epochs,
@@ -155,3 +161,32 @@ class CNNRegressor(BaseDeepRegressor, CNNNetwork):
         self._is_fitted = True
 
         return self
+
+    def predict(self, X, input_checks=True, **kwargs):
+        """
+        Find regression estimate for all cases in X.
+        Parameters
+        ----------
+        X : a nested pd.Dataframe, or (if input_checks=False) array-like of
+        shape = (n_instances, series_length, n_dimensions)
+            The training input samples. If a 2D array-like is passed,
+            n_dimensions is assumed to be 1.
+        input_checks: boolean
+            whether to check the X parameter
+        Returns
+        -------
+        predictions : 1d numpy array
+            array of predictions of each instance
+        """
+        self.check_is_fitted()
+
+        X = check_and_clean_data(X, input_checks=input_checks)
+
+        x_test= self.prepare_input(X)
+
+        preds = self.model.predict([x_test,X,X], batch_size=self.batch_size)
+
+        return preds
+
+
+

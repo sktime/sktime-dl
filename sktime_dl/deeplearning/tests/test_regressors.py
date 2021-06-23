@@ -6,12 +6,13 @@ from sktime.datasets import load_italy_power_demand
 from sktime.forecasting.compose import RecursiveTimeSeriesRegressionForecaster
 from sktime.forecasting.model_selection import temporal_train_test_split
 
-from sktime_dl.deeplearning import MLPRegressor, MCDCNNRegressor
+from sktime_dl.deeplearning import MLPRegressor, MCDCNNRegressor, CNTCRegressor,LSTMFCNRegressor
+
 from sktime_dl.utils.model_lists import (SMALL_NB_EPOCHS,
                                          construct_all_regressors)
 
 
-def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
+def test_regressor(estimator=CNTCRegressor(nb_epochs=SMALL_NB_EPOCHS)):
     """
     test a regressor
     """
@@ -36,7 +37,7 @@ def test_regressor(estimator=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS)):
 
 
 def test_regressor_forecasting(
-        regressor=MLPRegressor(nb_epochs=SMALL_NB_EPOCHS), window_length=4
+        regressor=CNTCRegressor(nb_epochs=SMALL_NB_EPOCHS), window_length=4
 ):
     """
     test a regressor used for forecasting
