@@ -13,7 +13,7 @@ from sktime.datasets import load_italy_power_demand
 
 from sktime_dl.classification import CNNClassifier
 from sktime_dl.deeplearning import EncoderClassifier
-from sktime_dl.deeplearning import FCNClassifier
+from sktime_dl.classification import FCNClassifier
 from sktime_dl.deeplearning import InceptionTimeClassifier
 from sktime_dl.deeplearning import MCDCNNClassifier
 from sktime_dl.deeplearning import MCNNClassifier
