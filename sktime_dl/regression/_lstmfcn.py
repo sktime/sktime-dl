@@ -3,7 +3,7 @@ __author__ = "Jack Russon"
 from tensorflow import keras
 
 from sktime_dl.regression._regressor import BaseDeepRegressor
-from sktime_dl.regression._lstmfcn import LSTMFCNNetwork
+from sktime_dl.networks._lstmfcn import LSTMFCNNetwork
 from sktime_dl.utils import check_and_clean_data, \
     check_and_clean_validation_data
 
