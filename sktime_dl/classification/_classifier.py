@@ -1,7 +1,10 @@
-# Base class for the Keras neural network classifiers adapted from Fawaz et. al
+# -*- coding: utf-8 -*-
+"""
+Base class for the Keras neural network classifiers adapted from Fawaz et. al
 # https://github.com/hfawaz/dl-4-tsc
-
+"""
 __author__ = "James Large, Aaron Bostrom"
+__all__ = ["BaseDeepClassifier"]
 
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
