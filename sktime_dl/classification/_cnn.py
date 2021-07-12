@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Time Convolutional Neural Network (CNN) for classification"""
 
-
 __author__ = "James Large"
+__all__ = ["CNNClassifier"]
 
 from sktime_dl.classification._classifier import BaseDeepClassifier
 from sktime_dl.networks._cnn import CNNNetwork
@@ -15,32 +15,32 @@ from tensorflow import keras
 class CNNClassifier(BaseDeepClassifier, CNNNetwork):
     """Time Convolutional Neural Network (CNN).
 
-    Adapted from the implementation from Fawaz et. al
-
-    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/cnn.py
-
-    Network originally defined in:
-    @article{zhao2017convolutional, title={Convolutional neural networks for
-    time series classification}, author={Zhao, Bendong and Lu, Huanzhang and
-    Chen, Shangfeng and Liu, Junliang and Wu, Dongya}, journal={Journal of
-    Systems Engineering and Electronics}, volume={28}, number={1}, pages={
-    162--169}, year={2017}, publisher={BIAI} }
-
-    :param nb_epochs: int, the number of epochs to train the model
-    :param batch_size: int, the number of samples per gradient update.
-    :param kernel_size: int, specifying the length of the 1D convolution
+    Parameters
+    ----------
+    nb_epochs: int, the number of epochs to train the model
+    batch_size: int, the number of samples per gradient update.
+    kernel_size: int, specifying the length of the 1D convolution
      window
-    :param avg_pool_size: int, size of the average pooling windows
-    :param nb_conv_layers: int, the number of convolutional plus average
+    avg_pool_size: int, size of the average pooling windows
+    nb_conv_layers: int, the number of convolutional plus average
      pooling layers
-    :param filter_sizes: int, array of shape = (nb_conv_layers)
-    :param callbacks: list of tf.keras.callbacks.Callback objects
-    :param random_state: int, or sklearn Random.state
-    :param verbose: boolean, whether to output extra information
-    :param model_name: string, the name of this model for printing and
+    filter_sizes: int, array of shape = (nb_conv_layers)
+    callbacks: list of tf.keras.callbacks.Callback objects
+    random_state: int, or sklearn Random.state
+    verbose: boolean, whether to output extra information
+    model_name: string, the name of this model for printing and
     file writing purposes
-    :param model_save_directory: string, if not None; location to save
+    model_save_directory: string, if not None; location to save
     the trained keras model in hdf5 format
+
+    Notes
+    -----
+    ..[1] Zhao et. al, Convolutional neural networks for
+    time series classification, Journal of
+    Systems Engineering and Electronics, 28(1):2017.
+
+    Adapted from the implementation from Fawaz et. al
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/cnn.py
     """
 
     def __init__(
@@ -76,12 +76,15 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
         """
         Construct a compiled, un-trained, keras model that is ready for
         training
+
+        Parameters
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
         nb_classes: int
             The number of classes, which shall become the size of the output
             layer
+
         Returns
         -------
         output : a compiled Keras Model
@@ -105,6 +108,8 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
             validation_y=None, **kwargs):
         """
         Fit the classifier on the training set (X, y)
+
+        Parameters
         ----------
         X : a nested pd.Dataframe, or (if input_checks=False) array-like of
         shape = (n_instances, series_length, n_dimensions)
@@ -124,6 +129,7 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
             are stored in the model's fit history.
         validation_y : array-like, shape = [n_instances]
             The validation class labels.
+
         Returns
         -------
         self : object

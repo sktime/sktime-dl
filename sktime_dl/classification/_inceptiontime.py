@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+__author__ = "James Large"
+__all__ = ["InceptionTimeClassifier"]
+
 from tensorflow import keras
 
 from sktime_dl.classification._classifier import BaseDeepClassifier
@@ -10,37 +14,32 @@ from sklearn.utils import check_random_state
 class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
     """InceptionTime
 
-    Adapted from the implementation from Fawaz et. al
-
-    https://github.com/hfawaz/InceptionTime/blob/master/classifiers/
-    inception.py
-
-    Network originally defined in:
-
-    @article{IsmailFawaz2019inceptionTime, Title                    = {
-    InceptionTime: Finding AlexNet for Time Series Classification}, Author
-                    = {Ismail Fawaz, Hassan and Lucas, Benjamin and
-                    Forestier, Germain and Pelletier, Charlotte and Schmidt,
-                    Daniel F. and Weber, Jonathan and Webb, Geoffrey I. and
-                    Idoumghar, Lhassane and Muller, Pierre-Alain and
-                    Petitjean, François}, journal                  = {
-                    ArXiv}, Year                     = {2019} }
-    :param nb_filters: int,
-    :param use_residual: boolean,
-    :param use_bottleneck: boolean,
-    :param depth: int
-    :param kernel_size: int, specifying the length of the 1D convolution
+    Parameters
+    ----------
+    nb_filters: int,
+    use_residual: boolean,
+    use_bottleneck: boolean,
+    depth: int
+    kernel_size: int, specifying the length of the 1D convolution
      window
-    :param batch_size: int, the number of samples per gradient update.
-    :param bottleneck_size: int,
-    :param nb_epochs: int, the number of epochs to train the model
-    :param callbacks: list of tf.keras.callbacks.Callback objects
-    :param random_state: int, seed to any needed random actions
-    :param verbose: boolean, whether to output extra information
-    :param model_name: string, the name of this model for printing and
+    batch_size: int, the number of samples per gradient update.
+    bottleneck_size: int,
+    nb_epochs: int, the number of epochs to train the model
+    callbacks: list of tf.keras.callbacks.Callback objects
+    random_state: int, seed to any needed random actions
+    verbose: boolean, whether to output extra information
+    model_name: string, the name of this model for printing and
      file writing purposes
-    :param model_save_directory: string, if not None; location to save
+    model_save_directory: string, if not None; location to save
      the trained keras model in hdf5 format
+
+    Notes
+    -----
+    ..[1] Fawaz et. al, InceptionTime: Finding AlexNet for Time Series
+    Classification, Data Mining and Knowledge Discovery, 34, 2020
+
+    Adapted from the implementation from Fawaz et. al
+    https://github.com/hfawaz/InceptionTime/blob/master/classifiers/inception.py
     """
 
     def __init__(
@@ -82,14 +81,16 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
-        Construct a compiled, un-trained, keras model that is ready for
-         training
+        Construct a compiled, un-trained, keras model that is ready for training
+
+        Parameters
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
         nb_classes: int
             The number of classes, which shall become the size of the output
              layer
+
         Returns
         -------
         output : a compiled Keras Model
@@ -128,6 +129,8 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
             validation_y=None, **kwargs):
         """
         Fit the classifier on the training set (X, y)
+
+        Parameters
         ----------
         X : a nested pd.Dataframe, or (if input_checks=False) array-like of
         shape = (n_instances, series_length, n_dimensions)
@@ -147,6 +150,7 @@ class InceptionTimeClassifier(BaseDeepClassifier, InceptionTimeNetwork):
             are stored in the model's fit history.
         validation_y : array-like, shape = [n_instances]
             The validation class labels.
+
         Returns
         -------
         self : object
