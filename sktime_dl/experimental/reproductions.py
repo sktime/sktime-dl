@@ -36,20 +36,20 @@ if len(sys.argv) > 6:
 import gc
 from tensorflow import keras
 
-from sktime_dl.deeplearning import CNNClassifier
+from sktime_dl.classification import CNNClassifier
 from sktime_dl.deeplearning import EncoderClassifier
-from sktime_dl.deeplearning import FCNClassifier
-from sktime_dl.deeplearning import MCDCNNClassifier
-from sktime_dl.deeplearning import MCNNClassifier
-from sktime_dl.deeplearning import MLPClassifier
-from sktime_dl.deeplearning import ResNetClassifier
-from sktime_dl.deeplearning import TLENETClassifier
-from sktime_dl.deeplearning import TWIESNClassifier
-from sktime_dl.deeplearning import InceptionTimeClassifier
+from sktime_dl.classification import FCNClassifier
+from sktime_dl.classification import MCDCNNClassifier
+from sktime_dl.classification import MCNNClassifier
+from sktime_dl.classification import MLPClassifier
+from sktime_dl.classification import ResNetClassifier
+from sktime_dl.classification import TLENETClassifier
+from sktime_dl.classification import TWIESNClassifier
+from sktime_dl.classification import InceptionTimeClassifier
 from sktime_dl.meta import EnsembleFromFileClassifier
 
 #import sktime.contrib.experiments as exp
-import sktime_dl.experimental.dlexp as dlexp
+import sktime.contrib.experiments as dlexp
 
 ucr112dsets = [
     "ACSF1",
@@ -360,5 +360,5 @@ if __name__ == "__main__":
         sys.argv[1], sys.argv[2], classifier, sys.argv[4], int(sys.argv[5])
     )
 
-    #ensembleInception("Z:/ArchiveData/Multivariate_ts/", "E:/MultivariateArchive/", "inceptiontime", ueamv26dsets,
+    #ensembleInception("Z:/ArchiveData/Multivariate_ts/", "E:/MultivariateArchive/", "inceptiontime", ueamv26dRsets,
     #range(0,30), overwrite=False)
