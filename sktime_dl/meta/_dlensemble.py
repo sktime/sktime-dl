@@ -12,7 +12,7 @@ from sktime.classification.base import BaseClassifier
 from sktime.utils.validation.forecasting import check_X
 from tensorflow import keras
 
-from sktime_dl.deeplearning import InceptionTimeClassifier
+from sktime_dl.classification import InceptionTimeClassifier
 
 from sklearn.utils import check_random_state
 
