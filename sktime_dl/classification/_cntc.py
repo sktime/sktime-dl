@@ -12,6 +12,30 @@ from sklearn.utils import check_random_state
 
 
 class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
+    """
+
+    Parameters
+    ----------
+    nb_epochs: int, the number of epochs to train the model
+    batch_size: int, the number of samples per gradient update.
+    rnn_layer: int, filter size for rnn layer
+    filter_sizes: int, array of shape 2, filter sizes for two convolutional layers
+    kernel_sizes: int,array of shape 2,  kernel size for two convolutional layers
+    lstm_size: int, filter size of lstm layer
+    dense_size: int, size of dense layer
+    callbacks: not used
+    random_state: int, seed to any needed random actions
+    verbose: boolean, whether to output extra information
+    model_name: string, the name of this model for printing and file writing purposes
+    model_save_directory: string, if not None; location to save the trained keras
+    model in hdf5 format
+
+    Notes
+    -----
+    todo: JACK TO DO
+
+    """
+
     def __init__(
             self,
             nb_epochs=120,
@@ -27,22 +51,6 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
             model_name="cntc",
             model_save_directory=None,
     ):
-        """
-        :param nb_epochs: int, the number of epochs to train the model
-        :param batch_size: int, the number of samples per gradient update.
-        :param rnn_layer: int, filter size for rnn layer
-        :param filter_sizes: int, array of shape 2, filter sizes for two convolutional layers
-        :param kernel_sizes: int,array of shape 2,  kernel size for two convolutional layers
-        :param lstm_size: int, filter size of lstm layer
-        :param dense_size: int, size of dense layer
-        :param callbacks: not used
-        :param random_state: int, seed to any needed random actions
-        :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and
-        file writing purposes
-        :param model_save_directory: string, if not None; location to save
-        the trained keras model in hdf5 format
-        """
         super(CNTCClassifier, self).__init__(
             model_name=model_name, model_save_directory=model_save_directory
         )

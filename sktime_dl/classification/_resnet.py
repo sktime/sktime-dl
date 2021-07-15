@@ -12,22 +12,26 @@ from sklearn.utils import check_random_state
 class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
     """Residual Network (ResNet).
 
+    Parameters
+    ----------
+    nb_epochs: int, the number of epochs to train the model
+    batch_size: int, specifying the length of the 1D convolution window
+    callbacks: list of tf.keras.callbacks.Callback objects
+    random_state: int, seed to any needed random actions
+    verbose: boolean, whether to output extra information
+    model_name: string, the name of this model for printing and file writing purposes
+    model_save_directory: string, if not None; location to save the trained keras
+    model in hdf5 format
+
+
+    Notes
+    -----
+    ..[1] Wang et al., Time series classification from scratch with deep neural networks:
+       A strong baseline, IJCNN, 2017
+
     Adapted from the implementation from Fawaz et. al
 
     https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/resnet.py
-
-    Network originally defined in:
-
-    @inproceedings{wang2017time,
-      title={Time series classification from scratch with deep neural networks:
-       A strong baseline},
-      author={Wang, Zhiguang and Yan, Weizhong and Oates, Tim},
-      booktitle={2017 International joint conference on neural networks
-       (IJCNN)},
-      pages={1578--1585},
-      year={2017},
-      organization={IEEE}
-    }
     """
 
     def __init__(self,
@@ -38,18 +42,6 @@ class ResNetClassifier(BaseDeepClassifier, ResNetNetwork):
                  verbose=False,
                  model_name="resnet",
                  model_save_directory=None):
-        """
-        :param nb_epochs: int, the number of epochs to train the model
-        :param batch_size: int, specifying the length of the 1D convolution
-         window
-        :param callbacks: list of tf.keras.callbacks.Callback objects
-        :param random_state: int, seed to any needed random actions
-        :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and
-         file writing purposes
-        :param model_save_directory: string, if not None; location to save
-         the trained keras model in hdf5 format
-        """
 
         super(ResNetClassifier, self).__init__(
             model_name=model_name, model_save_directory=model_save_directory

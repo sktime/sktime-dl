@@ -12,7 +12,25 @@ from sklearn.utils import check_random_state
 
 
 class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
-    """
+    """LSTMFCN classifier
+
+    Parameters
+    ----------
+    nb_epochs: int, the number of epochs to train the model
+    batch_size: int, the number of samples per gradient update.
+    kernel_sizes: list of ints, specifying the length of the 1D convolution windows
+    filter_sizes: int, array of shape = 3, size of filter for each conv layer
+    callbacks: not used
+    random_state: int, seed to any needed random actions
+    verbose: boolean, whether to output extra information
+    model_name: string, the name of this model for printing and file writing purposes
+    model_save_directory: string, if not None; location to save the trained keras
+    model in hdf5 format
+
+    Notes
+    -----
+    todo: JACK TO DO
+
     """
 
     def __init__(
@@ -30,21 +48,6 @@ class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
             model_name="lstmfcn",
             model_save_directory=None,
     ):
-        """
-        :param nb_epochs: int, the number of epochs to train the model
-        :param batch_size: int, the number of samples per gradient update.
-        :param kernel_sizes: list of ints, specifying the length of the 1D convolution
-         windows
-        :param filter_sizes: int, array of shape = 3, size of filter for each
-         conv layer
-        :param callbacks: not used
-        :param random_state: int, seed to any needed random actions
-        :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and
-        file writing purposes
-        :param model_save_directory: string, if not None; location to save
-        the trained keras model in hdf5 format
-        """
         super(LSTMFCNClassifier, self).__init__(
             model_name=model_name, model_save_directory=model_save_directory
         )

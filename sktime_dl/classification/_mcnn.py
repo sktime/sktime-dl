@@ -19,20 +19,33 @@ from sklearn.utils import check_random_state
 class MCNNClassifier(BaseDeepClassifier):
     """Multi-scale Convolutional Neural Network (MCNN).
 
+    Parameters
+    ----------
+    pool_factors: array of shape
+    filter_sizes: array of shape
+    window_size: int,
+    nb_train_batch: int,
+    nb_epochs: int, the number of epochs to train the model
+    max_train_batch_size: int,
+    slice_ratio: int,
+    random_state: int, seed to any needed random actions
+    verbose: boolean, whether to output extra information
+    model_name: string, the name of this model for printing and file writing purposes
+    model_save_directory: string, if not None; location to save the trained keras
+    model in hdf5 format
+
+    Notes
+    -----
+    ..[1] Cui et al., Multi-scale convolutional neural networks for time series
+       classification, arXiv, 2016
+
     Adapted from the implementation from Fawaz et. al
 
     https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mcnn.py
 
-    Network originally defined in:
-
-    @article{cui2016multi,
-      title={Multi-scale convolutional neural networks for time series
-       classification},
-      author={Cui, Zhicheng and Chen, Wenlin and Chen, Yixin},
-      journal={arXiv preprint arXiv:1603.06995},
-      year={2016}
-    }
     """
+
+
 
     def __init__(
             self,
@@ -48,22 +61,6 @@ class MCNNClassifier(BaseDeepClassifier):
             model_name="mcnn",
             model_save_directory=None,
     ):
-        """
-        :param pool_factors: array of shape
-        :param filter_sizes: array of shape
-        :param window_size: int,
-        :param nb_train_batch: int,
-        :param nb_epochs: int, the number of epochs to train the model
-        :param max_train_batch_size: int,
-        :param slice_ratio: int,
-
-        :param random_state: int, seed to any needed random actions
-        :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and
-         file writing purposes
-        :param model_save_directory: string, if not None; location to save
-         the trained keras model in hdf5 format
-        """
         super(MCNNClassifier, self).__init__(
             model_save_directory=model_save_directory,
             model_name=model_name

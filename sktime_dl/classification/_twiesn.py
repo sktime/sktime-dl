@@ -16,18 +16,26 @@ from sklearn.utils import check_random_state
 class TWIESNClassifier(BaseDeepClassifier):
     """Time Warping Invariant Echo State Network (TWIESN).
 
-    Adapted from the implementation from Fawaz et. al
+     Parameters
+    ----------
+    rho_s: array of shape
+    alpha: float, the leakage rate
+    random_state: int, seed to any needed random actions
+    verbose: boolean, whether to output extra information
+    model_name: string, the name of this model for printing and file writing purposes
+    model_save_directory: string, if not None; location to save the trained keras
+    model in hdf5 format
+
+    Notes
+    -----
+    ..[1]  Tanisaro et al. Time series classification using time warping invariant
+    echo state networks, ICMLA, 2016
 
     https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/twiesn.py
 
-    Network originally defined in:
-
-    @inproceedings{tanisaro2016time, title={Time series classification using
-    time warping invariant echo state networks}, author={Tanisaro, Pattreeya
-    and Heidemann, Gunther}, booktitle={2016 15th IEEE International
-    Conference on Machine Learning and Applications (ICMLA)}, pages={
-    831--836}, year={2016}, organization={IEEE} }
     """
+
+
 
     def __init__(
             self,
@@ -38,16 +46,6 @@ class TWIESNClassifier(BaseDeepClassifier):
             model_name="twiesn",
             model_save_directory=None,
     ):
-        """
-        :param rho_s: array of shape
-        :param alpha: float, the leakage rate
-        :param random_state: int, seed to any needed random actions
-        :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and
-         file writing purposes
-        :param model_save_directory: string, if not None; location to save
-         the trained keras model in hdf5 format
-        """
         super(TWIESNClassifier, self).__init__(
             model_name,
             model_save_directory)

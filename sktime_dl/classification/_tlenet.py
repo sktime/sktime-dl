@@ -13,20 +13,28 @@ from sklearn.utils import check_random_state
 class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
     """Time Le-Net (TLENET).
 
+    Parameters
+    ----------
+    nb_epochs: int, the number of epochs to train the model
+    batch_size: int, specifying the length of the 1D convolution window
+    warping_ratios: list of floats, warping ratio for each window
+    slice_ratio: float, ratio of the time series used to create a slice
+    callbacks: list of tf.keras.callbacks.Callback objects
+    random_state: int, seed to any needed random actions
+    verbose: boolean, whether to output extra information
+    model_name: string, the name of this model for printing and file writing purposes
+    model_save_directory: string, if not None; location to save the trained keras
+    model in hdf5 format
+
+
+    Notes
+    -----
+    ..[1] Guennec et al., Data augmentation for time series classification using
+      convolutional neural networks, AALTD workshop, 2016
+
     Adapted from the implementation from Fawaz et. al
 
     https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/tlenet.py
-
-    Network originally defined in:
-
-    @inproceedings{le2016data,
-      title={Data augmentation for time series classification using
-      convolutional neural networks},
-      author={Le Guennec, Arthur and Malinowski, Simon and Tavenard, Romain},
-      booktitle={ECML/PKDD workshop on advanced analytics and learning on
-      temporal data},
-      year={2016}
-    }
     """
 
     def __init__(
@@ -41,21 +49,6 @@ class TLENETClassifier(BaseDeepClassifier, TLENETNetwork):
             model_name="tlenet",
             model_save_directory=None,
     ):
-        """
-        :param nb_epochs: int, the number of epochs to train the model
-        :param batch_size: int, specifying the length of the 1D convolution
-         window
-        :param warping_ratios: list of floats, warping ratio for each window
-        :param slice_ratio: float, ratio of the time series used to create a
-         slice
-        :param callbacks: list of tf.keras.callbacks.Callback objects
-        :param random_state: int, seed to any needed random actions
-        :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and
-         file writing purposes
-        :param model_save_directory: string, if not None; location to save
-         the trained keras model in hdf5 format
-        """
         super(TLENETClassifier, self).__init__(
             model_name=model_name, model_save_directory=model_save_directory
         )

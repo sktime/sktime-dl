@@ -14,22 +14,30 @@ from sklearn.utils import check_random_state
 class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
     """Multi Channel Deep Convolutional Neural Network (MCDCNN).
 
+    Parameters
+    ----------
+    nb_epochs: int, the number of epochs to train the model
+    batch_size: int, the number of samples per gradient update.
+    kernel_size: int, specifying the length of the 1D convolution window
+    pool_size: int, size of the max pooling windows
+    filter_sizes: int, array of shape = 2, size of filter for each conv layer
+    dense_units: int, number of units in the penultimate dense layer
+    callbacks: not used
+    random_state: int, seed to any needed random actions
+    verbose: boolean, whether to output extra information
+    model_name: string, the name of this model for printing and file writing purposes
+    model_save_directory: string, if not None; location to save the trained keras
+    model in hdf5 format
+
+    Notes
+    -----
+    ..[1] Zheng et al,Time series classification using multi-channels deep
+      convolutional neural networks, International Conference on Web-Age Information
+      Management, 2014
+
     Adapted from the implementation from Fawaz et. al
 
     https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mcdcnn.py
-
-    Network originally defined in:
-
-    @inproceedings{zheng2014time,
-      title={Time series classification using multi-channels deep
-      convolutional neural networks},
-      author={Zheng, Yi and Liu, Qi and Chen, Enhong and Ge, Yong and Zhao,
-      J Leon},
-      booktitle={International Conference on Web-Age Information Management},
-      pages={298--310},
-      year={2014},
-      organization={Springer}
-    }
     """
 
     def __init__(
@@ -46,23 +54,6 @@ class MCDCNNClassifier(BaseDeepClassifier, MCDCNNNetwork):
             model_name="mcdcnn",
             model_save_directory=None,
     ):
-        """
-        :param nb_epochs: int, the number of epochs to train the model
-        :param batch_size: int, the number of samples per gradient update.
-        :param kernel_size: int, specifying the length of the 1D convolution
-         window
-        :param pool_size: int, size of the max pooling windows
-        :param filter_sizes: int, array of shape = 2, size of filter for each
-         conv layer
-        :param dense_units: int, number of units in the penultimate dense layer
-        :param callbacks: not used
-        :param random_state: int, seed to any needed random actions
-        :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and
-        file writing purposes
-        :param model_save_directory: string, if not None; location to save
-        the trained keras model in hdf5 format
-        """
         super(MCDCNNClassifier, self).__init__(
             model_name=model_name, model_save_directory=model_save_directory
         )
