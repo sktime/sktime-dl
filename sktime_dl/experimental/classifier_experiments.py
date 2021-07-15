@@ -33,25 +33,18 @@ from sktime.contrib.experiments import write_results_to_uea_format
 
 
 from sktime_dl.classification import CNNClassifier
-from sktime_dl.regression import (
-    CNNRegressor,
+from sktime_dl.classification import (
+    CNNClassifier,
+    CNTCClassifier,
     EncoderClassifier,
-    EncoderRegressor,
     FCNClassifier,
-    FCNRegressor,
     InceptionTimeClassifier,
-    InceptionTimeRegressor,
-    LSTMRegressor,
+    LSTMFCNClassifier,
     MCDCNNClassifier,
-    MCDCNNRegressor,
     MCNNClassifier,
     MLPClassifier,
-    MLPRegressor,
     ResNetClassifier,
-    ResNetRegressor,
-    SimpleRNNRegressor,
     TLENETClassifier,
-    TLENETRegressor,
     TWIESNClassifier,
 )
 

@@ -16,7 +16,6 @@ from sktime_dl.regression import (CNNRegressor,
                                   LSTMRegressor,
                                   MCDCNNRegressor,
                                   MLPRegressor,
-                                  ResNetClassifier,
                                   ResNetRegressor,
                                   SimpleRNNRegressor,
                                   TLENETRegressor
