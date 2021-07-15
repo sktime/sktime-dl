@@ -4,6 +4,7 @@ __all__ = [
     "InceptionTimeClassifier",
     "LSTMFCNClassifier",
     "CNTCClassifier",
+    "EncoderClassifier",
     "MCDCNNClassifier",
     "MCNNClassifier",
     "MLPClassifier",
@@ -17,6 +18,7 @@ from sktime_dl.classification._fcn import FCNClassifier
 from sktime_dl.classification._inceptiontime import InceptionTimeClassifier
 from sktime_dl.classification._lstmfcn import LSTMFCNClassifier
 from sktime_dl.classification._cntc import CNTCClassifier
+from sktime_dl.classification._encoder import EncoderClassifier
 from sktime_dl.classification._mcdcnn import MCDCNNClassifier
 from sktime_dl.classification._mcnn import MCNNClassifier
 from sktime_dl.classification._mlp import MLPClassifier

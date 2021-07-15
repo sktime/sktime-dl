@@ -4,6 +4,7 @@ __all__ = [
     "InceptionTimeRegressor",
     "LSTMRegressor",
     "LSTMFCNRegressor",
+    "EncoderRegressor",
     "CNTCRegressor",
     "MCDCNNRegressor",
     "MLPRegressor",
@@ -17,6 +18,7 @@ from sktime_dl.regression._fcn import FCNRegressor
 from sktime_dl.regression._inceptiontime import InceptionTimeRegressor
 from sktime_dl.regression._lstm import LSTMRegressor
 from sktime_dl.regression._lstmfcn import LSTMFCNRegressor
+from sktime_dl.regression._encoder import EncoderRegressor
 from sktime_dl.regression._cntc import CNTCRegressor
 from sktime_dl.regression._mcdcnn import MCDCNNRegressor
 from sktime_dl.regression._mlp import MLPRegressor
