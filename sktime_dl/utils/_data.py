@@ -12,10 +12,15 @@ def check_and_clean_data(X, y=None, input_checks=True):
     Performs basic sktime data checks and prepares the train data for input to
     Keras models.
 
-    :param X: the train data
-    :param y: the train labels
-    :param input_checks: whether to perform the basic sktime checks
-    :return: X
+    Parameters
+    ----------
+    X: the train data
+    y: the train labels
+    input_checks: whether to perform the basic sktime checks
+
+    Returns
+    -------
+    X
     '''
     if input_checks:
         if y is None:

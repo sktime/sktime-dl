@@ -32,7 +32,6 @@ from sktime.contrib.experiments import set_classifier
 from sktime.contrib.experiments import write_results_to_uea_format
 
 
-from sktime_dl.classification import CNNClassifier
 from sktime_dl.regression import (
     CNNRegressor,
     EncoderClassifier,
@@ -91,49 +90,6 @@ estimator_list = [
 
 #classifier_list = ["cnn", "encode", "fcn", "lstm", "mcdcnn", "mcnn", "mlp", "resnet", "tlenet", "twiesn"]
 classifier_list = ["cnn"]
-
-
-
-def set_classifier(cls, resampleId=None):
-    """Construct a classifier.
-
-    Basic way of creating the classifier to build using the default settings. This
-    set up is to help with batch jobs for multiple problems to facilitate easy
-    reproducability. You can set up bespoke classifier in many other ways.
-
-    Parameters
-    ----------
-    cls: String indicating which classifier you want
-    resampleId: classifier random seed
-
-    Return
-    ------
-    A classifier.
-    """
-    name = cls.lower()
-    # Convolutional
-    if name == "cnn" or name == "cnnclassifier":
-        return CNNClassifier(random_state=resampleId)
-    elif name == "encode":
-        return EncoderClassifier()
-    elif name == "fcn":
-        return FCNClassifier()
-    elif name == "inceptiontime":
-        return InceptionTimeClassifier()
-    elif name == "mcdcnn":
-        return MCDCNNClassifier()
-    elif name == "mcnn":
-        return MCNNClassifier()
-    elif name == "mlp":
-        return MLPClassifier()
-    elif name == "resnet":
-        return ResNetClassifier()
-    elif name == "tlenet":
-        return TLENETClassifier()
-    elif name == "twiesn":
-        return TWIESNClassifier()
-    else:
-        raise Exception("UNKNOWN CLASSIFIER")
 
 
 def stratified_resample(X_train, y_train, X_test, y_test, random_state):
