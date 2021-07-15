@@ -2,7 +2,7 @@ __author__ = "James Large, Withington"
 
 from tensorflow import keras
 
-from sktime_dl.networks._network import BaseDeepRegressor
+from sktime_dl.regression._regressor import BaseDeepRegressor
 from sktime_dl.networks._encoder import EncoderNetwork
 from sktime_dl.utils import check_and_clean_data, \
     check_and_clean_validation_data
