@@ -4,7 +4,7 @@
 
 __author__ = "Jack Russon"
 
-from sktime_dl.classification._classifier import BaseDeepClassifier
+from sktime_dl.regression._regressor import   BaseDeepRegressor
 from sktime_dl.networks._tapnet import TapNetNetwork
 from sktime_dl.utils import check_and_clean_data, \
     check_and_clean_validation_data
@@ -12,7 +12,7 @@ from sklearn.utils import check_random_state
 from tensorflow import keras
 
 
-class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
+class TapNetRegressor(BaseDeepRegressor, TapNetNetwork):
     """
     """
 
@@ -41,7 +41,7 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
             model_save_directory=None,
             is_fitted=False
     ):
-        super(TapNetClassifier, self).__init__(
+        super(TapNetRegressor, self).__init__(
             model_save_directory=model_save_directory,
             model_name=model_name)
         self.batch_size=batch_size
@@ -50,7 +50,8 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         self.layers = layers
         self.rp_params = rp_params
         self.filter_sizes = filter_sizes
-        self.use_att = use_att
+        #Leave this as False for now
+        self.use_att = False
         self.use_ss = use_ss
         self.dilation = dilation
         self.padding = padding
@@ -86,15 +87,13 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         """
         input_layer, output_layer = self.build_network(input_shape, nb_classes, X, y, **kwargs)
 
-        output_layer = keras.layers.Dense(
-            units=nb_classes, activation="softmax"
-        )(output_layer)
+        output_layer = keras.layers.Dense(units=1)(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(
-            loss="categorical_crossentropy",
+            loss="mean_squared_error",
             optimizer=keras.optimizers.Adam(),
-            metrics=["accuracy"]
+            metrics=["mean_squared_error"]
         )
 
         return model

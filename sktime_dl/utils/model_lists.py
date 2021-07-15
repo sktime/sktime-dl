@@ -18,6 +18,12 @@ from sktime_dl.deeplearning import SimpleRNNRegressor
 from sktime_dl.deeplearning import TLENETClassifier
 from sktime_dl.deeplearning import TLENETRegressor
 from sktime_dl.deeplearning import TWIESNClassifier
+from sktime_dl.deeplearning import CNTCClassifier
+from sktime_dl.deeplearning import CNTCRegressor
+from sktime_dl.regression import TapNetRegressor
+from sktime_dl.regression import LSTMFCNRegressor
+from sktime_dl.classification import TapNetClassifier
+from sktime_dl.classification import LSTMFCNClassifier
 
 SMALL_NB_EPOCHS = 3
 
@@ -44,6 +50,10 @@ def construct_all_classifiers(nb_epochs=None):
             'TWIESNClassifier_quick': TWIESNClassifier(),
             'InceptionTimeClassifier_quick': InceptionTimeClassifier(
                 nb_epochs=nb_epochs),
+            "CNTCClassifier_quick": CNTCClassifier(nb_epochs=nb_epochs),
+            "LSTMFCNClassifier_quick": LSTMFCNClassifier(nb_epochs=nb_epochs),
+            "TapNetClassifier_quick": TapNetClassifier(nb_epochs=nb_epochs)
+
         }
     else:
         # the 'literature-conforming' versions
@@ -58,6 +68,9 @@ def construct_all_classifiers(nb_epochs=None):
             'TLENETClassifier': TLENETClassifier(),
             'TWIESNClassifier': TWIESNClassifier(),
             'InceptionTimeClassifier': InceptionTimeClassifier(),
+            "CNTCClassifier": CNTCClassifier(),
+            "LSTMFCNClassifier": LSTMFCNClassifier(),
+            "TapNetClassifier": TapNetClassifier()
         }
 
 
@@ -87,6 +100,9 @@ def construct_all_regressors(nb_epochs=None):
                 nb_epochs=nb_epochs),
             'SimpleRNNRegressor_quick': SimpleRNNRegressor(
                 nb_epochs=nb_epochs),
+            "CNTCRegressor_quick": CNTCRegressor(nb_epochs=nb_epochs),
+            "LSTMFCNRegressor_quick": LSTMFCNRegressor(nb_epochs=nb_epochs),
+            "TapNetRegressor_quick": TapNetRegressor(nb_epochs=nb_epochs)
         }
     else:
         # the 'literature-conforming' versions
@@ -101,4 +117,7 @@ def construct_all_regressors(nb_epochs=None):
             'TLENETRegressor': TLENETRegressor(),
             'InceptionTimeRegressor': InceptionTimeRegressor(),
             'SimpleRNNRegressor': SimpleRNNRegressor(),
+            "CNTCRegressor": CNTCRegressor(),
+            "LSTMFCNRegressor": LSTMFCNRegressor(),
+            "TapNetRegressor": TapNetRegressor()
         }
