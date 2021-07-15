@@ -5,7 +5,7 @@ import pytest
 from sktime.datasets import load_italy_power_demand
 from sktime.regression.base import BaseRegressor
 
-from sktime_dl.deeplearning import MLPClassifier
+from sktime_dl.classification   import MLPClassifier
 from sktime_dl.utils.model_lists import SMALL_NB_EPOCHS
 from sktime_dl.utils.model_lists import construct_all_classifiers
 from sktime_dl.utils.model_lists import construct_all_regressors

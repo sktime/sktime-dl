@@ -3,7 +3,7 @@ __author__ = "James Large, Withington"
 import tensorflow
 import tensorflow.keras as keras
 
-from sktime_dl.deeplearning.base.estimators import BaseDeepNetwork
+from sktime_dl.networks._network import BaseDeepNetwork
 
 if tensorflow.__version__ >= "1.15" and tensorflow.__version__ <= "2":
     keras.__name__ = "tensorflow.keras"

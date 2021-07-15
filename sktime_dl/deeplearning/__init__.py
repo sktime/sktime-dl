@@ -28,8 +28,8 @@ __all__ = [
 from sktime_dl.regression._cnn import CNNRegressor
 from sktime_dl.deeplearning.cntc._classifier import CNTCClassifier
 from sktime_dl.deeplearning.cntc._regressor import CNTCRegressor
-from sktime_dl.deeplearning.encoder._classifier import EncoderClassifier
-from sktime_dl.deeplearning.encoder._regressor import EncoderRegressor
+from sktime_dl.classification._encoder import EncoderClassifier
+from sktime_dl.regression._encoder import EncoderRegressor
 from sktime_dl.deeplearning.fcn._classifier import FCNClassifier
 from sktime_dl.deeplearning.fcn._regressor import FCNRegressor
 from sktime_dl.deeplearning.inceptiontime._classifier import \
