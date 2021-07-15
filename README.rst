@@ -1,11 +1,16 @@
-NOTE: sktime-dl is currenlty being updated to work correctly with sktime 0.6, and wwill be fully relaunched over the summer. The plan is
+NOTE: sktime-dl is currently being updated to work correctly with sktime 0.6, and
+wwill be fully relaunched over the summer. The plan is
 
-1. Update it to be compliant with sktime 0.6 (currently works with sktime 0.4)
-2. Update classifiers (documentation etc)
+2. Refactor and update classifiers (documentation etc)
 3. Import pytorch, add a pytorch classifier
 4. Add a forecasting module
 5. Review literature on the latest dl classifiers, assimilate and evaluate any worth including
 6. Update devops so it exactly mirror sktime
+
+done
+
+1. Update it to be compliant with sktime 0.6 (currently works with sktime 0.4)
+
 
 
 |travis|_ |pypi|_ |gitter|_ |Binder|_
@@ -98,3 +103,79 @@ Contributors
 Former and current active contributors are as follows:
 
 James Large (@James-Large, `@jammylarge <https://twitter.com/jammylarge>`__, james.large@uea.ac.uk), Aaron Bostrom (@ABostrom), Hassan Ismail Fawaz (@hfawaz), Markus Löning (@mloning), @Withington
+
+
+
+Installation
+------------
+
+The simplest installation method is to install in a new environment via pip:
+::
+	# if using anaconda for environment management
+	conda create -n sktime-dl python=3.6
+	conda activate sktime-dl
+
+	# if using virtualenv for environment management
+	virtualenv sktime-dl
+	source bin/activate            #unix
+	sktime-dl\Scipts\activate      #windows
+
+	pip install sktime-dl
+
+sktime-dl is under development. To ensure that you're using the most up to date code, you can instead install the development version in your environment:
+::
+	git clone https://github.com/sktime/sktime-dl.git
+	cd sktime-dl
+	git checkout dev
+	git pull origin dev
+	pip install .
+
+When installing sktime-dl from scratch, the latest stable version of
+`Tensorflow <https://www.tensorflow.org/install/>`__ 2.x will be installed.
+Tensorflow 1.x is also supported beyond 1.9, if you have an existing
+installation in your environment that you wish to maintain.
+
+Users with Tensorflow versions older than 2.1.0 shall also need to install
+`keras-contrib <https://github.com/keras-team/keras-contrib>`__ after installing
+sktime-dl, using the `installation instructions for
+tf.keras <https://github.com/keras-team/keras-contrib#install-keras_contrib-for-tensorflowkeras>`__.
+
+Using GPUS
+~~~~~~~~~~
+
+With the above instructions, the networks can be run out the box on your CPU. If
+you wish to run the networks on an NVIDIA® GPU, you can:
+
+- use Docker (see below)
+
+or
+
+- install extra drivers and toolkits (GPU drivers, CUDA Toolkit, and CUDNN library). See `this page <https://www.tensorflow.org/install/gpu#software_requirements>`__ for links and instructions, and also `this page <https://www.tensorflow.org/install/source#tested_build_configurations>`__ for a list of definite versioning compatabilities.
+
+Docker
+~~~~~~
+
+Follow `Tensorflow's instuctions <https://www.tensorflow.org/install/gpu>`__ to install Docker and nvidia-docker (Linux only).
+
+Build the sktime-dl Docker image:
+::
+	cd sktime-dl
+	docker build -t sktime_dl .
+
+Run a container with GPU support using the image:
+::
+	docker run --gpus all --rm -it sktime_dl:latest
+
+Run all the tests with:
+::
+	pytest -v --cov=sktime_dl
+
+or exclude the long-running tests with:
+::
+	pytest -v -m="not slow" --cov=sktime_dl --pyargs sktime_dl
+
+**CPU**
+
+To run this Docker container on CPU, replace the above ``docker run`` command with:
+::
+	docker run --rm -it sktime_dl:latest
