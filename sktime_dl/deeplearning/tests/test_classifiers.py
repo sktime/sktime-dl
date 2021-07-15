@@ -3,11 +3,12 @@ from sktime.datasets import load_italy_power_demand
 
 from sktime_dl.deeplearning import LSTMFCNClassifier
 from sktime_dl.deeplearning.cntc._classifier import CNTCClassifier
+from sktime_dl.classification import TapNetClassifier
 from sktime_dl.utils.model_lists import SMALL_NB_EPOCHS
 from sktime_dl.utils.model_lists import construct_all_classifiers
 
 
-def test_basic_univariate(network=CNTCClassifier(nb_epochs=SMALL_NB_EPOCHS)):
+def test_basic_univariate(network=TapNetClassifier(nb_epochs=200)):
     """
     just a super basic test with gunpoint,
         load data,
@@ -83,7 +84,7 @@ def test_highLevelsktime(network=LSTMFCNClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     print("End test_highLevelsktime()")
 
 
-def test_basic_multivariate(network=CNTCClassifier(nb_epochs=SMALL_NB_EPOCHS)):
+def test_basic_multivariate(network=TapNetClassifier(nb_epochs=SMALL_NB_EPOCHS)):
     """
     just a super basic test with basicmotions,
         load data,
@@ -97,7 +98,7 @@ def test_basic_multivariate(network=CNTCClassifier(nb_epochs=SMALL_NB_EPOCHS)):
 
     network.fit(X_train, y_train)
 
-    print(network.score(X_test, y_test))
+    #print(network.score(X_test, y_test))
     print("End test_multivariate()")
 
 
