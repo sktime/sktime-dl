@@ -7,6 +7,7 @@ from sktime_dl.classification import (CNNClassifier,
                                       TWIESNClassifier,
                                       MCNNClassifier,
                                       MLPClassifier,
+                                      ResNetClassifier
                                       )
 
 from sktime_dl.regression import (CNNRegressor,
