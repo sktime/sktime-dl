@@ -47,9 +47,12 @@ from sktime_dl.deeplearning import TLENETClassifier
 from sktime_dl.deeplearning import TWIESNClassifier
 from sktime_dl.deeplearning import InceptionTimeClassifier
 from sktime_dl.meta import EnsembleFromFileClassifier
+from sktime_dl.classification import   LSTMFCNClassifier
+from sktime_dl.deeplearning import CNTCClassifier
+from sktime_dl.classification import TapNetClassifier
 
 #import sktime.contrib.experiments as exp
-import sktime_dl.experimental.dlexp as dlexp
+import sktime.contrib.classification_experiments as dlexp
 
 ucr112dsets = [
     "ACSF1",
@@ -195,6 +198,8 @@ ueamv26dsets = [
     "UWaveGestureLibrary",
 ]
 
+NB_EPOCHS=10
+
 def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     """
     Basic way of determining the classifier to build. To differentiate settings just and another elif. So, for example, if
@@ -242,6 +247,12 @@ def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
         return InceptionTimeClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
     elif cls.lower() == "inception4":
         return InceptionTimeClassifier(random_state=fold)
+    elif cls.lower() == "cntc":
+        return CNTCClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir,nb_epochs=NB_EPOCHS)
+    elif cls.lower() == "lstmfcn":
+        return LSTMFCNClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir,nb_epochs=NB_EPOCHS)
+    elif cls.lower() == "tapnet":
+        return TapNetClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir,nb_epochs=NB_EPOCHS)
     elif cls.lower() == "inceptiontime":
         return EnsembleFromFileClassifier(
             res_dir,
