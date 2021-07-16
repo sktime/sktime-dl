@@ -161,7 +161,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
             )
 
         self.model = self.build_model(self.input_shape, self.nb_classes)
-        self.model.summary()
+
 
         if self.verbose:
             self.model.summary()

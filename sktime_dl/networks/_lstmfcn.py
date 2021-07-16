@@ -28,9 +28,7 @@ class LSTMFCNNetwork(BaseDeepNetwork):
 
         self.random_state = random_state
         self.kernel_sizes = kernel_sizes
-        self.pool_size = pool_size
         self.filter_sizes = filter_sizes
-        self.dense_units = dense_units
         self.NUM_CELLS=NUM_CELLS
         self.dropout=dropout
         self.attention=False

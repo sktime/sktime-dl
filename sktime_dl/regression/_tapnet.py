@@ -71,7 +71,7 @@ class TapNetRegressor(BaseDeepRegressor, TapNetNetwork):
         self.use_rp = use_rp
         self.rp_params = rp_params
 
-    def build_model(self, input_shape, nb_classes, X, y, **kwargs):
+    def build_model(self, input_shape, **kwargs):
         """
         Construct a compiled, un-trained, keras model that is ready for
         training
@@ -85,7 +85,7 @@ class TapNetRegressor(BaseDeepRegressor, TapNetNetwork):
         -------
         output : a compiled Keras Model
         """
-        input_layer, output_layer = self.build_network(input_shape, nb_classes, X, y, **kwargs)
+        input_layer, output_layer = self.build_network(input_shape, **kwargs)
 
         output_layer = keras.layers.Dense(units=1)(output_layer)
 
@@ -131,25 +131,23 @@ class TapNetRegressor(BaseDeepRegressor, TapNetNetwork):
             self.callbacks = []
 
         X = check_and_clean_data(X, y, input_checks=input_checks)
-        y_onehot = self.convert_y(y)
+
 
         validation_data = \
-            check_and_clean_validation_data(validation_X, validation_y,
-                                            self.label_encoder,
-                                            self.onehot_encoder)
+            check_and_clean_validation_data(validation_X, validation_y)
 
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
         self.input_shape = X.shape[1:]
 
-        self.model = self.build_model(self.input_shape, self.nb_classes,X,y_onehot)
+        self.model = self.build_model(self.input_shape)
 
         if self.verbose:
             self.model.summary()
 
         self.history = self.model.fit(
             X,
-            y_onehot,
+            y,
             batch_size=self.batch_size,
             epochs=self.nb_epochs,
             verbose=self.verbose,

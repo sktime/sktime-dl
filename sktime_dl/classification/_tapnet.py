@@ -70,7 +70,7 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         self.use_rp = use_rp
         self.rp_params = rp_params
 
-    def build_model(self, input_shape, nb_classes, X, y, **kwargs):
+    def build_model(self, input_shape, nb_classes, **kwargs):
         """
         Construct a compiled, un-trained, keras model that is ready for
         training
@@ -84,7 +84,7 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         -------
         output : a compiled Keras Model
         """
-        input_layer, output_layer = self.build_network(input_shape, nb_classes, X, y, **kwargs)
+        input_layer, output_layer = self.build_network(input_shape, **kwargs)
 
         output_layer = keras.layers.Dense(
             units=nb_classes, activation="softmax"
@@ -111,7 +111,7 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         y : array-like, shape = [n_instances]
             The training data class labels.
         input_checks : boolean
-            whether to check the X and y parameters
+            whether to check the X and y paramete
         validation_X : a nested pd.Dataframe, or array-like of shape =
         (n_instances, series_length, n_dimensions)
             The validation samples. If a 2D array-like is passed,
@@ -143,7 +143,7 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         # just want the shape of each instance
         self.input_shape = X.shape[1:]
 
-        self.model = self.build_model(self.input_shape, self.nb_classes,X,y_onehot)
+        self.model = self.build_model(self.input_shape, self.nb_classes)
 
         if self.verbose:
             self.model.summary()

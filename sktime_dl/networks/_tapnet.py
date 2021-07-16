@@ -76,25 +76,17 @@ class TapNetNetwork(BaseDeepNetwork):
     def euclidean_dist(self,x, y):
         # x: N x D
         # y: M x D
-        print(x.shape,y.shape)
         n = tf.shape(x)[0]
         m = tf.shape(y)[0]
         d = tf.shape(x)[1]
         #assert d == tf.shape(y)[1]
         x=tf.expand_dims(x,1)
         y=tf.expand_dims(y,0)
-        print('xshape,yshape')
-        print(x.shape, y.shape)
         x=tf.broadcast_to(x, shape=(n,m,d))
         y=tf.broadcast_to(y,shape=(n,m,d))
-
-        print('xshape,yshape')
-        print(x.shape,y.shape)
-        print(tf.math.pow(x - y, 2).shape)
-        print(tf.math.reduce_sum(tf.math.pow(x - y, 2),axis=2).shape)
         return tf.math.reduce_sum(tf.math.pow(x - y, 2),axis=2)
 
-    def build_network(self, input_shape, nclass,X, y, **kwargs):
+    def build_network(self, input_shape, **kwargs):
         """
         Construct a network and return its input and output layers
 
@@ -120,12 +112,9 @@ class TapNetNetwork(BaseDeepNetwork):
             self.lstm_dim = 128
 
             x_lstm = keras.layers.LSTM(self.lstm_dim,return_sequences=True)(input_layer)
-            print('x_lstm shape')
-            print(x_lstm.shape)
 
             if self.use_att:
                 x_lstm = SeqSelfAttention(128, attention_type='multiplicative')(x_lstm)
-            print(x_lstm.shape)
             x_lstm = keras.layers.GlobalAveragePooling1D()(x_lstm)
 
         if self.use_cnn:
@@ -134,7 +123,6 @@ class TapNetNetwork(BaseDeepNetwork):
             if self.use_rp:
                 self.conv_1_models = keras.Sequential()
 
-                print('rp_group' + str(self.rp_group))
                 for i in range(self.rp_group):
 
                     self.idx=(np.random.permutation(input_shape[1])[0: self.rp_dim])
@@ -159,11 +147,8 @@ class TapNetNetwork(BaseDeepNetwork):
                                                  padding=self.padding)(x_conv)
                     x_conv = keras.layers.BatchNormalization()(x_conv)
                     x_conv = keras.layers.LeakyReLU()(x_conv)
-                    print('cnn_shape')
-                    print(x_conv.shape)
                     if self.use_att:
                         x_conv = SeqSelfAttention(128, attention_type='multiplicative')(x_conv)
-                    print(x_conv.shape)
 
                     x_conv=keras.layers.GlobalAveragePooling1D(data_format='channels_first')(x_conv)
 
