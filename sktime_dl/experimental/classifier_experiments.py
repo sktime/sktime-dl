@@ -26,30 +26,24 @@ import pandas as pd
 from sklearn import preprocessing
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_predict
-from sktime.utils.data_io import load_from_tsfile_to_dataframe as load_ts
+from sktime.contrib.experiments import run_experiment
+from sktime.datasets.base import load_UCR_UEA_dataset
+from sktime.contrib.experiments import write_results_to_uea_format
 
-#from sktime.utils.load_data import load_from_tsfile_to_dataframe as load_ts
 
 from sktime_dl.classification import CNNClassifier
-from sktime_dl.deeplearning import (
-    CNNRegressor,
+from sktime_dl.classification import (
+    CNNClassifier,
+    CNTCClassifier,
     EncoderClassifier,
-    EncoderRegressor,
     FCNClassifier,
-    FCNRegressor,
     InceptionTimeClassifier,
-    InceptionTimeRegressor,
-    LSTMRegressor,
+    LSTMFCNClassifier,
     MCDCNNClassifier,
-    MCDCNNRegressor,
     MCNNClassifier,
     MLPClassifier,
-    MLPRegressor,
     ResNetClassifier,
-    ResNetRegressor,
-    SimpleRNNRegressor,
     TLENETClassifier,
-    TLENETRegressor,
     TWIESNClassifier,
 )
 
@@ -66,24 +60,14 @@ generated in java
 
 estimator_list = [
     "CNNClassifier",
-    "CNNRegressor",
     "EncoderClassifier",
-    "EncoderRegressor",
     "FCNClassifier",
-    "FCNRegressor",
     "InceptionTimeClassifier",
-    "InceptionTimeRegressor",
-    "LSTMRegressor",
     "MCDCNNClassifier",
-    "MCDCNNRegressor",
     "MCNNClassifier",
     "MLPClassifier",
-    "MLPRegressor",
     "ResNetClassifier",
-    "ResNetRegressor",
-    "SimpleRNNRegressor",
     "TLENETClassifier",
-    "TLENETRegressor",
     "TWIESNClassifier",
 ]
 
@@ -134,73 +118,10 @@ def set_classifier(cls, resampleId=None):
         raise Exception("UNKNOWN CLASSIFIER")
 
 
-def stratified_resample(X_train, y_train, X_test, y_test, random_state):
-    """Resample data using a random state.
-
-    Reproducable resampling. Combines train and test, resamples to get the same class
-    distribution, then returns new trrain and test.
-
-    Parameters
-    ----------
-    X_train: train data attributes in sktime pandas format.
-    y_train: train data class labes as np array.
-    X_test: test data attributes in sktime pandas format.
-    y_test: test data class labes as np array.
-
-    Returns
-    -------
-    new train and test attributes and class labels.
-    """
-    all_labels = np.concatenate((y_train, y_test), axis=None)
-    all_data = pd.concat([X_train, X_test])
-    random_state = sklearn.utils.check_random_state(random_state)
-    # count class occurrences
-    unique_train, counts_train = np.unique(y_train, return_counts=True)
-    unique_test, counts_test = np.unique(y_test, return_counts=True)
-    assert list(unique_train) == list(
-        unique_test
-    )  # haven't built functionality to deal with classes that exist in
-    # test but not in train
-    # prepare outputs
-    X_train = pd.DataFrame()
-    y_train = np.array([])
-    X_test = pd.DataFrame()
-    y_test = np.array([])
-    # for each class
-    for label_index in range(0, len(unique_train)):
-        # derive how many instances of this class from the counts
-        num_instances = counts_train[label_index]
-        # get the indices of all instances with this class label
-        label = unique_train[label_index]
-        indices = np.where(all_labels == label)[0]
-        # shuffle them
-        random_state.shuffle(indices)
-        # take the first lot of instances for train, remainder for test
-        train_indices = indices[0:num_instances]
-        test_indices = indices[num_instances:]
-        del indices  # just to make sure it's not used!
-        # extract data from corresponding indices
-        train_instances = all_data.iloc[train_indices, :]
-        test_instances = all_data.iloc[test_indices, :]
-        train_labels = all_labels[train_indices]
-        test_labels = all_labels[test_indices]
-        # concat onto current data from previous loop iterations
-        X_train = pd.concat([X_train, train_instances])
-        X_test = pd.concat([X_test, test_instances])
-        y_train = np.concatenate([y_train, train_labels], axis=None)
-        y_test = np.concatenate([y_test, test_labels], axis=None)
-    # get the counts of the new train and test resample
-    unique_train_new, counts_train_new = np.unique(y_train, return_counts=True)
-    unique_test_new, counts_test_new = np.unique(y_test, return_counts=True)
-    # make sure they match the original distribution of data
-    assert list(counts_train_new) == list(counts_train)
-    assert list(counts_test_new) == list(counts_test)
-    return X_train, y_train, X_test, y_test
-
-
 def run_experiment(
-    problem_path,
     results_path,
+    trainX, trainY,
+    testX, testY,
     cls_name,
     dataset,
     classifier=None,
@@ -274,8 +195,9 @@ def run_experiment(
 
     # TO DO: Automatically differentiate between problem types,
     # currently only works with .ts
-    trainX, trainY = load_ts(problem_path + dataset + "/" + dataset + "_TRAIN" + format)
-    testX, testY = load_ts(problem_path + dataset + "/" + dataset + "_TEST" + format)
+    #trainX, trainY = load_ts(problem_path + dataset + "/" + dataset + "_TRAIN" +
+    # format)
+    #testX, testY = load_ts(problem_path + dataset + "/" + dataset + "_TEST" + format)
     if resampleID != 0:
         # allLabels = np.concatenate((trainY, testY), axis = None)
         # allData = pd.concat([trainX, testX])
@@ -400,297 +322,33 @@ def run_experiment(
         )
 
 
-def write_results_to_uea_format(
-    output_path,
-    classifier_name,
-    dataset_name,
-    actual_class_vals,
-    predicted_class_vals,
-    split="TEST",
-    resample_seed=0,
-    actual_probas=None,
-    second_line="No Parameter Info",
-    third_line="N/A",
-    class_labels=None,
-):
-    """Write results to file.
-
-    Outputs the classifier results, mirrors that produced by tsml Java package.
-    Directories of the form
-    <output_path>/<classifier_name>/Predictions/<dataset_name>
-    Will automatically be created and results written.
-
-    Parameters
-    ----------
-    output_path:            string, root path where to put results.
-    classifier_name:        string, name of the classifier that made the predictions
-    dataset_name:           string, name of the problem the classifier was built on
-    actual_class_vals:      array, actual class labels
-    predicted_class_vals:   array, predicted class labels
-    split:                  string, wither TRAIN or TEST, depending on the results.
-    resample_seed:          int, makes resampling deterministic
-    actual_probas:          number of cases x number of classes 2d array
-    second_line:            unstructured, classifier parameters
-    third_line:             summary performance information (see comment below)
-    class_labels:           needed to equate to tsml output
-
-    """
-    if len(actual_class_vals) != len(predicted_class_vals):
-        raise IndexError(
-            "The number of predicted class values is not the same as the "
-            + "number of actual class values"
-        )
-
-    try:
-        os.makedirs(
-            str(output_path)
-            + "/"
-            + str(classifier_name)
-            + "/Predictions/"
-            + str(dataset_name)
-            + "/"
-        )
-    except os.error:
-        pass  # raises os.error if path already exists
-
-    if split == "TRAIN" or split == "train":
-        train_or_test = "train"
-    elif split == "TEST" or split == "test":
-        train_or_test = "test"
-    else:
-        raise ValueError("Unknown 'split' value - should be TRAIN/train or TEST/test")
-
-    file = open(
-        str(output_path)
-        + "/"
-        + str(classifier_name)
-        + "/Predictions/"
-        + str(dataset_name)
-        + "/"
-        + str(train_or_test)
-        + "Fold"
-        + str(resample_seed)
-        + ".csv",
-        "w",
-    )
-
-    # <classifierName>,<datasetName>,<train/test>,<Class Labels>
-    file.write(
-        str(dataset_name)
-        + ","
-        + str(classifier_name)
-        + ","
-        + str(train_or_test)
-        + ","
-        + str(resample_seed)
-        + ",MILLISECONDS,PREDICTIONS, Generated by classification_experiments.py"
-    )
-    file.write("\n")
-
-    # the second line of the output is free form and classifier-specific;
-    # usually this will record info
-    # such as parameter options used, any constituent model names for ensembles, etc.
-    file.write(str(second_line) + "\n")
-
-    # the third line of the file is the accuracy (should be between 0 and 1 inclusive).
-    # If this is a train output file then it will be a training estimate of the
-    # classifier on the training data only (e.g. #10-fold cv, leave-one-out cv, etc.).
-    # If this is a test output file, it should be the output of the estimator on the
-    # test data (likely trained on the training data for a-priori para optimisation)
-    file.write(str(third_line))
-    file.write("\n")
-
-    # from line 4 onwards each line should include the actual and predicted class labels
-    # (comma-separated). If present, for each case, the probabilities of predicting
-    # every class value for this case should also be appended to the line (a space is
-    # also included between the predicted value and the predict_proba). E.g.:
-    # if predict_proba data IS provided for case i:
-    #   actual_class_val[i], predicted_class_val[i],,
-    #
-    # if predict_proba data IS NOT provided for case i:
-    #   actual_class_val[i], predicted_class_val[i]
-    for i in range(0, len(predicted_class_vals)):
-        file.write(str(actual_class_vals[i]) + "," + str(predicted_class_vals[i]))
-        if actual_probas is not None:
-            file.write(",")
-            for j in actual_probas[i]:
-                file.write("," + str(j))
-            file.write("\n")
-
-    file.close()
-
-
-def test_loading():
-    """Test function to check dataset loading of univariate and multivaria problems."""
-    for i in range(0, len(dataset_lists.univariate)):
-        data_dir = "E:/tsc_ts/"
-        dataset = dataset_lists.univariate[i]
-        trainX, trainY = load_ts(data_dir + dataset + "/" + dataset + "_TRAIN.ts")
-        testX, testY = load_ts(data_dir + dataset + "/" + dataset + "_TEST.ts")
-        print("Loaded " + dataset + " in position " + str(i))
-        print("Train X shape :")
-        print(trainX.shape)
-        print("Train Y shape :")
-        print(trainY.shape)
-        print("Test X shape :")
-        print(testX.shape)
-        print("Test Y shape :")
-        print(testY.shape)
-    for i in range(16, len(dataset_lists.multivariate)):
-        data_dir = "E:/mtsc_ts/"
-        dataset = dataset_lists.multivariate[i]
-        print("Loading " + dataset + " in position " + str(i) + ".......")
-        trainX, trainY = load_ts(data_dir + dataset + "/" + dataset + "_TRAIN.ts")
-        testX, testY = load_ts(data_dir + dataset + "/" + dataset + "_TEST.ts")
-        print("Loaded " + dataset)
-        print("Train X shape :")
-        print(trainX.shape)
-        print("Train Y shape :")
-        print(trainY.shape)
-        print("Test X shape :")
-        print(testX.shape)
-        print("Test Y shape :")
-        print(testY.shape)
-
-
-benchmark_datasets = [
-    "ACSF1",
-    "Adiac",
-    "ArrowHead",
-    "Beef",
-    "BeetleFly",
-    "BirdChicken",
-    "BME",
-    "Car",
-    "CBF",
-    "ChlorineConcentration",
-    "CinCECGTorso",
-    "Coffee",
-    "Computers",
-    "CricketX",
-    "CricketY",
-    "CricketZ",
-    "DiatomSizeReduction",
-    "DistalPhalanxOutlineCorrect",
-    "DistalPhalanxOutlineAgeGroup",
-    "DistalPhalanxTW",
-    "Earthquakes",
-    "ECG200",
-    "ECG5000",
-    "ECGFiveDays",
-    "EOGHorizontalSignal",
-    "EOGVerticalSignal",
-    "EthanolLevel",
-    "FaceAll",
-    "FaceFour",
-    "FacesUCR",
-    "FiftyWords",
-    "Fish",
-    "FreezerRegularTrain",
-    "FreezerSmallTrain",
-    "Ham",
-    "Haptics",
-    "Herring",
-    "InlineSkate",
-    "InsectEPGRegularTrain",
-    "InsectEPGSmallTrain",
-    "InsectWingbeatSound",
-    "ItalyPowerDemand",
-    "LargeKitchenAppliances",
-    "Lightning2",
-    "Lightning7",
-    "Mallat",
-    "Meat",
-    "MedicalImages",
-    "MiddlePhalanxOutlineCorrect",
-    "MiddlePhalanxOutlineAgeGroup",
-    "MiddlePhalanxTW",
-    "MixedShapesRegularTrain",
-    "MixedShapesSmallTrain",
-    "MoteStrain",
-    "OliveOil",
-    "OSULeaf",
-    "PhalangesOutlinesCorrect",
-    "Phoneme",
-    "PigAirwayPressure",
-    "PigArtPressure",
-    "PigCVP",
-    "Plane",
-    "PowerCons",
-    "ProximalPhalanxOutlineCorrect",
-    "ProximalPhalanxOutlineAgeGroup",
-    "ProximalPhalanxTW",
-    "RefrigerationDevices",
-    "Rock",
-    "ScreenType",
-    "SemgHandGenderCh2",
-    "SemgHandMovementCh2",
-    "SemgHandSubjectCh2",
-    "ShapeletSim",
-    "SmallKitchenAppliances",
-    "SmoothSubspace",
-    "SonyAIBORobotSurface1",
-    "SonyAIBORobotSurface2",
-    "Strawberry",
-    "SwedishLeaf",
-    "Symbols",
-    "SyntheticControl",
-    "ToeSegmentation1",
-    "ToeSegmentation2",
-    "Trace",
-    "TwoLeadECG",
-    "TwoPatterns",
-    "UMD",
-    "UWaveGestureLibraryX",
-    "UWaveGestureLibraryY",
-    "UWaveGestureLibraryZ",
-    "Wafer",
-    "Wine",
-    "WordSynonyms",
-    "Worms",
-    "WormsTwoClass",
-    "Yoga",
-]
-
 
 if __name__ == "__main__":
     """
     Example simple usage, with arguments input via script or hard coded for testing
     """
-    if sys.argv.__len__() > 1:  # cluster run, this is fragile
-        print(sys.argv)
-        data_dir = sys.argv[1]
-        results_dir = sys.argv[2]
-        classifier = sys.argv[3]
-        dataset = sys.argv[4]
-        resample = int(sys.argv[5]) - 1
-        tf = str(sys.argv[6]) == "True"
-        run_experiment(
-            problem_path=data_dir,
-            results_path=results_dir,
-            cls_name=classifier,
-            dataset=dataset,
-            resampleID=resample,
-            train_file=tf,
-        )
-    else:  # Local run
-        print(" Local Run")
-        data_dir = "Z:/ArchiveData/Univariate_ts/"
-        results_dir = "C:/temp/sktime-dl/refactor/"
-        dataset = "Chinatown"
-        trainX, trainY = load_ts(data_dir + dataset + "/" + dataset + "_TRAIN.ts")
-        testX, testY = load_ts(data_dir + dataset + "/" + dataset + "_TEST.ts")
-        classifier = "cnn"
-        resample = 0
-        tf = False
-        for i in range(0, len(classifier_list)):
-            classifier = classifier_list[i]
-            run_experiment(
-                overwrite=True,
-                problem_path=data_dir,
-                results_path=results_dir,
-                cls_name=classifier,
-                dataset=dataset,
-                resampleID=resample,
-                train_file=tf,
-            )
+    print(" Local Run")
+    results_dir = "C:/Temp/sktime-dl/"
+    classifier = "resnet"
+    resample = 0
+    #         for i in range(0, len(univariate_datasets)):
+    #             dataset = univariate_datasets[i]
+    # #            print(i)
+    # #            print(" problem = "+dataset)
+    problem="ItalyPowerDemand"
+    print("Loading ",problem)
+    trX, trY = load_UCR_UEA_dataset(problem, split="train", return_X_y=True)
+    teX, teY = load_UCR_UEA_dataset(problem, split="test", return_X_y=True)
+    tf = False
+    run_experiment(
+        overwrite=True,
+        trainX=trX,
+        trainY=trY,
+        testX=trX,
+        testY=trY,
+        results_path=results_dir,
+        cls_name=classifier,
+        dataset=problem,
+        resampleID=resample,
+        train_file=tf,
+    )

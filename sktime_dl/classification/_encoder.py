@@ -1,54 +1,54 @@
-# -*- coding: utf-8 -*-
 __author__ = "James Large"
-__all__ = ["FCNClassifier"]
-
-from tensorflow import keras
 
 from sktime_dl.classification._classifier import BaseDeepClassifier
-from sktime_dl.networks._fcn import FCNNetwork
+from sktime_dl.networks._encoder import EncoderNetwork
 from sktime_dl.utils import check_and_clean_data, \
     check_and_clean_validation_data
+from tensorflow import keras
 from sklearn.utils import check_random_state
 
 
-class FCNClassifier(BaseDeepClassifier, FCNNetwork):
-    """Fully convolutional neural network (FCN).
+class EncoderClassifier(BaseDeepClassifier, EncoderNetwork):
+    """Encoder
 
-    Parameters
-    ----------
-    nb_epochs: int, the number of epochs to train the model
-    batch_size: int, specifying the length of the 1D convolution
+    Adapted from the implementation from Fawaz et. al
+
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/encoder.py
+
+    Network originally defined in:
+
+    @article{serra2018towards,
+       title={Towards a universal neural network encoder for time series},
+       author={Serrà, J and Pascual, S and Karatzoglou, A},
+       journal={Artif Intell Res Dev Curr Chall New Trends Appl},
+       volume={308},
+       pages={120},
+       year={2018}
+    }
+
+    :param nb_epochs: int, the number of epochs to train the model
+    :param batch_size: int, specifying the length of the 1D convolution
      window
-    callbacks: list of tf.keras.callbacks.Callback objects
-    random_state: int, seed to any needed random actions
-    verbose: boolean, whether to output extra information
-    model_name: string, the name of this model for printing and
+    :param callbacks: list of tf.keras.callbacks.Callback objects
+    :param random_state: int, seed to any needed random actions
+    :param verbose: boolean, whether to output extra information
+    :param model_name: string, the name of this model for printing and
      file writing purposes
-    model_save_directory: string, if not None; location to save
+    :param model_save_directory: string, if not None; location to save
      the trained keras model in hdf5 format
-
-
-    Notes
-    -----
-    ..[1] Z. Wang et. al, Time series classification from scratch with deep neural
-    networks: A strong baseline, IJCNN, 2017
-
-    Adapted from the implementation from Fawaz et. al`
-
-    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/fcn.py
     """
 
     def __init__(
             self,
-            nb_epochs=2000,
-            batch_size=16,
+            nb_epochs=100,
+            batch_size=12,
             callbacks=None,
             random_state=0,
             verbose=False,
-            model_name="fcn",
+            model_name="encoder",
             model_save_directory=None,
     ):
-        super(FCNClassifier, self).__init__(
+        super(EncoderClassifier, self).__init__(
             model_name=model_name, model_save_directory=model_save_directory
         )
 
@@ -63,22 +63,19 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
-        Construct a compiled, un-trained, keras model that is ready for training
-
-        Parameters
+        Construct a compiled, un-trained, keras model that is ready for
+         training
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
         nb_classes: int
             The number of classes, which shall become the size of the output
              layer
-
         Returns
         -------
         output : a compiled Keras Model
         """
         input_layer, output_layer = self.build_network(input_shape, **kwargs)
-
         output_layer = keras.layers.Dense(nb_classes, activation="softmax")(
             output_layer
         )
@@ -87,23 +84,9 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
 
         model.compile(
             loss="categorical_crossentropy",
-            optimizer=keras.optimizers.Adam(),
+            optimizer=keras.optimizers.Adam(0.00001),
             metrics=["accuracy"],
         )
-
-        # if user hasn't provided a custom ReduceLROnPlateau via
-        # init already, add the default from literature
-        if self.callbacks is None:
-            self.callbacks = []
-
-        if not any(
-                isinstance(callback, keras.callbacks.ReduceLROnPlateau)
-                for callback in self.callbacks
-        ):
-            reduce_lr = keras.callbacks.ReduceLROnPlateau(
-                monitor="loss", factor=0.5, patience=50, min_lr=0.0001
-            )
-            self.callbacks.append(reduce_lr)
 
         return model
 
@@ -111,8 +94,6 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
             validation_y=None, **kwargs):
         """
         Fit the classifier on the training set (X, y)
-
-        Parameters
         ----------
         X : a nested pd.Dataframe, or (if input_checks=False) array-like of
         shape = (n_instances, series_length, n_dimensions)
@@ -132,12 +113,14 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
             are stored in the model's fit history.
         validation_y : array-like, shape = [n_instances]
             The validation class labels.
-
         Returns
         -------
         self : object
         """
         self.random_state = check_random_state(self.random_state)
+
+        if self.callbacks is None:
+            self.callbacks = []
 
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
@@ -150,8 +133,6 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
         self.input_shape = X.shape[1:]
-
-        self.batch_size = int(min(X.shape[0] / 10, self.batch_size))
 
         self.model = self.build_model(self.input_shape, self.nb_classes)
 

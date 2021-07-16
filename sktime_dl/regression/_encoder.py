@@ -1,41 +1,40 @@
-# -*- coding: utf-8 -*-
-__author__ = "James Large"
-__all__ = ["FCNClassifier"]
+__author__ = "James Large, Withington"
 
 from tensorflow import keras
 
-from sktime_dl.classification._classifier import BaseDeepClassifier
-from sktime_dl.networks._fcn import FCNNetwork
+from sktime_dl.regression._regressor import BaseDeepRegressor
+from sktime_dl.networks._encoder import EncoderNetwork
 from sktime_dl.utils import check_and_clean_data, \
     check_and_clean_validation_data
-from sklearn.utils import check_random_state
 
 
-class FCNClassifier(BaseDeepClassifier, FCNNetwork):
-    """Fully convolutional neural network (FCN).
+class EncoderRegressor(BaseDeepRegressor, EncoderNetwork):
+    """Encoder
 
-    Parameters
-    ----------
-    nb_epochs: int, the number of epochs to train the model
-    batch_size: int, specifying the length of the 1D convolution
+    Adapted from the implementation from Fawaz et. al
+
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/encoder.py
+
+    Network originally defined in:
+
+    @article{serra2018towards,
+       title={Towards a universal neural network encoder for time series},
+       author={Serrà, J and Pascual, S and Karatzoglou, A},
+       journal={Artif Intell Res Dev Curr Chall New Trends Appl},
+       volume={308},
+       pages={120},
+       year={2018}
+    }
+    :param nb_epochs: int, the number of epochs to train the model
+    :param batch_size: int, specifying the length of the 1D convolution
      window
-    callbacks: list of tf.keras.callbacks.Callback objects
-    random_state: int, seed to any needed random actions
-    verbose: boolean, whether to output extra information
-    model_name: string, the name of this model for printing and
-     file writing purposes
-    model_save_directory: string, if not None; location to save
-     the trained keras model in hdf5 format
-
-
-    Notes
-    -----
-    ..[1] Z. Wang et. al, Time series classification from scratch with deep neural
-    networks: A strong baseline, IJCNN, 2017
-
-    Adapted from the implementation from Fawaz et. al`
-
-    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/fcn.py
+    :param callbacks: list of tf.keras.callbacks.Callback objects
+    :param random_state: int, seed to any needed random actions
+    :param verbose: boolean, whether to output extra information
+    :param model_name: string, the name of this model for printing and
+    file writing purposes
+    :param model_save_directory: string, if not None; location to save the
+     trained keras model in hdf5 format
     """
 
     def __init__(
@@ -45,13 +44,21 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
             callbacks=None,
             random_state=0,
             verbose=False,
-            model_name="fcn",
+            model_name="encoder_regressor",
             model_save_directory=None,
     ):
-        super(FCNClassifier, self).__init__(
+        super(EncoderRegressor, self).__init__(
             model_name=model_name, model_save_directory=model_save_directory
         )
 
+        self.verbose = verbose
+        self._is_fitted = False
+
+        # calced in fit
+        self.input_shape = None
+        self.history = None
+
+        # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
 
@@ -61,58 +68,35 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
 
         self._is_fitted = False
 
-    def build_model(self, input_shape, nb_classes, **kwargs):
+    def build_model(self, input_shape, **kwargs):
         """
-        Construct a compiled, un-trained, keras model that is ready for training
-
-        Parameters
+        Construct a compiled, un-trained, keras model that is ready for
+        training
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
-        nb_classes: int
-            The number of classes, which shall become the size of the output
-             layer
-
         Returns
         -------
         output : a compiled Keras Model
         """
         input_layer, output_layer = self.build_network(input_shape, **kwargs)
-
-        output_layer = keras.layers.Dense(nb_classes, activation="softmax")(
-            output_layer
-        )
+        output_layer = keras.layers.Dense(units=1)(output_layer)
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
-
         model.compile(
-            loss="categorical_crossentropy",
-            optimizer=keras.optimizers.Adam(),
-            metrics=["accuracy"],
+            loss="mean_squared_error",
+            optimizer=keras.optimizers.Adam(0.00001),
+            metrics=["mean_squared_error"],
         )
 
-        # if user hasn't provided a custom ReduceLROnPlateau via
-        # init already, add the default from literature
-        if self.callbacks is None:
-            self.callbacks = []
-
-        if not any(
-                isinstance(callback, keras.callbacks.ReduceLROnPlateau)
-                for callback in self.callbacks
-        ):
-            reduce_lr = keras.callbacks.ReduceLROnPlateau(
-                monitor="loss", factor=0.5, patience=50, min_lr=0.0001
-            )
-            self.callbacks.append(reduce_lr)
+        self.callbacks = []
 
         return model
 
     def fit(self, X, y, input_checks=True, validation_X=None,
             validation_y=None, **kwargs):
         """
-        Fit the classifier on the training set (X, y)
-
-        Parameters
+        Fit the regressor on the training set (X, y)
         ----------
         X : a nested pd.Dataframe, or (if input_checks=False) array-like of
         shape = (n_instances, series_length, n_dimensions)
@@ -132,35 +116,30 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
             are stored in the model's fit history.
         validation_y : array-like, shape = [n_instances]
             The validation class labels.
-
         Returns
         -------
         self : object
         """
-        self.random_state = check_random_state(self.random_state)
+        if self.callbacks is None:
+            self.callbacks = []
 
         X = check_and_clean_data(X, y, input_checks=input_checks)
-        y_onehot = self.convert_y(y)
 
         validation_data = \
-            check_and_clean_validation_data(validation_X, validation_y,
-                                            self.label_encoder,
-                                            self.onehot_encoder)
+            check_and_clean_validation_data(validation_X, validation_y)
 
         # ignore the number of instances, X.shape[0],
         # just want the shape of each instance
         self.input_shape = X.shape[1:]
 
-        self.batch_size = int(min(X.shape[0] / 10, self.batch_size))
-
-        self.model = self.build_model(self.input_shape, self.nb_classes)
+        self.model = self.build_model(self.input_shape)
 
         if self.verbose:
             self.model.summary()
 
         self.history = self.model.fit(
             X,
-            y_onehot,
+            y,
             batch_size=self.batch_size,
             epochs=self.nb_epochs,
             verbose=self.verbose,

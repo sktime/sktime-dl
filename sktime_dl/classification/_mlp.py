@@ -1,60 +1,56 @@
-# -*- coding: utf-8 -*-
 __author__ = "James Large"
-__all__ = ["FCNClassifier"]
 
 from tensorflow import keras
 
 from sktime_dl.classification._classifier import BaseDeepClassifier
-from sktime_dl.networks._fcn import FCNNetwork
+from sktime_dl.networks._mlp import MLPNetwork
 from sktime_dl.utils import check_and_clean_data, \
     check_and_clean_validation_data
 from sklearn.utils import check_random_state
 
 
-class FCNClassifier(BaseDeepClassifier, FCNNetwork):
-    """Fully convolutional neural network (FCN).
+class MLPClassifier(BaseDeepClassifier, MLPNetwork):
+    """Multi Layer Perceptron (MLP).
 
-    Parameters
-    ----------
-    nb_epochs: int, the number of epochs to train the model
-    batch_size: int, specifying the length of the 1D convolution
-     window
-    callbacks: list of tf.keras.callbacks.Callback objects
-    random_state: int, seed to any needed random actions
-    verbose: boolean, whether to output extra information
-    model_name: string, the name of this model for printing and
-     file writing purposes
-    model_save_directory: string, if not None; location to save
-     the trained keras model in hdf5 format
+    Adapted from the implementation from Fawaz et. al
 
+    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/mlp.py
 
-    Notes
-    -----
-    ..[1] Z. Wang et. al, Time series classification from scratch with deep neural
-    networks: A strong baseline, IJCNN, 2017
+    Network originally defined in:
 
-    Adapted from the implementation from Fawaz et. al`
-
-    https://github.com/hfawaz/dl-4-tsc/blob/master/classifiers/fcn.py
+    @inproceedings{wang2017time, title={Time series classification from
+    scratch with deep neural networks: A strong baseline}, author={Wang,
+    Zhiguang and Yan, Weizhong and Oates, Tim}, booktitle={2017
+    International joint conference on neural networks (IJCNN)}, pages={
+    1578--1585}, year={2017}, organization={IEEE} }
     """
 
-    def __init__(
-            self,
-            nb_epochs=2000,
-            batch_size=16,
-            callbacks=None,
-            random_state=0,
-            verbose=False,
-            model_name="fcn",
-            model_save_directory=None,
-    ):
-        super(FCNClassifier, self).__init__(
-            model_name=model_name, model_save_directory=model_save_directory
+    def __init__(self,
+                 nb_epochs=5000,
+                 batch_size=16,
+                 callbacks=None,
+                 random_state=0,
+                 verbose=False,
+                 model_name="mlp",
+                 model_save_directory=None):
+        """
+        :param nb_epochs: int, the number of epochs to train the model
+        :param batch_size: int, specifying the length of the 1D convolution
+         window
+        :param callbacks: list of tf.keras.callbacks.Callback objects
+        :param random_state: int, seed to any needed random actions
+        :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and
+         file writing purposes
+        :param model_save_directory: string, if not None; location to save
+         the trained keras model in hdf5 format
+        """
+        super(MLPClassifier, self).__init__(
+            model_save_directory=model_save_directory,
+            model_name=model_name
         )
-
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
-
         self.callbacks = callbacks
         self.random_state = random_state
         self.verbose = verbose
@@ -63,22 +59,19 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
-        Construct a compiled, un-trained, keras model that is ready for training
-
-        Parameters
+        Construct a compiled, un-trained, keras model that is ready for
+        training
         ----------
         input_shape : tuple
             The shape of the data fed into the input layer
         nb_classes: int
             The number of classes, which shall become the size of the output
-             layer
-
+            layer
         Returns
         -------
         output : a compiled Keras Model
         """
         input_layer, output_layer = self.build_network(input_shape, **kwargs)
-
         output_layer = keras.layers.Dense(nb_classes, activation="softmax")(
             output_layer
         )
@@ -87,12 +80,12 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
 
         model.compile(
             loss="categorical_crossentropy",
-            optimizer=keras.optimizers.Adam(),
+            optimizer=keras.optimizers.Adadelta(),
             metrics=["accuracy"],
         )
 
-        # if user hasn't provided a custom ReduceLROnPlateau via
-        # init already, add the default from literature
+        # if user hasn't provided a custom ReduceLROnPlateau via init already,
+        # add the default from literature
         if self.callbacks is None:
             self.callbacks = []
 
@@ -111,8 +104,6 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
             validation_y=None, **kwargs):
         """
         Fit the classifier on the training set (X, y)
-
-        Parameters
         ----------
         X : a nested pd.Dataframe, or (if input_checks=False) array-like of
         shape = (n_instances, series_length, n_dimensions)
@@ -132,7 +123,6 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
             are stored in the model's fit history.
         validation_y : array-like, shape = [n_instances]
             The validation class labels.
-
         Returns
         -------
         self : object
@@ -147,8 +137,8 @@ class FCNClassifier(BaseDeepClassifier, FCNNetwork):
                                             self.label_encoder,
                                             self.onehot_encoder)
 
-        # ignore the number of instances, X.shape[0],
-        # just want the shape of each instance
+        # ignore the number of instances, X.shape[0], just want the shape of
+        # each instance
         self.input_shape = X.shape[1:]
 
         self.batch_size = int(min(X.shape[0] / 10, self.batch_size))
