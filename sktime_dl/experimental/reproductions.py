@@ -36,19 +36,19 @@ if len(sys.argv) > 6:
 import gc
 from tensorflow import keras
 
-from sktime_dl.deeplearning import CNNClassifier
-from sktime_dl.deeplearning import EncoderClassifier
-from sktime_dl.deeplearning import FCNClassifier
-from sktime_dl.deeplearning import MCDCNNClassifier
-from sktime_dl.deeplearning import MCNNClassifier
-from sktime_dl.deeplearning import MLPClassifier
-from sktime_dl.deeplearning import ResNetClassifier
-from sktime_dl.deeplearning import TLENETClassifier
-from sktime_dl.deeplearning import TWIESNClassifier
-from sktime_dl.deeplearning import InceptionTimeClassifier
+from sktime_dl.classification import CNNClassifier
+from sktime_dl.classification import EncoderClassifier
+from sktime_dl.classification import FCNClassifier
+from sktime_dl.classification import MCDCNNClassifier
+from sktime_dl.classification import MCNNClassifier
+from sktime_dl.classification import MLPClassifier
+from sktime_dl.classification import ResNetClassifier
+from sktime_dl.classification import TLENETClassifier
+from sktime_dl.classification import TWIESNClassifier
+from sktime_dl.classification import InceptionTimeClassifier
 from sktime_dl.meta import EnsembleFromFileClassifier
 from sktime_dl.classification import   LSTMFCNClassifier
-from sktime_dl.deeplearning import CNTCClassifier
+from sktime_dl.classification import CNTCClassifier
 from sktime_dl.classification import TapNetClassifier
 
 #import sktime.contrib.experiments as exp
