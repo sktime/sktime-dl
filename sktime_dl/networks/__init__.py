@@ -7,6 +7,7 @@ __all__ = [
     "CNTCNetwork",
     "MCDCNNNetwork",
     "MLPNetwork",
+    "OSCNNNetwork",
     "ResNetNetwork",
     "TLENETNetwork",
 ]
@@ -19,5 +20,6 @@ from sktime_dl.networks._lstmfcn import LSTMFCNNetwork
 from sktime_dl.networks._cntc import CNTCNetwork
 from sktime_dl.networks._mcdcnn import MCDCNNNetwork
 from sktime_dl.networks._mlp import MLPNetwork
+from sktime_dl.networks._oscnn import OSCNNNetwork
 from sktime_dl.networks._resnet import ResNetNetwork
 from sktime_dl.networks._tlenet import TLENETNetwork
