@@ -8,6 +8,7 @@ __all__ = [
     "CNTCRegressor",
     "MCDCNNRegressor",
     "MLPRegressor",
+    "OSCNNRegressor",
     "ResNetRegressor",
     "SimpleRNNRegressor",
     "TLENETRegressor",
@@ -22,6 +23,7 @@ from sktime_dl.regression._encoder import EncoderRegressor
 from sktime_dl.regression._cntc import CNTCRegressor
 from sktime_dl.regression._mcdcnn import MCDCNNRegressor
 from sktime_dl.regression._mlp import MLPRegressor
+from sktime_dl.regression._oscnn import OSCNNRegressor
 from sktime_dl.regression._resnet import ResNetRegressor
 from sktime_dl.regression._rnn import SimpleRNNRegressor
 from sktime_dl.regression._tlenet import TLENETRegressor
