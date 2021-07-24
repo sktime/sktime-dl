@@ -14,6 +14,18 @@ from tensorflow import keras
 
 class TapNetRegressor(BaseDeepRegressor, TapNetNetwork):
     """
+    Implentation of TapNet found at https://github.com/kdd2019-tapnet/tapnet
+    Currently does not implement custom distance matrix loss function or class  based self attention.
+
+    @inproceedings{zhang2020tapnet,
+    title={Tapnet: Multivariate time series classification with attentional prototypical network},
+    author={Zhang, Xuchao and Gao, Yifeng and Lin, Jessica and Lu, Chang-Tien},
+    booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+    volume={34},
+    number={04},
+    pages={6845--6852},
+    year={2020}
+    }
     """
 
     def __init__(
@@ -41,6 +53,16 @@ class TapNetRegressor(BaseDeepRegressor, TapNetNetwork):
             model_save_directory=None,
             is_fitted=False
     ):
+        """
+        :param kernel_size: int, specifying the length of the 1D convolution
+         window
+        :param avg_pool_size: int, size of the average pooling windows
+        :param layers: int, size of dense layers
+        :param filter_sizes: int, array of shape = (nb_conv_layers)
+        :param random_state: int, seed to any needed random actions
+        :param rp_params: array of ints, parameters for random permutation
+        :param dropout: dropout rate
+        """
         super(TapNetRegressor, self).__init__(
             model_save_directory=model_save_directory,
             model_name=model_name)
