@@ -12,27 +12,37 @@ class MACNNNetwork(BaseDeepNetwork):
     def __init__(
             self,
             random_state=1,
-            padding='same'
+            padding='same',
+            pool_size=3,
+            stride=2,
+            repeats=2,
+            filters=[64,128,256],
+            kernel_sizes=[3,6,12],
+            reduction=16
+
+
+
     ):
-        """
-        :param kernel_sizes: list of ints, specifying the length of the 1D convolution
-         windows
-        :param filter_sizes: int, array of shape = 3, size of filter for each
-         conv layer
-        :param random_state: int, seed to any needed random actions
-        """
+
         super(MACNNNetwork, self).__init__()
         self.random_state=random_state
         self.padding=padding
 
+        self.kernel_sizes = kernel_sizes
+        self.filters = filters
+        self.reduction = reduction
+        self.pool_size=pool_size
+        self.stride=stride
+        self.repeats=repeats
+
 
 
     def __MACNN_block(self, x, kernels, reduce):
-        cov1 = keras.layers.Conv1D(kernels, 3, padding='same')(x)
+        cov1 = keras.layers.Conv1D(kernels, self.kernel_sizes[0], padding='same')(x)
 
-        cov2 = keras.layers.Conv1D(kernels, 6, padding='same')(x)
+        cov2 = keras.layers.Conv1D(kernels, self.kernel_sizes[1], padding='same')(x)
 
-        cov3 = keras.layers.Conv1D(kernels, 12, padding='same')(x)
+        cov3 = keras.layers.Conv1D(kernels, self.kernel_sizes[2], padding='same')(x)
 
         x = keras.layers.Concatenate(axis=2)([cov1, cov2, cov3])
         x = keras.layers.BatchNormalization()(x)
@@ -61,11 +71,11 @@ class MACNNNetwork(BaseDeepNetwork):
         output_layer : a keras layer
         """
         input_layer = keras.layers.Input(shape=input_shape)
-        x=self.__stack(input_layer,2,64,16)
-        x = keras.layers.MaxPooling1D( 3, 2, padding='same')(x)
-        x = self.__stack(x, 2, 128, 16)
-        x = keras.layers.MaxPooling1D( 3, 2, padding='same')(x)
-        x = self.__stack(x, 2, 256, 16)
+        x=self.__stack(input_layer,self.repeats,self.filters[0],self.reduction)
+        x = keras.layers.MaxPooling1D( self.pool_size, self.stride, padding='same')(x)
+        x = self.__stack(x, self.repeats, self.filters[1], self.reduction)
+        x = keras.layers.MaxPooling1D( self.pool_size, self.stride, padding='same')(x)
+        x = self.__stack(x, self.repeats, self.filters[2], self.reduction)
 
         fc = tf.reduce_mean(x, 1)
 

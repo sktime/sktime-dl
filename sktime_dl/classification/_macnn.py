@@ -9,9 +9,69 @@ from tensorflow import keras
 
 
 class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
+    """
+
+    Implementation of MACNNClassifier from Chen (2015). [1]_
+    Overview:
+     Neural Network made of multiple convolutional attention blocks.
+
+
+    Parameters
+    ----------
+    pool_size : int, default=3
+       Controls pool size for maxpooling layers.
+    stride : int, default=2
+       Controls stride length for maxpooling layers.
+    filters: list or array of ints, default=[64, 128, 256]
+        sets the kernel size argument for each convolutional block. Controls number of convolutional filters
+        and number of neurons in attention dense layers.
+    kernel_size : list or array of ints, default=[3, 6, 12]
+        controls the size of the convolutional kernels
+    reduction : int, default=16
+        divides the number of dense neurons in the first layer of the attention block.
+    n_jobs : int, default=1
+        The number of jobs to run in parallel for both `fit` and `predict`.
+        ``-1`` means using all processors.
+    random_state : int or None, default=None
+        Seed for random, integer.
+    Attributes
+    ----------
+    nb_classes : int
+        Number of classes. Extracted from the data.
+
+    References
+    ----------
+    [1] Wei Chen, Ke Shi,
+    Multi-scale Attention Convolutional Neural Network for time series classification,
+    Neural Networks,
+    Volume 136,
+    2021,
+    Pages 126-140,
+    ISSN 0893-6080,
+    https://doi.org/10.1016/j.neunet.2021.01.001.
+    (https://www.sciencedirect.com/science/article/pii/S0893608021000010)
+
+    Example
+    -------
+    >>> from sktime_dl.classification import MACNNClassifier
+    >>> from sktime.datasets import load_italy_power_demand
+    >>> X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
+    >>> X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
+    >>> clf = MACNNClassifier()
+    >>> clf.fit(X_train, y_train)
+    BOSSEnsemble(...)
+    >>> y_pred = clf.predict(X_test)
+    """
 
     def __init__(
             self,
+            padding='same',
+            pool_size=3,
+            stride=2,
+            repeats=2,
+            filters=[64, 128, 256],
+            kernel_sizes=[3, 6, 12],
+            reduction=16,
             nb_epochs=1500,
             batch_size=4,
             callbacks=[],
@@ -24,7 +84,7 @@ class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
         :param rnn_layer: int, filter size for rnn layer
-        :param filter_sizes: int, array of shape 2, filter sizes for two convolutional layers
+        :param filters: int, array of shape 2, filter sizes for two convolutional layers
         :param kernel_sizes: int,array of shape 2,  kernel size for two convolutional layers
         :param lstm_size: int, filter size of lstm layer
         :param dense_size: int, size of dense layer
@@ -49,6 +109,13 @@ class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
         self.input_shape = None
         self.model = None
         self.history = None
+
+        self.kernel_sizes = kernel_sizes
+        self.filters= filters
+        self.reduction = reduction
+        self.pool_size = pool_size
+        self.stride = stride
+        self.repeats = repeats
 
         # predefined
         self.nb_epochs = nb_epochs
