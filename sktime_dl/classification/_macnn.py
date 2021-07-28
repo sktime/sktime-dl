@@ -1,93 +1,66 @@
-# -*- coding: utf-8 -*-
-"""Time Convolutional Neural Network (CNN) for classification"""
-
-
 __author__ = "Jack Russon"
 
 from sktime_dl.classification._classifier import BaseDeepClassifier
-from sktime_dl.networks._tapnet import TapNetNetwork
+from sktime_dl.networks._macnn import MACNNNetwork
 from sktime_dl.utils import check_and_clean_data, \
     check_and_clean_validation_data
 from sklearn.utils import check_random_state
 from tensorflow import keras
 
 
-class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
-    """
-    @inproceedings{zhang2020tapnet,
-    title={Tapnet: Multivariate time series classification with attentional prototypical network},
-    author={Zhang, Xuchao and Gao, Yifeng and Lin, Jessica and Lu, Chang-Tien},
-    booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
-    volume={34},
-    number={04},
-    pages={6845--6852},
-    year={2020}
-    }
-    """
+class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
 
     def __init__(
             self,
-            batch_size=16,
-            dropout=0.5,
-            filter_sizes=[256, 256, 128],
-            kernel_size=[8, 5, 3],
-            dilation=1,
-            layers=[500, 300],
-            use_rp=True,
-            rp_params=[-1, 3],
-            use_att=True,
-            use_ss=False,
-            use_metric=False,
-            use_muse=False,
-            use_lstm=True,
-            use_cnn=True,
-            random_state=1,
-            padding='same',
-            callbacks=None,
+            nb_epochs=1500,
+            batch_size=4,
+            callbacks=[],
+            random_state=0,
             verbose=False,
-            nb_epochs=2000,
-            model_name="TapNet",
+            model_name="macnn",
             model_save_directory=None,
-            is_fitted=False
     ):
         """
-        :param kernel_size: int, specifying the length of the 1D convolution
-         window
-        :param avg_pool_size: int, size of the average pooling windows
-        :param layers: int, size of dense layers
-        :param filter_sizes: int, array of shape = (nb_conv_layers)
+        :param nb_epochs: int, the number of epochs to train the model
+        :param batch_size: int, the number of samples per gradient update.
+        :param rnn_layer: int, filter size for rnn layer
+        :param filter_sizes: int, array of shape 2, filter sizes for two convolutional layers
+        :param kernel_sizes: int,array of shape 2,  kernel size for two convolutional layers
+        :param lstm_size: int, filter size of lstm layer
+        :param dense_size: int, size of dense layer
+        :param callbacks: not used
         :param random_state: int, seed to any needed random actions
-        :param rp_params: array of ints, parameters for random permutation
-        :param dropout: dropout rate
+        :param verbose: boolean, whether to output extra information
+        :param model_name: string, the name of this model for printing and
+        file writing purposes
+        :param model_save_directory: string, if not None; location to save
+        the trained keras model in hdf5 format
         """
-        super(TapNetClassifier, self).__init__(
-            model_save_directory=model_save_directory,
-            model_name=model_name)
-        self.batch_size=batch_size
+        super(MACNNClassifier, self).__init__(
+            model_name=model_name, model_save_directory=model_save_directory
+        )
+
+        self.verbose = verbose
+        self._is_fitted = False
+
+        # calced in fit
+        self.classes_ = None
+        self.nb_classes = -1
+        self.input_shape = None
+        self.model = None
+        self.history = None
+
+        # predefined
+        self.nb_epochs = nb_epochs
+        self.batch_size = batch_size
         self.random_state = random_state
-        self.kernel_size = kernel_size
-        self.layers = layers
-        self.rp_params = rp_params
-        self.filter_sizes = filter_sizes
-        self.use_att = use_att
-        self.use_ss = use_ss
-        self.dilation = dilation
-        self.padding = padding
-        self.nb_epochs=nb_epochs
-        self.callbacks=callbacks
-        self.verbose=verbose
 
-        self._is_fitted=False
 
-        self.dropout = dropout
-        self.use_metric = use_metric
-        self.use_muse = use_muse
-        self.use_lstm = use_lstm
-        self.use_cnn = use_cnn
+        self.callbacks = callbacks
+        self.random_state = random_state
+        self.verbose = verbose
 
-        # parameters for random projection
-        self.use_rp = use_rp
-        self.rp_params = rp_params
+        self._is_fitted = False
 
     def build_model(self, input_shape, nb_classes, **kwargs):
         """
@@ -112,11 +85,11 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(
             loss="categorical_crossentropy",
-            optimizer=keras.optimizers.Adam(),
+            optimizer=keras.optimizers.Adam(lr=0.0001),
             metrics=["accuracy"]
         )
         reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
-                                                      patience=20, min_lr=0.0001)
+                                                      patience=50, min_lr=0.00001)
         self.callbacks = [reduce_lr]
 
         return model
@@ -184,5 +157,3 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         self.save_trained_model()
 
         return self
-
-

@@ -198,7 +198,7 @@ ueamv26dsets = [
     "UWaveGestureLibrary",
 ]
 
-NB_EPOCHS=10
+NB_EPOCHS=1000
 
 def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     """

@@ -14,8 +14,8 @@ from sklearn.utils import check_random_state
 class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
     def __init__(
             self,
-            nb_epochs=120,
-            batch_size=64,
+            nb_epochs=150,
+            batch_size=30,
             rnn_layer=64,
             filter_sizes=[16, 8],
             kernel_sizes=[1, 1],
@@ -94,12 +94,10 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         )
 
         model = keras.models.Model(inputs=input_layers, outputs=output_layer)
-
+        Adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7)
         model.compile(
             loss="categorical_crossentropy",
-            optimizer=keras.optimizers.SGD(
-                lr=0.01, momentum=0.9, decay=0.0005
-            ),
+            optimizer=Adam,
             metrics=["accuracy"],
         )
 
@@ -108,7 +106,9 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         #     filepath=file_path, monitor='val_loss',
         #     save_best_only=True)
         # self.callbacks = [model_checkpoint]
-        self.callbacks = []
+        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
+                                      patience=25, min_lr=0.00001)
+        self.callbacks = [reduce_lr]
 
         return model
 
@@ -156,7 +156,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         X_2 = self.prepare_input(X)
         if validation_data is not None:
             validation_data = (
-                self.prepare_input(validation_data[0]),
+                (self.prepare_input(validation_data[0]),validation_data[0],validation_data[0]),
                 validation_data[1]
             )
 
@@ -167,7 +167,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
             self.model.summary()
 
         self.history = self.model.fit(
-            [X_2, X, X],
+            [X_2, X,X],
             y_onehot,
             batch_size=self.batch_size,
             epochs=self.nb_epochs,
@@ -202,7 +202,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
 
         x_test_2 = self.prepare_input(X)
 
-        probs = self.model.predict([x_test_2,X,X], **kwargs)
+        probs = self.model.predict([ x_test_2,X, X], **kwargs)
 
         # check if binary classification
         if probs.shape[1] == 1:

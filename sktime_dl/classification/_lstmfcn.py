@@ -18,7 +18,7 @@ class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
     def __init__(
             self,
             nb_epochs=120,
-            batch_size=16,
+            batch_size=128,
             kernel_sizes=[8, 5, 3],
             filter_sizes=[128, 256, 128],
             NUM_CELLS=8,
@@ -98,9 +98,7 @@ class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
 
         model.compile(
             loss="categorical_crossentropy",
-            optimizer=keras.optimizers.SGD(
-                lr=0.01, momentum=0.9, decay=0.0005
-            ),
+            optimizer='adam',
             metrics=["accuracy"],
         )
 
@@ -109,7 +107,10 @@ class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
         #     filepath=file_path, monitor='val_loss',
         #     save_best_only=True)
         # self.callbacks = [model_checkpoint]
-        self.callbacks = []
+
+        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
+                                                      patience=20, min_lr=0.0001)
+        self.callbacks = [reduce_lr]
 
         return model
 
@@ -157,7 +158,7 @@ class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
 
         if validation_data is not None:
             validation_data = (
-                self.prepare_input(validation_data[0]),
+                validation_data[0],
                 validation_data[1]
             )
 
