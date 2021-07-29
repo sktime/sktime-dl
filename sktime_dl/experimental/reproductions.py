@@ -50,6 +50,7 @@ from sktime_dl.meta import EnsembleFromFileClassifier
 from sktime_dl.classification import   LSTMFCNClassifier
 from sktime_dl.classification import CNTCClassifier
 from sktime_dl.classification import TapNetClassifier
+from sktime_dl.classification import MACNNClassifier
 
 #import sktime.contrib.experiments as exp
 import sktime.contrib.classification_experiments as dlexp
@@ -248,11 +249,13 @@ def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     elif cls.lower() == "inception4":
         return InceptionTimeClassifier(random_state=fold)
     elif cls.lower() == "cntc":
-        return CNTCClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir,nb_epochs=NB_EPOCHS)
+        return CNTCClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
     elif cls.lower() == "lstmfcn":
-        return LSTMFCNClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir,nb_epochs=NB_EPOCHS)
+        return LSTMFCNClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
     elif cls.lower() == "tapnet":
-        return TapNetClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir,nb_epochs=NB_EPOCHS)
+        return TapNetClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower()=="macnn":
+        return MACNNClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
     elif cls.lower() == "inceptiontime":
         return EnsembleFromFileClassifier(
             res_dir,

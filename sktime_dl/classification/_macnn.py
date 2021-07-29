@@ -13,7 +13,9 @@ class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
 
     Implementation of MACNNClassifier from Chen (2015). [1]_
     Overview:
-     Neural Network made of multiple convolutional attention blocks.
+     Neural Network made of multiple convolutional attention blocks. The block is separated into three
+     sections. Section 1 and 2 are made up of two blocks followed by a max pooling layer. The final section
+     contains two blocks and a mean reduction followed by the dense output layer.
 
 
     Parameters
@@ -53,14 +55,14 @@ class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
 
     Example
     -------
-    >>> from sktime_dl.classification import MACNNClassifier
-    >>> from sktime.datasets import load_italy_power_demand
-    >>> X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
-    >>> X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
-    >>> clf = MACNNClassifier()
-    >>> clf.fit(X_train, y_train)
+    from sktime_dl.classification import MACNNClassifier
+    from sktime.datasets import load_italy_power_demand
+    X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
+    X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
+    clf = MACNNClassifier()
+    clf.fit(X_train, y_train)
     BOSSEnsemble(...)
-    >>> y_pred = clf.predict(X_test)
+    y_pred = clf.predict(X_test)
     """
 
     def __init__(

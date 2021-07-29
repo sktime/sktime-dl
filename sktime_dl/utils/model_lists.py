@@ -7,7 +7,8 @@ from sktime_dl.classification import (CNNClassifier,
                                       TWIESNClassifier,
                                       MCNNClassifier,
                                       MLPClassifier,
-                                      ResNetClassifier
+                                      ResNetClassifier,
+                                      MACNNClassifier
                                       )
 
 from sktime_dl.regression import (CNNRegressor,
@@ -51,6 +52,7 @@ def construct_all_classifiers(nb_epochs=None):
             'TWIESNClassifier_quick': TWIESNClassifier(),
             'InceptionTimeClassifier_quick': InceptionTimeClassifier(
                 nb_epochs=nb_epochs),
+            "MACNNClassifier_quick": MACNNClassifier(nb_epochs=nb_epochs)
         }
     else:
         # the 'literature-conforming' versions
@@ -65,6 +67,7 @@ def construct_all_classifiers(nb_epochs=None):
             'TLENETClassifier': TLENETClassifier(),
             'TWIESNClassifier': TWIESNClassifier(),
             'InceptionTimeClassifier': InceptionTimeClassifier(),
+            "MACNNClassifier": MACNNClassifier()
         }
 
 
