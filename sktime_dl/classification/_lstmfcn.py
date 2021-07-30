@@ -13,15 +13,85 @@ from sklearn.utils import check_random_state
 
 class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
     """
+
+    Implementation of LSTMFCNClassifier from Karim et al (2019). [1]_
+    Overview:
+     Combines an LSTM arm with a CNN arm. Optionally uses an attention mechanism in the LSTM which the
+     author indicates provides improved performance.
+
+
+    Parameters
+    ----------
+    nb_epochs: int, default=1500
+     the number of epochs to train the model
+    param batch_size: int, default=128
+        the number of samples per gradient update.
+    kernel_sizes: list of ints, default=[8, 5, 3]
+        specifying the length of the 1D convolution windows
+    filter_sizes: int, list of ints, default=[128, 256, 128]
+        size of filter for each conv layer
+    num_cells: int, default=8
+        output dimension for LSTM layer
+    dropout: float, default=0.8
+        controls dropout rate of LSTM layer
+    attention: boolean, default=False
+        If True, uses custom attention LSTM layer
+    callbacks: keras callbacks, default=ReduceLRonPlateau
+        Keras callbacks to use such as learning rate reduction or saving best model based on validation error
+    random_state: int,
+        seed to any needed random actions
+    verbose: boolean,
+        whether to output extra information
+    model_name: string,
+        the name of this model for printing and file writing purposes
+    model_save_directory: string,
+        if not None; location to save the trained keras model in hdf5 format
+    n_jobs : int, default=1
+        The number of jobs to run in parallel for both `fit` and `predict`.
+        ``-1`` means using all processors.
+    random_state : int or None, default=None
+        Seed for random, integer.
+    Attributes
+    ----------
+    nb_classes : int
+        Number of classes. Extracted from the data.
+
+    References
+    ----------
+    @article{Karim_2019,
+    title={Multivariate LSTM-FCNs for time series classification},
+    volume={116},
+    ISSN={0893-6080},
+    url={http://dx.doi.org/10.1016/j.neunet.2019.04.014},
+    DOI={10.1016/j.neunet.2019.04.014},
+    journal={Neural Networks},
+    publisher={Elsevier BV},
+    author={Karim, Fazle and Majumdar, Somshubra and Darabi, Houshang and Harford, Samuel},
+    year={2019},
+    month={Aug},
+    pages={237–245}
+    }
+
+
+
+    Example
+    -------
+    from sktime_dl.classification import LSTMFCNClassifier
+    from sktime.datasets import load_italy_power_demand
+    X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
+    X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
+    clf = LSTMFCNClassifier()
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
     """
 
     def __init__(
             self,
-            nb_epochs=120,
-            batch_size=128,
+            nb_epochs=1500,
+            batch_size=8,
             kernel_sizes=[8, 5, 3],
             filter_sizes=[128, 256, 128],
-            NUM_CELLS=8,
+            num_cells=8,
             dropout=0.8,
             attention=False,
             callbacks=[],
@@ -30,21 +100,7 @@ class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
             model_name="lstmfcn",
             model_save_directory=None,
     ):
-        """
-        :param nb_epochs: int, the number of epochs to train the model
-        :param batch_size: int, the number of samples per gradient update.
-        :param kernel_sizes: list of ints, specifying the length of the 1D convolution
-         windows
-        :param filter_sizes: int, array of shape = 3, size of filter for each
-         conv layer
-        :param callbacks: not used
-        :param random_state: int, seed to any needed random actions
-        :param verbose: boolean, whether to output extra information
-        :param model_name: string, the name of this model for printing and
-        file writing purposes
-        :param model_save_directory: string, if not None; location to save
-        the trained keras model in hdf5 format
-        """
+
         super(LSTMFCNClassifier, self).__init__(
             model_name=model_name, model_save_directory=model_save_directory
         )
@@ -64,7 +120,7 @@ class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
         self.batch_size = batch_size
         self.kernel_sizes = kernel_sizes
         self.filter_sizes = filter_sizes
-        self.NUM_CELLS=NUM_CELLS
+        self.NUM_CELLS=num_cells
         self.dropout=dropout
         self.attention=attention
 
@@ -107,10 +163,12 @@ class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
         #     filepath=file_path, monitor='val_loss',
         #     save_best_only=True)
         # self.callbacks = [model_checkpoint]
-
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
-                                                      patience=20, min_lr=0.0001)
-        self.callbacks = [reduce_lr]
+        if self.callbacks==None:
+            reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
+                                                          patience=50, min_lr=0.0001)
+            self.callbacks = [reduce_lr]
+        else:
+            pass
 
         return model
 

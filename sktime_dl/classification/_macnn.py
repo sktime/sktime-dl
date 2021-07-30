@@ -11,7 +11,7 @@ from tensorflow import keras
 class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
     """
 
-    Implementation of MACNNClassifier from Chen (2015). [1]_
+    Implementation of MACNNClassifier from Chen (2021). [1]_
     Overview:
      Neural Network made of multiple convolutional attention blocks. The block is separated into three
      sections. Section 1 and 2 are made up of two blocks followed by a max pooling layer. The final section
@@ -61,7 +61,6 @@ class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
     X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
     clf = MACNNClassifier()
     clf.fit(X_train, y_train)
-    BOSSEnsemble(...)
     y_pred = clf.predict(X_test)
     """
 

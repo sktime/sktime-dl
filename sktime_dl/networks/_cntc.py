@@ -71,7 +71,7 @@ class CNTCNetwork(BaseDeepNetwork):
         input_layers=[]
         # This is the CCNN arm
         X2 = keras.layers.Input(input_shape)
-        self.dropout=0.8
+        self.dropout=0.2
         rnn1 = keras.layers.SimpleRNN(self.rnn_layer*input_shape[1], activation='relu', use_bias=True, kernel_initializer='glorot_uniform')(X2)
         rnn1 = keras.layers.BatchNormalization()(rnn1)
         rnn1 = keras.layers.Dropout(self.dropout)(rnn1)
@@ -81,7 +81,7 @@ class CNTCNetwork(BaseDeepNetwork):
         input_layers.append(X2)
         conv1 = keras.layers.Conv1D(self.filter_sizes[0], self.kernel_sizes[0], activation='relu', kernel_initializer='glorot_uniform')(X1)
         conv1 = keras.layers.BatchNormalization()(conv1)
-        #conv1 = keras.layers.Dropout(self.dropout)(conv1)
+        conv1 = keras.layers.Dropout(self.dropout)(conv1)
         conv1 = keras.layers.Dense(input_shape[1], input_shape=(input_shape[0], keras.backend.int_shape(conv1)[2]))(conv1)
         conc1 = keras.layers.Concatenate(axis=-2, name="contextual_convolutional_layer")([conv1, rnn1])
         conv2 = keras.layers.Conv1D(self.filter_sizes[1], self.kernel_sizes[1], activation='relu', kernel_initializer='glorot_uniform',
@@ -89,7 +89,7 @@ class CNTCNetwork(BaseDeepNetwork):
             conc1)
         conv2 = keras.layers.Dense(input_shape[1], input_shape=(input_shape[0], keras.backend.int_shape(conv2)[2]))(conv2)
         conv2 = keras.layers.BatchNormalization()(conv2)
-        #conv2 = keras.layers.Dropout(self.dropout)(conv2)
+        conv2 = keras.layers.Dropout(0.2)(conv2)
 
 
         #CLSTM ARM
@@ -101,18 +101,18 @@ class CNTCNetwork(BaseDeepNetwork):
         merge = keras.layers.concatenate([conv2, lstm11], axis=-2)
 
         avg = keras.layers.MaxPooling1D(pool_size=1, strides=None, padding='valid')(merge)
-        avg = keras.layers.Dropout(0.5)(avg)
+        avg = keras.layers.Dropout(0.2)(avg)
         att = SeqSelfAttention(attention_width=10,
                              attention_activation='sigmoid',
                               name='Attention',
                               attention_type='multiplicative'
                               )(avg)
 
-        att = keras.layers.Dropout(0.5)(att)
+        att = keras.layers.Dropout(0.2)(att)
         mlp1 = keras.layers.Dense(self.dense_size, kernel_initializer='glorot_uniform', activation='relu')(att)
-        mlp1 = keras.layers.Dropout(0.1)(mlp1)
+        mlp1 = keras.layers.Dropout(0.2)(mlp1)
         mlp2 = keras.layers.Dense(self.dense_size, kernel_initializer='glorot_uniform', activation='relu')(mlp1)
-        mlp2 = keras.layers.Dropout(0.1)(mlp2)
+        mlp2 = keras.layers.Dropout(0.2)(mlp2)
         flat5 = keras.layers.Flatten()(mlp2)
 
         return input_layers, flat5
@@ -143,4 +143,6 @@ class CNTCNetwork(BaseDeepNetwork):
                 trainX5 = trainX3.reshape((trainX3.shape[0], trainX3.shape[1], 1))
                 lst.append(trainX5)
             trainX4= np.concatenate(lst,axis=2)
+        print('trainX4 shape====================')
+        print(trainX4.shape)
         return trainX4
