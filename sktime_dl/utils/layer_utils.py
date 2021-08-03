@@ -6,10 +6,10 @@ from tensorflow.keras import activations
 from tensorflow.keras import initializers
 from tensorflow.keras import regularizers
 from tensorflow.keras import constraints
-from tensorflow.keras import Layer
-from tensorflow.keras import InputSpec
+from tensorflow.keras.layers import Layer
+from tensorflow.keras.layers import InputSpec
 #from keras.legacy import interfaces
-from tensorflow.keras import RNN
+from tensorflow.keras.layers import RNN
 
 
 def _time_distributed_dense(x, w, b=None, dropout=None,
