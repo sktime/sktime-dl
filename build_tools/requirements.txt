@@ -9,4 +9,4 @@ coveralls
 numpy==1.19.2
 matplotlib
 seaborn
-
+keras-self-attention
