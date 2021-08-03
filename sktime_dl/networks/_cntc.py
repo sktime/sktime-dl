@@ -93,7 +93,7 @@ class CNTCNetwork(BaseDeepNetwork):
 
 
         #CLSTM ARM
-        X3 = keras.layers.Input((input_shape[1],input_shape[0]))
+        X3 = keras.layers.Input(input_shape)
         input_layers.append(X3)
         lstm11 = keras.layers.LSTM(self.lstm_size*input_shape[1], return_sequences=False, kernel_initializer='glorot_uniform', activation='relu')(X3)
         lstm11 = keras.layers.Reshape((self.lstm_size, input_shape[1]))(lstm11)

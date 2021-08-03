@@ -156,7 +156,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         X_2 = self.prepare_input(X)
         if validation_data is not None:
             validation_data = (
-                (self.prepare_input(validation_data[0]),validation_data[0],validation_data[0].transpose(0,2,1)),
+                (self.prepare_input(validation_data[0]),validation_data[0],validation_data[0]),
                 validation_data[1]
             )
 
@@ -167,7 +167,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
             self.model.summary()
 
         self.history = self.model.fit(
-            [X_2,X,X.transpose(0,2,1)],
+            [X_2,X,X],
             y_onehot,
             batch_size=self.batch_size,
             epochs=self.nb_epochs,
@@ -202,7 +202,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
 
         x_test_2 = self.prepare_input(X)
 
-        probs = self.model.predict([X, X, x_test_2], **kwargs)
+        probs = self.model.predict([x_test_2,X, X], **kwargs)
 
         # check if binary classification
         if probs.shape[1] == 1:
