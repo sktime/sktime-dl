@@ -89,11 +89,11 @@ class CNTCNetwork(BaseDeepNetwork):
             conc1)
         conv2 = keras.layers.Dense(input_shape[1], input_shape=(input_shape[0], keras.backend.int_shape(conv2)[2]))(conv2)
         conv2 = keras.layers.BatchNormalization()(conv2)
-        conv2 = keras.layers.Dropout(0.2)(conv2)
+        conv2 = keras.layers.Dropout(0.1)(conv2)
 
 
         #CLSTM ARM
-        X3 = keras.layers.Input(input_shape)
+        X3 = keras.layers.Input((input_shape[1],input_shape[0]))
         input_layers.append(X3)
         lstm11 = keras.layers.LSTM(self.lstm_size*input_shape[1], return_sequences=False, kernel_initializer='glorot_uniform', activation='relu')(X3)
         lstm11 = keras.layers.Reshape((self.lstm_size, input_shape[1]))(lstm11)
@@ -101,20 +101,20 @@ class CNTCNetwork(BaseDeepNetwork):
         merge = keras.layers.concatenate([conv2, lstm11], axis=-2)
 
         avg = keras.layers.MaxPooling1D(pool_size=1, strides=None, padding='valid')(merge)
-        avg = keras.layers.Dropout(0.2)(avg)
+        avg = keras.layers.Dropout(0.1)(avg)
         att = SeqSelfAttention(attention_width=10,
                              attention_activation='sigmoid',
                               name='Attention',
                               attention_type='multiplicative'
                               )(avg)
 
-        att = keras.layers.Dropout(0.2)(att)
+        att = keras.layers.Dropout(0.1)(att)
         mlp1 = keras.layers.Dense(self.dense_size, kernel_initializer='glorot_uniform', activation='relu')(att)
-        mlp1 = keras.layers.Dropout(0.2)(mlp1)
+        mlp1 = keras.layers.Dropout(0.1)(mlp1)
         mlp2 = keras.layers.Dense(self.dense_size, kernel_initializer='glorot_uniform', activation='relu')(mlp1)
-        mlp2 = keras.layers.Dropout(0.2)(mlp2)
-        flat5 = keras.layers.Flatten()(mlp2)
-
+        mlp2 = keras.layers.Dropout(0.1)(mlp2)
+        #flat5 = keras.layers.GlobalAveragePooling1D()(att)
+        flat5=keras.layers.Flatten()(mlp2)
         return input_layers, flat5
 
     def prepare_input(self,X):

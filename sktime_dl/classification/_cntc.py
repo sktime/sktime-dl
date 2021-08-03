@@ -94,7 +94,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         )
 
         model = keras.models.Model(inputs=input_layers, outputs=output_layer)
-        Adam = keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-7)
+        Adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7)
         model.compile(
             loss="categorical_crossentropy",
             optimizer=Adam,
@@ -108,7 +108,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         # self.callbacks = [model_checkpoint]
         reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
                                       patience=25, min_lr=0.00001)
-        self.callbacks = [reduce_lr]
+        self.callbacks.append(reduce_lr)
 
         return model
 
@@ -156,7 +156,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         X_2 = self.prepare_input(X)
         if validation_data is not None:
             validation_data = (
-                (validation_data[0],validation_data[0],self.prepare_input(validation_data[0])),
+                (self.prepare_input(validation_data[0]),validation_data[0],validation_data[0].transpose(0,2,1)),
                 validation_data[1]
             )
 
@@ -167,7 +167,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
             self.model.summary()
 
         self.history = self.model.fit(
-            [X,X,X_2],
+            [X_2,X,X.transpose(0,2,1)],
             y_onehot,
             batch_size=self.batch_size,
             epochs=self.nb_epochs,

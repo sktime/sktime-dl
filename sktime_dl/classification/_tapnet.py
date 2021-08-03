@@ -14,7 +14,48 @@ from tensorflow import keras
 
 class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
     """
-    @inproceedings{zhang2020tapnet,
+    Implementation of TapNetClassifier Zhang (2020). [1]_
+    Overview:
+
+
+    Parameters
+    ----------
+
+    filter_sizes: list or array of ints, default=[256, 256, 128]
+        sets the kernel size argument for each convolutional block. Controls number of convolutional filters
+        and number of neurons in attention dense layers.
+    kernel_size : list or array of ints, default=[8, 5, 3]
+        controls the size of the convolutional kernels
+    use_rp: boolean, default=True
+        Whether to use random projections or not
+    use_att: boolean, default=True
+        Use self attention in the model
+    use_cnn: boolean, default=True
+        Use cnn layers
+    use_lstm: boolean, default=True
+        Use lstm layers
+    layers: list of ints, default=[500,300]
+    reduction : int, default=16
+        divides the number of dense neurons in the first layer of the attention block.
+    n_jobs : int, default=1
+        The number of jobs to run in parallel for both `fit` and `predict`.
+        ``-1`` means using all processors.
+    random_state : int or None, default=None
+        Seed for random, integer.
+
+    Attributes
+    ----------
+    nb_classes : int
+        Number of classes. Extracted from the data.
+
+
+
+
+    References
+
+    --------
+
+    [1] @inproceedings{zhang2020tapnet,
     title={Tapnet: Multivariate time series classification with attentional prototypical network},
     author={Zhang, Xuchao and Gao, Yifeng and Lin, Jessica and Lu, Chang-Tien},
     booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
@@ -23,6 +64,16 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
     pages={6845--6852},
     year={2020}
     }
+
+    Example
+    -------
+    from sktime_dl.classification import TapNetClassifier
+    from sktime.datasets import load_italy_power_demand
+    X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
+    X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
+    clf = TapNetClassifier()
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
     """
 
     def __init__(
@@ -36,9 +87,6 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
             use_rp=True,
             rp_params=[-1, 3],
             use_att=True,
-            use_ss=False,
-            use_metric=False,
-            use_muse=False,
             use_lstm=True,
             use_cnn=True,
             random_state=1,
