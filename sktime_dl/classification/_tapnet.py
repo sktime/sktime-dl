@@ -16,6 +16,8 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
     """
     Implementation of TapNetClassifier Zhang (2020). [1]_
     Overview:
+    Uses optionally an LSTM, CNN and self attention mechanism. Original implementation used pytorch
+    so some features have not been added.
 
 
     Parameters
@@ -118,7 +120,7 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         self.rp_params = rp_params
         self.filter_sizes = filter_sizes
         self.use_att = use_att
-        self.use_ss = use_ss
+
         self.dilation = dilation
         self.padding = padding
         self.nb_epochs=nb_epochs
@@ -128,8 +130,6 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         self._is_fitted=False
 
         self.dropout = dropout
-        self.use_metric = use_metric
-        self.use_muse = use_muse
         self.use_lstm = use_lstm
         self.use_cnn = use_cnn
 
