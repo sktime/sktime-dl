@@ -61,7 +61,7 @@ def find_install_requires():
     # by default, make sure anything already installed is above 1.8.0,
     # or if installing from new get the most recent stable (i.e. not
     # nightly) version
-    MINIMUM_TF_VERSION = '1.9.0'
+    MINIMUM_TF_VERSION = '2.0.0'
     tf_requires = 'tensorflow>=' + MINIMUM_TF_VERSION
 
     has_tf_gpu = False
