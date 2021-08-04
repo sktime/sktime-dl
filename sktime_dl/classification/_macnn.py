@@ -117,6 +117,7 @@ class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
         self.pool_size = pool_size
         self.stride = stride
         self.repeats = repeats
+        self.padding=padding
 
         # predefined
         self.nb_epochs = nb_epochs
