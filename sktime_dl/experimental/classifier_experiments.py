@@ -42,24 +42,14 @@ from sktime_dl.classification import ( CNNClassifier,
                                      )
 from sktime_dl.regression import (
     CNNRegressor,
-    # EncoderClassifier,
-    # EncoderRegressor,
-    # FCNClassifier,
     FCNRegressor,
-    # InceptionTimeClassifier,
     InceptionTimeRegressor,
     LSTMRegressor,
-    # MCDCNNClassifier,
     MCDCNNRegressor,
-    # MCNNClassifier,
-    # MLPClassifier,
     MLPRegressor,
-    # ResNetClassifier,
     ResNetRegressor,
     SimpleRNNRegressor,
-    # TLENETClassifier,
     TLENETRegressor,
-    # TWIESNClassifier,
 )
 
 __author__ = ["Tony Bagnall"]
