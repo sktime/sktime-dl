@@ -30,27 +30,36 @@ from sktime.utils.data_io import load_from_tsfile_to_dataframe as load_ts
 
 #from sktime.utils.load_data import load_from_tsfile_to_dataframe as load_ts
 
-from sktime_dl.classification import CNNClassifier
-from sktime_dl.deeplearning import (
+from sktime_dl.classification import ( CNNClassifier,
+                                       FCNClassifier,
+                                       InceptionTimeClassifier,
+                                       MCDCNNClassifier,
+                                       MCNNClassifier,
+                                       MLPClassifier,
+                                       ResNetClassifier,
+                                       TLENETClassifier,
+                                       TWIESNClassifier,
+                                     )
+from sktime_dl.regression import (
     CNNRegressor,
-    EncoderClassifier,
-    EncoderRegressor,
-    FCNClassifier,
+    # EncoderClassifier,
+    # EncoderRegressor,
+    # FCNClassifier,
     FCNRegressor,
-    InceptionTimeClassifier,
+    # InceptionTimeClassifier,
     InceptionTimeRegressor,
     LSTMRegressor,
-    MCDCNNClassifier,
+    # MCDCNNClassifier,
     MCDCNNRegressor,
-    MCNNClassifier,
-    MLPClassifier,
+    # MCNNClassifier,
+    # MLPClassifier,
     MLPRegressor,
-    ResNetClassifier,
+    # ResNetClassifier,
     ResNetRegressor,
     SimpleRNNRegressor,
-    TLENETClassifier,
+    # TLENETClassifier,
     TLENETRegressor,
-    TWIESNClassifier,
+    # TWIESNClassifier,
 )
 
 __author__ = ["Tony Bagnall"]
@@ -112,8 +121,8 @@ def set_classifier(cls, resampleId=None):
     # Convolutional
     if name == "cnn" or name == "cnnclassifier":
         return CNNClassifier(random_state=resampleId)
-    elif name == "encode":
-        return EncoderClassifier()
+    # elif name == "encode":
+    #     return EncoderClassifier()
     elif name == "fcn":
         return FCNClassifier()
     elif name == "inceptiontime":

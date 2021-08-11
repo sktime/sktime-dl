@@ -55,7 +55,7 @@ class InceptionTimeNetwork(BaseDeepNetwork):
 
         self.random_state = random_state
 
-    def _inception_module(self, input_tensor, stride=1, activation="linear"):
+    def _inception_module(self, input_tensor, stride=1, activation="relu"):
 
         if self.use_bottleneck and int(input_tensor.shape[-1]) > 1:
             input_inception = keras.layers.Conv1D(
