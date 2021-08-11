@@ -31,14 +31,18 @@ from sktime.utils.data_io import load_from_tsfile_to_dataframe as load_ts
 #from sktime.utils.load_data import load_from_tsfile_to_dataframe as load_ts
 
 from sktime_dl.classification import ( CNNClassifier,
-                                       FCNClassifier,
-                                       InceptionTimeClassifier,
-                                       MCDCNNClassifier,
-                                       MCNNClassifier,
-                                       MLPClassifier,
-                                       ResNetClassifier,
-                                       TLENETClassifier,
-                                       TWIESNClassifier,
+    CNTCClassifier,
+    EncoderClassifier,
+    FCNClassifier,
+    InceptionTimeClassifier,
+    LSTMFCNClassifier,
+    MCDCNNClassifier,
+    MCNNClassifier,
+    MLPClassifier,
+    ResNetClassifier,
+    TLENETClassifier,
+    TWIESNClassifier,
+)
                                      )
 from sktime_dl.regression import (
     CNNRegressor,
