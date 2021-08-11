@@ -43,7 +43,7 @@ from sktime_dl.classification import ( CNNClassifier,
     TLENETClassifier,
     TWIESNClassifier,
 )
-                                     )
+                                     
 from sktime_dl.regression import (
     CNNRegressor,
     FCNRegressor,
