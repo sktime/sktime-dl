@@ -20,6 +20,7 @@ class LSTMFCNRegressor(BaseDeepRegressor, LSTMFCNNetwork):
             kernel_sizes=[8, 5, 3],
             filter_sizes=[128, 256, 128],
             NUM_CELLS=8,
+            Attention=False,
             dropout=0.8,
             callbacks=[],
             random_state=0,
@@ -61,6 +62,7 @@ class LSTMFCNRegressor(BaseDeepRegressor, LSTMFCNNetwork):
         self.filter_sizes = filter_sizes
         self.NUM_CELLS = NUM_CELLS
         self.dropout=dropout
+        self.attention=False
 
         self.callbacks = callbacks
         self.random_state = random_state

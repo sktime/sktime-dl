@@ -1,37 +1,91 @@
 __author__ = "Jack Russon"
 
-import numpy as np
-from tensorflow import keras
-
 from sktime_dl.classification._classifier import BaseDeepClassifier
-from sktime_dl.networks._cntc import CNTCNetwork
+from sktime_dl.networks._macnn import MACNNNetwork
 from sktime_dl.utils import check_and_clean_data, \
     check_and_clean_validation_data
-from sktime_dl.utils import check_is_fitted
 from sklearn.utils import check_random_state
+from tensorflow import keras
 
 
-class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
+class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
+    """
+
+    Implementation of MACNNClassifier from Chen (2021). [1]_
+    Overview:
+     Neural Network made of multiple convolutional attention blocks. The block is separated into three
+     sections. Section 1 and 2 are made up of two blocks followed by a max pooling layer. The final section
+     contains two blocks and a mean reduction followed by the dense output layer.
+
+
+    Parameters
+    ----------
+    pool_size : int, default=3
+       Controls pool size for maxpooling layers.
+    stride : int, default=2
+       Controls stride length for maxpooling layers.
+    filters: list or array of ints, default=[64, 128, 256]
+        sets the kernel size argument for each convolutional block. Controls number of convolutional filters
+        and number of neurons in attention dense layers.
+    kernel_size : list or array of ints, default=[3, 6, 12]
+        controls the size of the convolutional kernels
+    reduction : int, default=16
+        divides the number of dense neurons in the first layer of the attention block.
+    n_jobs : int, default=1
+        The number of jobs to run in parallel for both `fit` and `predict`.
+        ``-1`` means using all processors.
+    random_state : int or None, default=None
+        Seed for random, integer.
+    Attributes
+    ----------
+    nb_classes : int
+        Number of classes. Extracted from the data.
+
+    References
+    ----------
+    [1] Wei Chen, Ke Shi,
+    Multi-scale Attention Convolutional Neural Network for time series classification,
+    Neural Networks,
+    Volume 136,
+    2021,
+    Pages 126-140,
+    ISSN 0893-6080,
+    https://doi.org/10.1016/j.neunet.2021.01.001.
+    (https://www.sciencedirect.com/science/article/pii/S0893608021000010)
+
+    Example
+    -------
+    from sktime_dl.classification import MACNNClassifier
+    from sktime.datasets import load_italy_power_demand
+    X_train, y_train = load_italy_power_demand(split="train", return_X_y=True)
+    X_test, y_test = load_italy_power_demand(split="test", return_X_y=True)
+    clf = MACNNClassifier()
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
+    """
+
     def __init__(
             self,
+            padding='same',
+            pool_size=3,
+            stride=2,
+            repeats=2,
+            filters=[64, 128, 256],
+            kernel_sizes=[3, 6, 12],
+            reduction=16,
             nb_epochs=1500,
-            batch_size=30,
-            rnn_layer=64,
-            filter_sizes=[16, 8],
-            kernel_sizes=[1, 1],
-            lstm_size=8,
-            dense_size=64,
+            batch_size=4,
             callbacks=[],
             random_state=0,
             verbose=False,
-            model_name="cntc",
+            model_name="macnn",
             model_save_directory=None,
     ):
         """
         :param nb_epochs: int, the number of epochs to train the model
         :param batch_size: int, the number of samples per gradient update.
         :param rnn_layer: int, filter size for rnn layer
-        :param filter_sizes: int, array of shape 2, filter sizes for two convolutional layers
+        :param filters: int, array of shape 2, filter sizes for two convolutional layers
         :param kernel_sizes: int,array of shape 2,  kernel size for two convolutional layers
         :param lstm_size: int, filter size of lstm layer
         :param dense_size: int, size of dense layer
@@ -43,7 +97,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         :param model_save_directory: string, if not None; location to save
         the trained keras model in hdf5 format
         """
-        super(CNTCClassifier, self).__init__(
+        super(MACNNClassifier, self).__init__(
             model_name=model_name, model_save_directory=model_save_directory
         )
 
@@ -57,15 +111,19 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         self.model = None
         self.history = None
 
+        self.kernel_sizes = kernel_sizes
+        self.filters= filters
+        self.reduction = reduction
+        self.pool_size = pool_size
+        self.stride = stride
+        self.repeats = repeats
+        self.padding=padding
+
         # predefined
         self.nb_epochs = nb_epochs
         self.batch_size = batch_size
         self.random_state = random_state
-        self.rnn_layer = rnn_layer
-        self.filter_sizes = filter_sizes
-        self.kernel_sizes = kernel_sizes
-        self.lstm_size = lstm_size
-        self.dense_size = dense_size
+
 
         self.callbacks = callbacks
         self.random_state = random_state
@@ -82,33 +140,26 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
             The shape of the data fed into the input layer
         nb_classes: int
             The number of classes, which shall become the size of the output
-             layer
+            layer
         Returns
         -------
         output : a compiled Keras Model
         """
-        input_layers, output_layer = self.build_network(input_shape, **kwargs)
+        input_layer, output_layer = self.build_network(input_shape, **kwargs)
 
-        output_layer = keras.layers.Dense(nb_classes, activation="softmax")(
-            output_layer
-        )
+        output_layer = keras.layers.Dense(
+            units=nb_classes, activation="softmax"
+        )(output_layer)
 
-        model = keras.models.Model(inputs=input_layers, outputs=output_layer)
-        Adam = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7)
+        model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(
             loss="categorical_crossentropy",
-            optimizer=Adam,
-            metrics=["accuracy"],
+            optimizer=keras.optimizers.Adam(lr=0.0001),
+            metrics=["accuracy"]
         )
-
-        # file_path = self.output_directory + 'best_model.hdf5'
-        # model_checkpoint = keras.callbacks.ModelCheckpoint(
-        #     filepath=file_path, monitor='val_loss',
-        #     save_best_only=True)
-        # self.callbacks = [model_checkpoint]
         reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
-                                      patience=25, min_lr=0.00001)
-        self.callbacks.append(reduce_lr)
+                                                      patience=50, min_lr=0.00001)
+        self.callbacks = [reduce_lr]
 
         return model
 
@@ -124,7 +175,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         y : array-like, shape = [n_instances]
             The training data class labels.
         input_checks : boolean
-            whether to check the X and y parameters
+            whether to check the X and y paramete
         validation_X : a nested pd.Dataframe, or array-like of shape =
         (n_instances, series_length, n_dimensions)
             The validation samples. If a 2D array-like is passed,
@@ -141,6 +192,9 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         """
         self.random_state = check_random_state(self.random_state)
 
+        if self.callbacks is None:
+            self.callbacks = []
+
         X = check_and_clean_data(X, y, input_checks=input_checks)
         y_onehot = self.convert_y(y)
 
@@ -153,60 +207,22 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         # just want the shape of each instance
         self.input_shape = X.shape[1:]
 
-        X_2 = self.prepare_input(X)
-        if validation_data is not None:
-            validation_data = (
-                (self.prepare_input(validation_data[0]),validation_data[0],validation_data[0]),
-                validation_data[1]
-            )
-
         self.model = self.build_model(self.input_shape, self.nb_classes)
-
 
         if self.verbose:
             self.model.summary()
 
         self.history = self.model.fit(
-            [X_2,X,X],
+            X,
             y_onehot,
             batch_size=self.batch_size,
             epochs=self.nb_epochs,
             verbose=self.verbose,
-            validation_data=(validation_data),
-            callbacks=self.callbacks
+            callbacks=self.callbacks,
+            validation_data=validation_data
         )
 
-        self.save_trained_model()
         self._is_fitted = True
+        self.save_trained_model()
 
         return self
-
-    def predict_proba(self, X, input_checks=True, **kwargs):
-        """
-        Find probability estimates for each class for all cases in X.
-        Parameters
-        ----------
-        X : a nested pd.Dataframe, or (if input_checks=False) array-like of
-        shape = (n_instances, series_length, n_dimensions)
-            The training input samples. If a 2D array-like is passed,
-            n_dimensions is assumed to be 1.
-        input_checks: boolean
-            whether to check the X parameter
-        Returns
-        -------
-        output : array of shape = [n_instances, n_classes] of probabilities
-        """
-        check_is_fitted(self)
-
-        X = check_and_clean_data(X, input_checks=input_checks)
-
-        x_test_2 = self.prepare_input(X)
-
-        probs = self.model.predict([x_test_2,X, X], **kwargs)
-
-        # check if binary classification
-        if probs.shape[1] == 1:
-            # first column is probability of class 0 and second is of class 1
-            probs = np.hstack([1 - probs, probs])
-
-        return probs

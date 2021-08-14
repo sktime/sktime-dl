@@ -1,6 +1,7 @@
 __author__ = "Jack Russon"
 
 from tensorflow import keras
+from sktime_dl.utils.layer_utils import AttentionLSTM
 
 from sktime_dl.networks._network import BaseDeepNetwork
 
@@ -28,12 +29,10 @@ class LSTMFCNNetwork(BaseDeepNetwork):
 
         self.random_state = random_state
         self.kernel_sizes = kernel_sizes
-        self.pool_size = pool_size
         self.filter_sizes = filter_sizes
-        self.dense_units = dense_units
         self.NUM_CELLS=NUM_CELLS
         self.dropout=dropout
-        self.attention=False
+        self.attention=attention
 
     def build_network(self, input_shape, **kwargs):
         """
@@ -51,7 +50,7 @@ class LSTMFCNNetwork(BaseDeepNetwork):
         x = keras.layers.Permute((2, 1))(input_layer)
         if self.attention:
 
-            x = keras.utils.AttentionLSTM(self.NUM_CELLS)(x)
+            x = AttentionLSTM(self.NUM_CELLS)(x)
         else:
             x = keras.layers.LSTM(self.NUM_CELLS)(x)
         x = keras.layers.Dropout(self.dropout)(x)

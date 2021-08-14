@@ -36,20 +36,24 @@ if len(sys.argv) > 6:
 import gc
 from tensorflow import keras
 
-from sktime_dl.deeplearning import CNNClassifier
-from sktime_dl.deeplearning import EncoderClassifier
-from sktime_dl.deeplearning import FCNClassifier
-from sktime_dl.deeplearning import MCDCNNClassifier
-from sktime_dl.deeplearning import MCNNClassifier
-from sktime_dl.deeplearning import MLPClassifier
-from sktime_dl.deeplearning import ResNetClassifier
-from sktime_dl.deeplearning import TLENETClassifier
-from sktime_dl.deeplearning import TWIESNClassifier
-from sktime_dl.deeplearning import InceptionTimeClassifier
+from sktime_dl.classification import CNNClassifier
+from sktime_dl.classification import EncoderClassifier
+from sktime_dl.classification import FCNClassifier
+from sktime_dl.classification import MCDCNNClassifier
+from sktime_dl.classification import MCNNClassifier
+from sktime_dl.classification import MLPClassifier
+from sktime_dl.classification import ResNetClassifier
+from sktime_dl.classification import TLENETClassifier
+from sktime_dl.classification import TWIESNClassifier
+from sktime_dl.classification import InceptionTimeClassifier
 from sktime_dl.meta import EnsembleFromFileClassifier
+from sktime_dl.classification import   LSTMFCNClassifier
+from sktime_dl.classification import CNTCClassifier
+from sktime_dl.classification import TapNetClassifier
+from sktime_dl.classification import MACNNClassifier
 
 #import sktime.contrib.experiments as exp
-import sktime_dl.experimental.dlexp as dlexp
+import sktime.contrib.classification_experiments as dlexp
 
 ucr112dsets = [
     "ACSF1",
@@ -195,6 +199,8 @@ ueamv26dsets = [
     "UWaveGestureLibrary",
 ]
 
+NB_EPOCHS=1000
+
 def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
     """
     Basic way of determining the classifier to build. To differentiate settings just and another elif. So, for example, if
@@ -242,6 +248,14 @@ def setNetwork(data_dir, res_dir, cls, dset, fold, classifier=None):
         return InceptionTimeClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
     elif cls.lower() == "inception4":
         return InceptionTimeClassifier(random_state=fold)
+    elif cls.lower() == "cntc":
+        return CNTCClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower() == "lstmfcn":
+        return LSTMFCNClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower() == "tapnet":
+        return TapNetClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
+    elif cls.lower()=="macnn":
+        return MACNNClassifier(random_state=fold, model_name=model_name, model_save_directory=model_save_dir)
     elif cls.lower() == "inceptiontime":
         return EnsembleFromFileClassifier(
             res_dir,
@@ -359,6 +373,5 @@ if __name__ == "__main__":
     dlExperiment(
         sys.argv[1], sys.argv[2], classifier, sys.argv[4], int(sys.argv[5])
     )
-
     #ensembleInception("Z:/ArchiveData/Multivariate_ts/", "E:/MultivariateArchive/", "inceptiontime", ueamv26dsets,
     #range(0,30), overwrite=False)

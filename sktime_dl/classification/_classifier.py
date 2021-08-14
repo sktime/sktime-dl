@@ -62,7 +62,7 @@ class BaseDeepClassifier(BaseClassifier):
 
         X = check_and_clean_data(X, input_checks=input_checks)
 
-        probs = self.model.predict(X, **kwargs)
+        probs = self.model.predict(X, batch_size=40,**kwargs)
 
         # check if binary classification
         if probs.shape[1] == 1:
