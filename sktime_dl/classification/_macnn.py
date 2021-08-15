@@ -66,16 +66,16 @@ class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
 
     def __init__(
             self,
-            padding='same',
-            pool_size=3,
-            stride=2,
-            repeats=2,
-            filters=[64, 128, 256],
-            kernel_sizes=[3, 6, 12],
-            reduction=16,
             nb_epochs=1500,
             batch_size=4,
-            callbacks=[],
+            padding='same',
+            max_pool_size=3,
+            stride=2,
+            repeats=2,
+            filter_sizes=[64, 128, 256],
+            kernel_sizes=[3, 6, 12],
+            reduction=16,
+            callbacks=None,
             random_state=0,
             verbose=False,
             model_name="macnn",
@@ -112,9 +112,9 @@ class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
         self.history = None
 
         self.kernel_sizes = kernel_sizes
-        self.filters= filters
+        self.filters= filter_sizes
         self.reduction = reduction
-        self.pool_size = pool_size
+        self.pool_size = max_pool_size
         self.stride = stride
         self.repeats = repeats
         self.padding=padding

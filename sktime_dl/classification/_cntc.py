@@ -21,7 +21,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
             kernel_sizes=[1, 1],
             lstm_size=8,
             dense_size=64,
-            callbacks=[],
+            callbacks=None,
             random_state=0,
             verbose=False,
             model_name="cntc",
