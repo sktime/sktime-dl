@@ -162,16 +162,15 @@ class TapNetNetwork(BaseDeepNetwork):
                     if self.use_att:
                         x_conv = SeqSelfAttention(128, attention_type='multiplicative')(x_conv)
                         #pass
-                    print(x_conv.shape)
+
                     x_conv=keras.layers.GlobalAveragePooling1D()(x_conv)
-                    print(x_conv.shape)
+
                     if i == 0:
 
                         x_conv_sum = x_conv
                     else:
                         x_conv_sum = keras.layers.Concatenate()([x_conv_sum, x_conv])
-                    print("x_conv_shape")
-                    print(x_conv_sum.shape)
+
 
 
                 x_conv = x_conv_sum
