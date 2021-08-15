@@ -1,7 +1,7 @@
 sktime==0.6.1
 tensorflow>=2.0
 tensorflow_addons==0.9.*
-keras==2.5.0
+keras==2.5.0rc0
 h5py==2.10.0
 pytest
 pytest-cov
