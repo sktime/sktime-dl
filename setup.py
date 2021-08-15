@@ -55,7 +55,7 @@ def find_install_requires():
         'matplotlib',
         'seaborn',
         'keras-self-attention',
-        'keras'==2.5.0.rc0
+        'keras==2.5.0.rc0'
     ]
 
     # tensorflow version requirements
