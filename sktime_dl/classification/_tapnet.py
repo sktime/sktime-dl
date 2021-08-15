@@ -160,12 +160,14 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(
             loss="categorical_crossentropy",
-            optimizer=keras.optimizers.Adam(),
+            optimizer=keras.optimizers.Adam(learning_rate=0.00001),
             metrics=["accuracy"]
         )
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
-                                                      patience=20, min_lr=0.0001)
-        self.callbacks = [reduce_lr]
+        #reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
+         #                                             patience=50, min_lr=0.0001)
+        # if self.callbacks==None:
+        #
+        #     self.callbacks.append = (reduce_lr)
 
         return model
 
