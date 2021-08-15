@@ -51,7 +51,7 @@ def find_install_requires():
 
     install_requires = [
         'sktime==0.7.0',
-        'h5py>=2.8.0',
+        'h5py>=3.1.0',
         'matplotlib',
         'seaborn',
         'keras-self-attention'
@@ -61,8 +61,8 @@ def find_install_requires():
     # by default, make sure anything already installed is above 1.8.0,
     # or if installing from new get the most recent stable (i.e. not
     # nightly) version
-    MINIMUM_TF_VERSION = '2.0.0'
-    tf_requires = 'tensorflow>=' + MINIMUM_TF_VERSION
+    MINIMUM_TF_VERSION = '2.5.0'
+    tf_requires = 'tensorflow==' + MINIMUM_TF_VERSION
 
     has_tf_gpu = False
     has_tf = False
