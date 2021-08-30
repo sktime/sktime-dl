@@ -157,9 +157,7 @@ class MACNNClassifier(BaseDeepClassifier, MACNNNetwork):
             optimizer=keras.optimizers.Adam(lr=0.0001),
             metrics=["accuracy"]
         )
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
-                                                      patience=50, min_lr=0.00001)
-        self.callbacks = [reduce_lr]
+        
 
         return model
 
