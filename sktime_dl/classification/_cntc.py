@@ -21,7 +21,7 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
             kernel_sizes=[1, 1],
             lstm_size=8,
             dense_size=64,
-            callbacks=[],
+            callbacks=None,
             random_state=0,
             verbose=False,
             model_name="cntc",
@@ -106,9 +106,10 @@ class CNTCClassifier(BaseDeepClassifier, CNTCNetwork):
         #     filepath=file_path, monitor='val_loss',
         #     save_best_only=True)
         # self.callbacks = [model_checkpoint]
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
-                                      patience=25, min_lr=0.00001)
-        self.callbacks.append(reduce_lr)
+        if self.callbacks==None:
+            reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
+                                          patience=25, min_lr=0.00001)
+            self.callbacks=[reduce_lr]
 
         return model
 

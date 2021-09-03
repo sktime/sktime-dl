@@ -143,6 +143,4 @@ class CNTCNetwork(BaseDeepNetwork):
                 trainX5 = trainX3.reshape((trainX3.shape[0], trainX3.shape[1], 1))
                 lst.append(trainX5)
             trainX4= np.concatenate(lst,axis=2)
-        print('trainX4 shape====================')
-        print(trainX4.shape)
         return trainX4

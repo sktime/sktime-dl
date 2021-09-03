@@ -87,14 +87,14 @@ class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
 
     def __init__(
             self,
-            nb_epochs=1500,
-            batch_size=8,
+            nb_epochs=2000,
+            batch_size=128,
+            dropout=0.8,
             kernel_sizes=[8, 5, 3],
             filter_sizes=[128, 256, 128],
-            num_cells=8,
-            dropout=0.8,
-            attention=False,
-            callbacks=[],
+            lstm_size=8,
+            use_att=False,
+            callbacks=None,
             random_state=0,
             verbose=False,
             model_name="lstmfcn",
@@ -120,9 +120,9 @@ class LSTMFCNClassifier(BaseDeepClassifier, LSTMFCNNetwork):
         self.batch_size = batch_size
         self.kernel_sizes = kernel_sizes
         self.filter_sizes = filter_sizes
-        self.NUM_CELLS=num_cells
+        self.NUM_CELLS=lstm_size
         self.dropout=dropout
-        self.attention=attention
+        self.attention=use_att
 
         self.callbacks = callbacks
         self.random_state = random_state

@@ -80,10 +80,11 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
 
     def __init__(
             self,
+            nb_epochs=2000,
             batch_size=16,
             dropout=0.5,
             filter_sizes=[256, 256, 128],
-            kernel_size=[8, 5, 3],
+            kernel_sizes=[8, 5, 3],
             dilation=1,
             layers=[500, 300],
             use_rp=True,
@@ -95,10 +96,9 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
             padding='same',
             callbacks=None,
             verbose=False,
-            nb_epochs=2000,
-            model_name="TapNet",
-            model_save_directory=None,
-            is_fitted=False
+            model_name="tapnet",
+            model_save_directory=None
+
     ):
         """
         :param kernel_size: int, specifying the length of the 1D convolution
@@ -115,7 +115,7 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
             model_name=model_name)
         self.batch_size=batch_size
         self.random_state = random_state
-        self.kernel_size = kernel_size
+        self.kernel_size = kernel_sizes
         self.layers = layers
         self.rp_params = rp_params
         self.filter_sizes = filter_sizes
@@ -160,12 +160,14 @@ class TapNetClassifier(BaseDeepClassifier, TapNetNetwork):
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(
             loss="categorical_crossentropy",
-            optimizer=keras.optimizers.Adam(),
+            optimizer=keras.optimizers.Adam(learning_rate=0.00001),
             metrics=["accuracy"]
         )
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
-                                                      patience=20, min_lr=0.0001)
-        self.callbacks = [reduce_lr]
+        #reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.7,
+         #                                             patience=50, min_lr=0.0001)
+        # if self.callbacks==None:
+        #
+        #     self.callbacks.append = (reduce_lr)
 
         return model
 

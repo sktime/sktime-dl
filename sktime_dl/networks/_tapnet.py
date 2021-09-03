@@ -7,7 +7,7 @@ from tensorflow import keras
 import tensorflow as tf
 import numpy as np
 import math
-#from keras_self_attention import   SeqSelfAttention
+from keras_self_attention import   SeqSelfAttention
 
 from sktime_dl.networks._network import BaseDeepNetwork
 
@@ -122,10 +122,11 @@ class TapNetNetwork(BaseDeepNetwork):
             self.lstm_dim = 128
 
             x_lstm = keras.layers.LSTM(self.lstm_dim,return_sequences=True)(input_layer)
+            x_lstm=keras.layers.Dropout(0.8)(x_lstm)
 
             if self.use_att:
-              #  x_lstm = SeqSelfAttention(128, attention_type='multiplicative')(x_lstm)
-                pass
+                x_lstm = SeqSelfAttention(128, attention_type='multiplicative')(x_lstm)
+                # pass
             x_lstm = keras.layers.GlobalAveragePooling1D()(x_lstm)
 
         if self.use_cnn:
@@ -159,10 +160,10 @@ class TapNetNetwork(BaseDeepNetwork):
                     x_conv = keras.layers.BatchNormalization()(x_conv)
                     x_conv = keras.layers.LeakyReLU()(x_conv)
                     if self.use_att:
-                        #x_conv = SeqSelfAttention(128, attention_type='multiplicative')(x_conv)
-                        pass
+                        x_conv = SeqSelfAttention(128, attention_type='multiplicative')(x_conv)
+                        #pass
 
-                    x_conv=keras.layers.GlobalAveragePooling1D(data_format='channels_first')(x_conv)
+                    x_conv=keras.layers.GlobalAveragePooling1D()(x_conv)
 
                     if i == 0:
 
@@ -193,10 +194,10 @@ class TapNetNetwork(BaseDeepNetwork):
                 x_conv = keras.layers.BatchNormalization()(x_conv)
                 x_conv = keras.layers.LeakyReLU()(x_conv)
                 if self.use_att:
-                    #x_conv=SeqSelfAttention(128)(x_conv)
-                    pass
+                    x_conv=SeqSelfAttention(128)(x_conv)
+                    #pass
 
-                x_conv = keras.layers.GlobalAveragePooling1D(data_format='channels_last')(x_conv)
+                x_conv = keras.layers.GlobalAveragePooling1D()(x_conv)
 
         if self.use_lstm and self.use_cnn:
                 x = keras.layers.Concatenate()([x_conv, x_lstm])
