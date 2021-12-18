@@ -1,5 +1,5 @@
 NOTE: sktime-dl is currently being updated to work correctly with sktime 0.6, and
-wwill be fully relaunched over the summer. The plan is
+will be fully relaunched over the summer. The plan is
 
 2. Refactor and update classifiers (documentation etc)
 3. Import pytorch, add a pytorch classifier
