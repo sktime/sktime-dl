@@ -97,7 +97,7 @@ class CNNClassifier(BaseDeepClassifier, CNNNetwork):
 
         model = keras.models.Model(inputs=input_layer, outputs=output_layer)
         model.compile(
-            loss="mean_squared_error",
+            loss=keras.losses.BinaryCrossentropy(),
             optimizer=keras.optimizers.Adam(),
             metrics=["accuracy"],
         )
