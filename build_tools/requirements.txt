@@ -1,5 +1,5 @@
 sktime==0.6.1
-tensorflow==2.5.1
+tensorflow==2.7.2
 tensorflow_addons==0.9.*
 keras==2.5.0rc0
 h5py>=3.1.0
