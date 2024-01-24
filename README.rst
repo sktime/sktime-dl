@@ -1,9 +1,7 @@
-sktime-dl is being ported over to sktime.
+`sktime-dl` is currently being ported to mini-packages within `sktime`, and no longer maintained.
 
-TensorFlow is now a soft dependency in sktime, so we are going to initially just port
-these classifiers over. We have not been very good at maintaining this repo, so
-hopefully it will be easier when it is part of sktime proper. We would welcome any
-contributors to deep learning components over there.
+Most estimators formerly in `sktime-dl` are now available in the `sktime.classification.deep_learning` and `sktime.regression.deep_learning` modules, and maintained there.
 
-The first PR into sktime is here
-https://github.com/alan-turing-institute/sktime/pull/2447
+Contributions are appreciated to port the rest!
+
+To contribute, follow instructions in the [umbrella planning issue](https://github.com/sktime/sktime/issues/3351) on the `sktime` repo.
