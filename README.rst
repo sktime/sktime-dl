@@ -1,4 +1,4 @@
-``sktime-dl`` is currently being ported to mini-packages within ``sktime``, and no longer maintained.
+``sktime-dl`` is currently being ported to mini-packages within ``sktime``, and no longer maintained as a separate package.
 
 Most estimators formerly in ``sktime-dl`` are now available in the ``sktime.classification.deep_learning`` and ``sktime.regression.deep_learning`` modules, and maintained there.
 
