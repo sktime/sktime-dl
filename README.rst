@@ -4,4 +4,4 @@ Most estimators formerly in ``sktime-dl`` are now available in the ``sktime.clas
 
 Contributions are appreciated to port the rest!
 
-To contribute, follow instructions in the [umbrella planning issue](https://github.com/sktime/sktime/issues/3351) on the ``sktime`` repo.
+To contribute, follow instructions in the umbrella planning issue https://github.com/sktime/sktime/issues/3351 on the ``sktime`` repo.
