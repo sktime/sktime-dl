@@ -81,7 +81,7 @@ def check_and_clean_validation_data(validation_X, validation_y,
         validation_y = label_encoder.transform(validation_y)
         validation_y = validation_y.reshape(
             len(validation_y), 1)
-        validation_y = onehot_encoder.fit_transform(
+        validation_y = onehot_encoder.transform(
             validation_y)
 
     return (validation_X, validation_y)
